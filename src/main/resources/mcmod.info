@@ -1,14 +1,14 @@
 [
   {
     "modid": "${modid}",
-    "name": "Xample Mod",
-    "description": "A mod that is used as an example.",
+    "name": "Overlay Manager",
+    "description": "Custom overlay manager shit",
     "version": "${version}",
     "mcversion": "${mcversion}",
     "url": "https://github.com/romangraef/Forge1.8.9Template/",
     "updateUrl": "",
     "authorList": [
-      "You"
+      "Rico"
     ],
     "credits": "",
     "logoFile": "",
