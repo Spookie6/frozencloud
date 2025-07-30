@@ -45,17 +45,17 @@ public class TextOverlay extends Overlay {
         }
 
         for (int i = 0; i < lines.length; i++) {
+            String line = lines[i].replaceAll("&", "§");
             if (rightAlign != null && rightAlign.get()) {
                 String delimiter = "#";
-                String[] parts = lines[i].split(delimiter, 2);
+                String[] parts = line.split(delimiter, 2);
                 String left = parts.length > 0 ? parts[0] : "";
                 String right = parts.length > 1 ? parts[1] : "";
                 int rightWidth = mc.fontRendererObj.getStringWidth(right);
                 mc.fontRendererObj.drawString(left, padding, padding + (i * (mc.fontRendererObj.FONT_HEIGHT + 1)), color.getRGB(), shadow);
                 mc.fontRendererObj.drawString(right, dimensions.width - padding - rightWidth, padding + (i * (mc.fontRendererObj.FONT_HEIGHT + 1)), color.getRGB(), shadow);
-            } else mc.fontRendererObj.drawString(lines[i].replace("#", " "), padding, padding + (i * (mc.fontRendererObj.FONT_HEIGHT + 1)), color.getRGB(), shadow);
+            } else mc.fontRendererObj.drawString(line.replace("#", " "), padding, padding + (i * (mc.fontRendererObj.FONT_HEIGHT + 1)), color.getRGB(), shadow);
         }
-
         GL11.glPopMatrix();
     }
 
@@ -76,6 +76,7 @@ public class TextOverlay extends Overlay {
         int totalHeight = lines.length == 1 ? fontRenderer.FONT_HEIGHT :  lines.length * (fontRenderer.FONT_HEIGHT + 1) - 3;
 
         for (String line : lines) {
+            line = line.replaceAll("&", "§");
             boolean bold = false;
             int lineWidth = 0;
 

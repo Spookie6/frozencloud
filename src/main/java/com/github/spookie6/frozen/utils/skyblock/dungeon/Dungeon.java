@@ -42,9 +42,9 @@ public class Dungeon {
             Matcher matcher = pattern.matcher(txt);
 
             if (!matcher.find()) return;
-            this.floor = DungeonEnums.Floor.getFloor(matcher.group(1));
-            if (ModConfig.debugMessages) ChatUtils.sendModInfo("Joined floor: " + this.floor.toString());
-            SplitsManager.initialize(this.floor);
+            DungeonEnums.Floor floor = DungeonEnums.Floor.getFloor(matcher.group(1));
+            if (floor == null) return;
+            this.floor = floor;
         }
         if (e.getPacket() instanceof S38PacketPlayerListItem) {
             S38PacketPlayerListItem packet = (S38PacketPlayerListItem) e.getPacket();

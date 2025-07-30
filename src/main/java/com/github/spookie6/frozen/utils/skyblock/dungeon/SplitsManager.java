@@ -1,6 +1,7 @@
 package com.github.spookie6.frozen.utils.skyblock.dungeon;
 
 import com.github.spookie6.frozen.config.ModConfig;
+import com.github.spookie6.frozen.utils.skyblock.Island;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -28,8 +29,9 @@ public class SplitsManager {
     private final static LinkedHashMap<Split, long[]> splits = new LinkedHashMap<>();
 
     public static void initialize(DungeonEnums.Floor floor) {
-        if (floor == null) return;
-        if (ModConfig.debugMessages) ChatUtils.sendModInfo("Splitsmanager initializing for floor: " + floor.toString());
+        if (isInitialized()) return;
+
+        if (ModConfig.debugMessages) ChatUtils.sendModInfo("Splitsmanager initializing for floor: " + floor);
 
 //        Defining splits for this run.
         for (Split split : Arrays.asList(Split.BloodOpened, Split.BloodCleared, Split.Portal, Split.BossEntry)) {
@@ -53,10 +55,6 @@ public class SplitsManager {
 
     @SubscribeEvent(receiveCanceled = true)
     public void onChatPacket(ChatPacketEvent e) {
-        if (e.message.toLowerCase().contains("starting in 4") && !isInitialized()) {
-            initialize(DungeonUtils.getFloor());
-        }
-
         if (!isInitialized()) return;
         long now = System.currentTimeMillis();
 
@@ -90,6 +88,19 @@ public class SplitsManager {
                 currentSplit = Split.Unknown; // Done
             }
         }
+    }
+
+    @SubscribeEvent
+    public void onChat(ChatPacketEvent e) {
+        if (!e.message.equals("Starting in 1 second.")) return;
+
+        DungeonEnums.Floor floor = DungeonUtils.getFloor();
+        if (floor == null) {
+            ChatUtils.sendModInfo("Failed to load dungeon!");
+            return;
+        }
+
+        initialize(floor);
     }
 
     @SubscribeEvent

@@ -320,20 +320,16 @@ public class GuiOverlayEditor extends GuiScreen {
     }
 
     public void open() {
-        this.openCall = true;
+//        this.openCall = true;
+        mc.addScheduledTask(() -> mc.displayGuiScreen(this));
     }
 
     @SubscribeEvent
     public void onTick(TickEvent.ClientTickEvent e) {
-        if (this.openCall) {
-            Minecraft.getMinecraft().displayGuiScreen(this);
-            this.openCall = false;
-        } else {
-            if (Minecraft.getMinecraft().currentScreen != this) {
-                for (Overlay overlay : OverlayManager.getOverlays()) {
-                    if (!overlay.inEditMode) break;
-                    overlay.setEditMode(false);
-                }
+        if (mc.currentScreen != this) {
+            for (Overlay overlay : OverlayManager.getOverlays()) {
+                if (!overlay.inEditMode) break;
+                overlay.setEditMode(false);
             }
         }
     }
