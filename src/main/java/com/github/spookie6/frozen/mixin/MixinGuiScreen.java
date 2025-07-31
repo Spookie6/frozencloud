@@ -13,22 +13,21 @@ public abstract class MixinGuiScreen extends net.minecraft.client.gui.GuiScreen 
 
     @Inject(method = "mouseClicked", at = @At("HEAD"))
     private void onMouseClicked(int mouseX, int mouseY, int mouseButton, CallbackInfo ci) {
-        MinecraftForge.EVENT_BUS.post(new GuiScreenEvent.MouseClicked(this, mouseX, mouseY, mouseButton));
-//        MinecraftForge.EVENT_BUS.post(new GuiInputEvent(this, GuiInputEvent.Type.MOUSE_CLICKED, mouseX, mouseY, mouseButton));
+        MinecraftForge.EVENT_BUS.post(new GuiScreenEvent.MouseClicked(this, mouseX, mouseY, mouseButton, ci));
     }
 
     @Inject(method = "mouseReleased", at = @At("HEAD"))
     private void onMouseReleased(int mouseX, int mouseY, int state, CallbackInfo ci) {
-        MinecraftForge.EVENT_BUS.post(new GuiScreenEvent.MouseReleased(this, mouseX, mouseY, state));
+        MinecraftForge.EVENT_BUS.post(new GuiScreenEvent.MouseReleased(this, mouseX, mouseY, state, ci));
     }
 
-//    @Inject(method = "handleMouseInput", at = @At("HEAD"))
-//    private void onMouseInput(CallbackInfo ci) {
-////        MinecraftForge.EVENT_BUS.post(new GuiInputEvent(this, GuiInputEvent.Type.MOUSE_INPUT, 0, 0, -1));
-//    }
-//
-//    @Inject(method = "keyTyped", at = @At("HEAD"))
-//    private void onKeyTyped(char typedChar, int keyCode, CallbackInfo ci) {
-////        MinecraftForge.EVENT_BUS.post(new GuiInputEvent(this, GuiInputEvent.Type.KEY_TYPED, keyCode, typedChar));
-//    }
+    @Inject(method = "handleMouseInput", at = @At("HEAD"))
+    private void onMouseInput(CallbackInfo ci) {
+        MinecraftForge.EVENT_BUS.post(new GuiScreenEvent.MouseInput(this, ci));
+    }
+
+    @Inject(method = "keyTyped", at = @At("HEAD"))
+    private void onKeyTyped(char typedChar, int keyCode, CallbackInfo ci) {
+        MinecraftForge.EVENT_BUS.post(new GuiScreenEvent.KeyTyped(this, keyCode, typedChar, ci));
+    }
 }

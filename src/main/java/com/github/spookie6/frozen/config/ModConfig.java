@@ -137,24 +137,27 @@ public class ModConfig extends cc.polyfrost.oneconfig.config.Config {
     )
     public static boolean autoDraft = false;
 
+//    Leaping
     @Dropdown(
-            name = "Hide players after leaping",
-            options = {"Never", "Always", "Only During Terminals"},
-            description = "Hides players for a set duration after leaping, hides all players",
-            category = "Dungeons",
-            size = 2
+        name = "Hide players after leaping",
+        description = "When to hide players",
+        category = "Dungeons",
+        subcategory = "Leap menu",
+        options = { "Never", "Always", "Only during boss", "Only during terminals", "Only during clear"}
     )
-    public static int hidePlayersAfterLeap = 0;
+    public static int hideAfterLeap = 0;
 
     @Slider(
             name = "Player hide duration",
             description = "How long the players will be hidden for after leaping (in seconds)",
             category = "Dungeons",
+            subcategory = "Leap menu",
             step = 1,
             min = 1,
             max = 60
     )
     public static int hidePlayersAfterLeapDuration = 5;
+
 
     @Switch(
             name = "Crystal place title",
