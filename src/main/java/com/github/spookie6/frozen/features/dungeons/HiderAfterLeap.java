@@ -21,19 +21,19 @@ import static com.github.spookie6.frozen.Frozen.mc;
 public class HiderAfterLeap {
     private static long hiddenTill = -1;
 
-//    @SubscribeEvent
-//    public void onRenderPlayer(RenderPlayerEvent.Pre e) {
-//        if (hiddenTill == -1) return;
-//        if (e.entityPlayer.equals(mc.thePlayer)) return;
-//
-//        long remaining = hiddenTill - System.currentTimeMillis();
-//
-//        if (remaining > 0) e.setCanceled(true);
-//        else {
-//            hiddenTill = -1;
-//            ChatUtils.sendModInfo("Revealing players!");
-//        }
-//    }
+    @SubscribeEvent
+    public void onRenderPlayer(RenderPlayerEvent.Pre e) {
+        if (hiddenTill == -1) return;
+        if (e.entityPlayer.equals(mc.thePlayer)) return;
+
+        long remaining = hiddenTill - System.currentTimeMillis();
+        if (remaining > 0) {
+            e.setCanceled(true);
+        } else {
+            hiddenTill = -1;
+            ChatUtils.sendModInfo("Revealing players!");
+        }
+    }
 
     @SubscribeEvent
     public void onRenderLiving(RenderLivingEvent.Pre event) {
@@ -42,12 +42,17 @@ public class HiderAfterLeap {
         if (event.entity.equals(mc.thePlayer)) return;
 
         long remaining = hiddenTill - System.currentTimeMillis();
-        if (remaining > 0) {
-            event.setCanceled(true); // cancels full living entity rendering, including shadow
-        } else {
-            hiddenTill = -1;
-            ChatUtils.sendModInfo("Revealing players!");
-        }
+        if (remaining > 0) event.setCanceled(true);
+    }
+
+    @SubscribeEvent
+    public void onRenderLivingSpecials(RenderLivingEvent.Specials.Pre event) {
+        if (hiddenTill == -1) return;
+        if (!(event.entity instanceof EntityPlayer)) return;
+        if (event.entity.equals(mc.thePlayer)) return;
+
+        long remaining = hiddenTill - System.currentTimeMillis();
+        if (remaining > 0) event.setCanceled(true);
     }
 
     @SubscribeEvent(receiveCanceled = true)
