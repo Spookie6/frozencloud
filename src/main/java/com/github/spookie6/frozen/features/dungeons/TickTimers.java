@@ -107,7 +107,7 @@ public class TickTimers {
 
         if (padTicks > -1) {
             padTicks--;
-            if (padTicks == 0) padTicks = 40;
+            if (padTicks == 0) padTicks = 20;
         }
         if (barrierTicks > -1) {
             barrierTicks--;

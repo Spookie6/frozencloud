@@ -18,7 +18,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class TerminalTitles {
-    private static final Pattern terminalsTitlePattern = Pattern.compile("^(\\w{2,18}) activated a (\\w+)! \\((\\d)/(\\d)\\)$");
+    private static final Pattern terminalsTitlePattern = Pattern.compile("^(\\w{2,18}) (activated|completed) a (\\w+)! \\((\\d)\\/(\\d)\\)$");
     private String text = "";
     private int showingTicks = 0;
 
@@ -41,7 +41,7 @@ public class TerminalTitles {
 
     @SubscribeEvent
     public void onTitle(TitleEvent.Incoming event) {
-        if (!ModConfig.customTerminalTitles || !LocationUtils.currentArea.isArea(Island.Dungeon) || event.getType() != TitleType.TITLE) return;
+        if (!ModConfig.customTerminalTitles || !LocationUtils.currentArea.isArea(Island.Dungeon) || event.getType() != TitleType.SUBTITLE) return;
 
         String raw = StringUtils.removeFormatting(event.getComponent().getUnformattedText());
 
@@ -49,15 +49,15 @@ public class TerminalTitles {
         if (!matcher.find()) return;
 
         String username = matcher.group(1);
-        String completedThing = matcher.group(2);
-        int progress = Integer.parseInt(matcher.group(3));
-        int total = Integer.parseInt(matcher.group(4));
+        String completedThing = matcher.group(3);
+        int progress = Integer.parseInt(matcher.group(4));
+        int total = Integer.parseInt(matcher.group(5));
 
         StringBuilder sb = new StringBuilder();
         sb.append(applyThingColorCodes(completedThing));
         sb.append("&f(&a");
         sb.append(progress);
-        sb.append("&r/&a");
+        sb.append("&f/&a");
         sb.append(total);
         sb.append("&f)&r");
         text = sb.toString();
