@@ -41,7 +41,7 @@ public class TerminalTitles {
 
     @SubscribeEvent
     public void onTitle(TitleEvent.Incoming event) {
-        if (!LocationUtils.currentArea.isArea(Island.Dungeon) || event.getType() != TitleType.TITLE) return;
+        if (!ModConfig.customTerminalTitles || !LocationUtils.currentArea.isArea(Island.Dungeon) || event.getType() != TitleType.TITLE) return;
 
         String raw = StringUtils.removeFormatting(event.getComponent().getUnformattedText());
 
@@ -62,6 +62,8 @@ public class TerminalTitles {
         sb.append("&f)&r");
         text = sb.toString();
         showingTicks = (int) (ModConfig.terminalTitleDuration * 20);
+
+        event.setCanceled(true);
     }
 
     @SubscribeEvent
