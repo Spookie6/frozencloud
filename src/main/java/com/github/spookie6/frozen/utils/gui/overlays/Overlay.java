@@ -1,4 +1,4 @@
-package com.github.spookie6.frozen.utils.overlays;
+package com.github.spookie6.frozen.utils.gui.overlays;
 
 import com.github.spookie6.frozen.Frozen;
 import net.minecraft.client.Minecraft;
@@ -8,8 +8,12 @@ import net.minecraft.util.MathHelper;
 import java.awt.*;
 import java.util.function.Supplier;
 
+import static com.github.spookie6.frozen.Frozen.mc;
+
 public abstract class Overlay {
     protected int x, y;
+    protected boolean centerX, centerY = false;
+
     protected Dimensions dimensions;
     protected OverlayConfig config;
     protected String configName;
@@ -55,6 +59,8 @@ public abstract class Overlay {
     void updateConfig() {
         config.x = x;
         config.y = y;
+        config.centerX = centerX;
+        config.centerY = centerY;
         config.color = color.getRGB();
         config.scale = scale;
         config.shadow = shadow;
@@ -64,7 +70,15 @@ public abstract class Overlay {
     public void setPosition(int x, int y) {
         this.x = x;
         this.y = y;
+
+        this.updateDynamicPosition();
+
         updateConfig();
+    }
+
+    public void updateDynamicPosition() {
+        if (this.centerX) this.x = new ScaledResolution(mc).getScaledWidth() / 2 - this.getWidth() / 2;
+        if (this.centerY) this.y = new ScaledResolution(mc).getScaledHeight() / 2 - this.getHeight() / 2;
     }
 
     public int getX() { return x; }

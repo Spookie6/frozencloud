@@ -1,5 +1,6 @@
 package com.github.spookie6.frozen.utils.skyblock;
 
+import com.github.spookie6.frozen.utils.StringUtils;
 import net.minecraft.scoreboard.ScoreObjective;
 import net.minecraft.scoreboard.ScorePlayerTeam;
 import net.minecraft.scoreboard.Scoreboard;
@@ -20,10 +21,10 @@ public class ScoreboardUtils {
                 .stream()
                 .limit(15)
                 .map(score ->
-                        StringUtils.stripAliens(
-                            ScorePlayerTeam.formatPlayerName(
-                                    scoreboard.getPlayersTeam(score.getPlayerName()),
-                                    score.getPlayerName())))
+                        StringUtils.removeUnicode(
+                                ScorePlayerTeam.formatPlayerName(
+                                        scoreboard.getPlayersTeam(score.getPlayerName()),
+                                        score.getPlayerName())))
                 .collect(Collectors.toList());
         Collections.reverse(scoreList);
         return scoreList;

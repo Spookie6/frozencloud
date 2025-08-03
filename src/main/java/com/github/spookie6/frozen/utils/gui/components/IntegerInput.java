@@ -1,10 +1,8 @@
-package com.github.spookie6.frozen.utils.overlays;
+package com.github.spookie6.frozen.utils.gui.components;
 
 import com.github.spookie6.frozen.utils.Button;
-import com.github.spookie6.frozen.utils.ChatUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
-import org.lwjgl.input.Mouse;
 
 public class IntegerInput extends Gui {
     private final int x, y, width = 60, height = 20, min, max, step;

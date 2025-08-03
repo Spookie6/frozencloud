@@ -81,8 +81,6 @@ public class MainCommand extends CommandBase {
                     }
                 }
                 break;
-            case "scan":
-                new DebugShurikenScanner().scanForShurikenEntities();
         }
     }
 
@@ -99,35 +97,5 @@ public class MainCommand extends CommandBase {
     @Override
     public List<String> getCommandAliases() {
         return Arrays.asList("fr");
-    }
-
-    public class DebugShurikenScanner {
-
-        public void scanForShurikenEntities() {
-
-            if (mc.theWorld == null) return;
-
-            for (Entity entity : mc.theWorld.loadedEntityList) {
-                String raw = null;
-
-                // Try custom name tag first (often used on Hypixel)
-                if (entity.hasCustomName()) {
-                    raw = entity.getCustomNameTag();
-                }
-
-                // Fallback to display name (for other cases)
-                if ((raw == null || raw.isEmpty()) && entity instanceof EntityLivingBase) {
-                    IChatComponent comp = ((EntityLivingBase) entity).getDisplayName();
-                    raw = comp.getUnformattedText();
-                }
-
-                if (raw != null && raw.endsWith("✯")) {
-                    System.out.println("Found Shuriken mob:");
-                    System.out.println("  Type: " + entity.getClass().getName());
-                    System.out.println("  Name: " + raw);
-                    System.out.println("  Pos:  " + entity.posX + ", " + entity.posY + ", " + entity.posZ);
-                }
-            }
-        }
     }
 }

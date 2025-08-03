@@ -1,4 +1,4 @@
-package com.github.spookie6.frozen.utils.overlays;
+package com.github.spookie6.frozen.utils.gui.overlays;
 
 import java.util.ArrayList;
 import java.util.List;

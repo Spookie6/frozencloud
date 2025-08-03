@@ -1,14 +1,12 @@
 package com.github.spookie6.frozen.features.hud;
 
 import com.github.spookie6.frozen.config.ModConfig;
-import com.github.spookie6.frozen.utils.overlays.BooleanConfigBinding;
-import com.github.spookie6.frozen.utils.overlays.OverlayManager;
-import com.github.spookie6.frozen.utils.overlays.TextOverlay;
-import net.minecraft.client.Minecraft;
+import com.github.spookie6.frozen.utils.gui.overlays.BooleanConfigBinding;
+import com.github.spookie6.frozen.utils.gui.overlays.OverlayManager;
+import com.github.spookie6.frozen.utils.gui.overlays.TextOverlay;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import com.github.spookie6.frozen.utils.skyblock.ItemUtils;
 import net.minecraftforge.fml.common.gameevent.TickEvent;

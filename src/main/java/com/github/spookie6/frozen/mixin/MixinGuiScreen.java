@@ -21,11 +21,6 @@ public abstract class MixinGuiScreen extends net.minecraft.client.gui.GuiScreen 
         MinecraftForge.EVENT_BUS.post(new GuiScreenEvent.MouseReleased(this, mouseX, mouseY, state, ci));
     }
 
-    @Inject(method = "handleMouseInput", at = @At("HEAD"))
-    private void onMouseInput(CallbackInfo ci) {
-        MinecraftForge.EVENT_BUS.post(new GuiScreenEvent.MouseInput(this, ci));
-    }
-
     @Inject(method = "keyTyped", at = @At("HEAD"))
     private void onKeyTyped(char typedChar, int keyCode, CallbackInfo ci) {
         MinecraftForge.EVENT_BUS.post(new GuiScreenEvent.KeyTyped(this, keyCode, typedChar, ci));

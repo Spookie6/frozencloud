@@ -1,4 +1,4 @@
-package com.github.spookie6.frozen.utils.overlays;
+package com.github.spookie6.frozen.utils.gui.overlays;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -34,6 +34,7 @@ public class TextOverlay extends Overlay {
         if (!getText().equals(cachedText)) {
             cachedText = getText();
             updateDimensions();
+            this.updateDynamicPosition();
         }
 
         GL11.glPushMatrix();

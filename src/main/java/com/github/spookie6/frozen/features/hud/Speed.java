@@ -1,9 +1,9 @@
 package com.github.spookie6.frozen.features.hud;
 
 import com.github.spookie6.frozen.config.ModConfig;
-import com.github.spookie6.frozen.utils.overlays.BooleanConfigBinding;
-import com.github.spookie6.frozen.utils.overlays.OverlayManager;
-import com.github.spookie6.frozen.utils.overlays.TextOverlay;
+import com.github.spookie6.frozen.utils.gui.overlays.BooleanConfigBinding;
+import com.github.spookie6.frozen.utils.gui.overlays.OverlayManager;
+import com.github.spookie6.frozen.utils.gui.overlays.TextOverlay;
 import com.github.spookie6.frozen.utils.skyblock.LocationUtils;
 import net.minecraft.client.entity.EntityPlayerSP;
 

@@ -1,7 +1,7 @@
-package com.github.spookie6.frozen.utils.overlays;
+package com.github.spookie6.frozen.utils.gui.overlays;
 
 import com.github.spookie6.frozen.utils.Button;
-import com.github.spookie6.frozen.utils.ChatUtils;
+import com.github.spookie6.frozen.utils.gui.components.ToggleSwitch;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import net.minecraft.client.Minecraft;
@@ -22,6 +22,8 @@ public class GuiOverlayEditor extends GuiScreen {
     private OverlayConfigGui overlayConfigGui = null;
     private int dragOffsetX, dragOffsetY;
 
+    private boolean shouldOpen = false;
+
     private final int snapThreshold = 5;
     private boolean snappingX = false;
     private boolean snappingY = false;
@@ -39,7 +41,6 @@ public class GuiOverlayEditor extends GuiScreen {
     private long lastScaleChange = -1;
     private final int scaleOverlayDuration = 250; // ms
 
-    private boolean openCall = false;
     private boolean showTip = false;
 
     public ScaledResolution res;
@@ -107,9 +108,12 @@ public class GuiOverlayEditor extends GuiScreen {
         }
 
         if (showTip) {
-            String str = "§7Left click on overlay to move, right click to configure!";
+            String str = "§7Left click on overlay to move, right click to configure!§r";
+            String str2 = "§8§oPress 1 on an overlay to center it on x, 2 to center on y.§r";
             int strW = mc.fontRendererObj.getStringWidth(str);
+            int strW2 = mc.fontRendererObj.getStringWidth(str2);
             mc.fontRendererObj.drawStringWithShadow(str, (float) res.getScaledWidth() / 2 - (float) strW / 2, (float) res.getScaledHeight() / 2 - (float) mc.fontRendererObj.FONT_HEIGHT / 2, 0xFFC1C1C1);
+            mc.fontRendererObj.drawStringWithShadow(str2, (float) res.getScaledWidth() / 2 - (float) strW2 / 2, (float) res.getScaledHeight() / 2 - (float) mc.fontRendererObj.FONT_HEIGHT / 2 + mc.fontRendererObj.FONT_HEIGHT + 2, 0xFF323232);
         }
 
         super.drawScreen(mouseX, mouseY, partialTicks);
@@ -130,6 +134,15 @@ public class GuiOverlayEditor extends GuiScreen {
         }
         if (overlayConfigGui != null) {
             overlayConfigGui.keyTyped(typedChar, keyCode);
+        } else {
+            int scaledMouseX = Mouse.getX() * res.getScaledWidth() / mc.displayWidth;
+            int scaledMouseY = res.getScaledHeight() - Mouse.getY() * res.getScaledHeight() / mc.displayHeight - 1;
+
+            Overlay hoveredOverlay = getHoveredOverlay(scaledMouseX, scaledMouseY);
+            if (hoveredOverlay == null) return;
+            if (keyCode == Keyboard.KEY_1) hoveredOverlay.centerX = !hoveredOverlay.centerX;
+            if (keyCode == Keyboard.KEY_2) hoveredOverlay.centerY = !hoveredOverlay.centerY;
+            hoveredOverlay.updateDynamicPosition();
         }
     }
 
@@ -138,13 +151,7 @@ public class GuiOverlayEditor extends GuiScreen {
         super.mouseClicked(mouseX, mouseY, mouseButton);
         showTip = false;
         com.github.spookie6.frozen.utils.Button mouseBtn = com.github.spookie6.frozen.utils.Button.getButton(mouseButton);
-        Overlay hoveringOverlay = null;
-
-        for (Overlay overlay : OverlayManager.getOverlays()) {
-            if ((overlay.isVisible() || showInvisibleToggle.getState()) && isMouseOverOverlay(overlay, mouseX, mouseY)) {
-                hoveringOverlay = overlay;
-            }
-        }
+        Overlay hoveringOverlay = getHoveredOverlay(mouseX, mouseY);
 
         if (mouseBtn.equals(com.github.spookie6.frozen.utils.Button.MOUSE_LEFT)) {
             if (overlayConfigGui != null) {
@@ -198,19 +205,18 @@ public class GuiOverlayEditor extends GuiScreen {
         }
 
         // Decide which overlay we are resizing
-        Overlay target = draggedOverlay;            // resize the one being dragged
-        for (Overlay overlay : OverlayManager.getOverlays()) {
-            if ((overlay.isVisible() || showInvisibleToggle.getState()) && isMouseOverOverlay(overlay, mouseX, mouseY)) {
-                target = overlay;
-                break;
-            }
-        }
-        if (target == null) return;
+        Overlay target = getHoveredOverlay(mouseX, mouseY);
 
         lastScaleChange = System.currentTimeMillis();
         scaledOverlay = target;
-        if (dWheel > 0) target.incrementScale();
-        else target.decrementScale();
+        if (dWheel > 0) {
+            assert target != null;
+            target.incrementScale();
+        }
+        else {
+            assert target != null;
+            target.decrementScale();
+        }
     }
 
     @Override
@@ -244,6 +250,15 @@ public class GuiOverlayEditor extends GuiScreen {
 
             draggedOverlay.setPosition(newX, newY);
         }
+    }
+
+    private Overlay getHoveredOverlay(int mouseX, int mouseY) {
+        for (Overlay overlay : OverlayManager.getOverlays()) {
+            if ((overlay.isVisible() || showInvisibleToggle.getState()) && isMouseOverOverlay(overlay, mouseX, mouseY)) {
+                return overlay;
+            }
+        }
+        return null;
     }
 
     private boolean isMouseOverOverlay(Overlay overlay, int mouseX, int mouseY) {
@@ -320,17 +335,14 @@ public class GuiOverlayEditor extends GuiScreen {
     }
 
     public void open() {
-//        this.openCall = true;
-        mc.addScheduledTask(() -> mc.displayGuiScreen(this));
+        this.shouldOpen = true;
     }
 
     @SubscribeEvent
-    public void onTick(TickEvent.ClientTickEvent e) {
-        if (mc.currentScreen != this) {
-            for (Overlay overlay : OverlayManager.getOverlays()) {
-                if (!overlay.inEditMode) break;
-                overlay.setEditMode(false);
-            }
+    public void onClientTick(TickEvent.ClientTickEvent e) {
+        if (e.phase.equals(TickEvent.Phase.END) && this.shouldOpen) {
+            Minecraft.getMinecraft().displayGuiScreen(this);
+            this.shouldOpen = false;
         }
     }
 

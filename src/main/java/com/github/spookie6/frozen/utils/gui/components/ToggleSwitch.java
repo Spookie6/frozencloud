@@ -1,4 +1,4 @@
-package com.github.spookie6.frozen.utils.overlays;
+package com.github.spookie6.frozen.utils.gui.components;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;

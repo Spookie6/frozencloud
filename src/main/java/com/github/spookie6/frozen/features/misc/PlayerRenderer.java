@@ -23,8 +23,8 @@ public class PlayerRenderer {
 
         GlStateManager.translate(x, y, z);
 
-        GlStateManager.scale(ModConfig.playerScale,ModConfig.playerScale,ModConfig.playerScale);
-        GlStateManager.translate(-x / ModConfig.playerScale, -y / ModConfig.playerScale, -z / ModConfig.playerScale);
+        GlStateManager.scale(ModConfig.playerScaleX,ModConfig.playerScaleY,ModConfig.playerScaleZ);
+        GlStateManager.translate(-x / ModConfig.playerScaleX, -y / ModConfig.playerScaleY, -z / ModConfig.playerScaleZ);
     }
 
     @SubscribeEvent

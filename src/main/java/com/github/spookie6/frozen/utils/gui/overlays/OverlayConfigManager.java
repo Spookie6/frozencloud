@@ -1,4 +1,4 @@
-package com.github.spookie6.frozen.utils.overlays;
+package com.github.spookie6.frozen.utils.gui.overlays;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

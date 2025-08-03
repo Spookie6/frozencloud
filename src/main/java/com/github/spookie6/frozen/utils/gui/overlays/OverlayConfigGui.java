@@ -1,8 +1,10 @@
-package com.github.spookie6.frozen.utils.overlays;
+package com.github.spookie6.frozen.utils.gui.overlays;
 
-import cc.polyfrost.oneconfig.libs.universal.UChat;
 import com.github.spookie6.frozen.Frozen;
-import com.github.spookie6.frozen.utils.ChatUtils;
+import com.github.spookie6.frozen.utils.gui.components.Button;
+import com.github.spookie6.frozen.utils.gui.components.ColorPicker;
+import com.github.spookie6.frozen.utils.gui.components.IntegerInput;
+import com.github.spookie6.frozen.utils.gui.components.ToggleSwitch;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;

@@ -21,8 +21,8 @@ public class ModConfig extends cc.polyfrost.oneconfig.config.Config {
         registerKeyBind(moveOverlaysKeybind, Frozen.guiOverlayEditor::open);
 
         addDependency("bloodTimer", "split");
-        addDependency("slotbinding", false);
-        addDependency("wardrobeAutoClose", false);
+//        addDependency("slotbinding", false);
+//        addDependency("wardrobeAutoClose", false);
         slotbinding = false;
         wardrobeAutoClose = false;
 
@@ -115,12 +115,28 @@ public class ModConfig extends cc.polyfrost.oneconfig.config.Config {
     public static boolean customPlayerScale = false;
 
     @Slider(
-            name = "Player scale",
+            name = "Player scale X",
             category = "Player",
             min = 0.1F,
-            max = 2.0F
+            max = 3.0F
     )
-    public static float playerScale = 1.0F;
+    public static float playerScaleX = 1.0F;
+
+    @Slider(
+            name = "Player scale Y",
+            category = "Player",
+            min = 0.1F,
+            max = 3.0F
+    )
+    public static float playerScaleY = 1.0F;
+
+    @Slider(
+            name = "Player scale Z",
+            category = "Player",
+            min = 0.1F,
+            max = 3.0F
+    )
+    public static float playerScaleZ = 1.0F;
 
     //    DUNGEONS
     @Switch(
@@ -215,6 +231,23 @@ public class ModConfig extends cc.polyfrost.oneconfig.config.Config {
             subcategory = "Tick Timers"
     )
     public static boolean startTimer = false;
+
+    @Switch(
+            name = "Custom terminal titles",
+            description = "Replaces the vanilla \"Spookie6 has completed terminal (5/7)\" with custom ones.",
+            category = "Dungeons",
+            subcategory = "Terminals"
+    )
+    public static boolean customTerminalTitles = false;
+
+    @Slider(
+            name = "Title duration (s)",
+            category = "Dungeons",
+            subcategory = "Terminals",
+            min = 1.0F,
+            max = 5.0F
+    )
+    public static float terminalTitleDuration = 3.0F;
 
     //    HUD
     @Switch(

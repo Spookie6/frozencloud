@@ -7,9 +7,10 @@ import com.github.spookie6.frozen.features.dungeons.*;
 import com.github.spookie6.frozen.features.hud.MaskTimers;
 import com.github.spookie6.frozen.features.hud.ReaperTimer;
 import com.github.spookie6.frozen.features.hud.Speed;
+import com.github.spookie6.frozen.features.hud.TerminalTitles;
 import com.github.spookie6.frozen.features.misc.*;
 import com.github.spookie6.frozen.utils.SlotBindingUtils;
-import com.github.spookie6.frozen.utils.overlays.*;
+import com.github.spookie6.frozen.utils.gui.overlays.*;
 import com.github.spookie6.frozen.utils.skyblock.LocationUtils;
 import com.github.spookie6.frozen.utils.skyblock.PartyUtils;
 import com.github.spookie6.frozen.utils.skyblock.dungeon.DungeonUtils;
@@ -93,12 +94,12 @@ public class Frozen {
                 new CrystalTitle(),
                 new SlotBinding(),
                 new Gui(),
-                new ShurikenHighlight()
+                new TerminalTitles()
         );
     }
 
     private void initOverlays() {
-        com.github.spookie6.frozen.utils.overlays.OverlayManager.register(new TextOverlay(
+        com.github.spookie6.frozen.utils.gui.overlays.OverlayManager.register(new TextOverlay(
                 new BooleanConfigBinding(
                         () -> ModConfig.timeHud,
                         (val) -> ModConfig.timeHud = val

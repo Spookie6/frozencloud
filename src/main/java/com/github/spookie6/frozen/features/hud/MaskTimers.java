@@ -2,10 +2,10 @@ package com.github.spookie6.frozen.features.hud;
 
 import com.github.spookie6.frozen.config.ModConfig;
 import com.github.spookie6.frozen.utils.ChatUtils;
-import com.github.spookie6.frozen.utils.overlays.BooleanConfigBinding;
-import com.github.spookie6.frozen.utils.overlays.IntegerConfigBinding;
-import com.github.spookie6.frozen.utils.overlays.OverlayManager;
-import com.github.spookie6.frozen.utils.overlays.TextOverlay;
+import com.github.spookie6.frozen.utils.gui.overlays.BooleanConfigBinding;
+import com.github.spookie6.frozen.utils.gui.overlays.IntegerConfigBinding;
+import com.github.spookie6.frozen.utils.gui.overlays.OverlayManager;
+import com.github.spookie6.frozen.utils.gui.overlays.TextOverlay;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
