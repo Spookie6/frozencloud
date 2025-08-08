@@ -30,6 +30,10 @@ public class Dungeon {
                 .orElse(null));
     }
 
+    public List<DungeonEnums.DungeonPlayer> getDungeonPlayers () {
+        return this.dungeonPlayers;
+    }
+
     public void onPacket(PacketEvent.Received e) {
         if (e.getPacket() instanceof S3EPacketTeams) {
             if (!this.floor.equals(DungeonEnums.Floor.None)) return;

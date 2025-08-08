@@ -49,6 +49,7 @@ public class HiderAfterLeap {
     public void onRenderLivingSpecials(RenderLivingEvent.Specials.Pre event) {
         if (hiddenTill == -1) return;
         if (!(event.entity instanceof EntityPlayer)) return;
+        if (LocationUtils.currentDungeon.getDungeonPlayers().stream().filter(x -> x.username.equals(((EntityPlayer) event.entity).getDisplayNameString())).findAny().orElse(null) == null) return;
         if (event.entity.equals(mc.thePlayer)) return;
 
         long remaining = hiddenTill - System.currentTimeMillis();
@@ -72,7 +73,7 @@ public class HiderAfterLeap {
                     hide = DungeonUtils.getF7Phase().equals(DungeonEnums.M7Phases.P3);
                     break;
                 case CLEAR:
-                    hide = !DungeonUtils.getInDungeon();
+                    hide = !DungeonUtils.getInBoss();
                     break;
             }
             if (!hide) return;

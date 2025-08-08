@@ -37,6 +37,7 @@ public class Gui {
             if (btn != 0) return;
 
             if (!Mouse.getEventButtonState()) return;
+            if (gui.getSlotUnderMouse() == null) return;
 
             switch (containerName) {
                 case "trades":

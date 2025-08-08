@@ -11,8 +11,8 @@ import static com.github.spookie6.frozen.Frozen.mc;
 
 public class PlayerRenderer {
 
-    @SubscribeEvent
     @SideOnly(Side.CLIENT)
+    @SubscribeEvent
     public void onEntityRenderPre(RenderPlayerEvent.Pre e) {
         if (!ModConfig.customPlayerScale || e.entity != mc.thePlayer) return;
         GlStateManager.pushMatrix();

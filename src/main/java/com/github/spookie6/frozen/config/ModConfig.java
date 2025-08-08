@@ -12,6 +12,8 @@ import cc.polyfrost.oneconfig.libs.universal.UKeyboard;
 import com.github.spookie6.frozen.Frozen;
 import org.lwjgl.input.Keyboard;
 
+import static com.github.spookie6.frozen.Frozen.mc;
+
 public class ModConfig extends cc.polyfrost.oneconfig.config.Config {
 
     public ModConfig() {
@@ -25,6 +27,8 @@ public class ModConfig extends cc.polyfrost.oneconfig.config.Config {
 //        addDependency("wardrobeAutoClose", false);
         slotbinding = false;
         wardrobeAutoClose = false;
+
+        addListener("legacyAxes", mc::refreshResources);
 
         addDependency("wardrobePreventUnequip", "wardrobePackets");
         addDependency("wdKeyOne", "wardrobePackets");
@@ -51,72 +55,18 @@ public class ModConfig extends cc.polyfrost.oneconfig.config.Config {
     )
     public static boolean debugMessages = false;
 
-    //    Refills
-    @Dropdown(
-            name = "Auto pearl refill",
-            description = "Automatically refills pearls from your sacks to inv",
-            subcategory = "Refills",
-            options = {"Don't", "On Threshold", "On Dungeon Start"},
-            size = OptionSize.DUAL
-    )
-    public static int pearlRefill = 0;
-
-    @Slider(
-            name = "Auto pearl refill threshold",
-            subcategory = "Refills",
-            min = 1,
-            max = 15,
-            step = 1
-    )
-    public static int pearlRefillThreshold = 8;
-
-    @Dropdown(
-            name = "Auto jerry refill",
-            description = "Automatically refills pearls from your sacks to inv",
-            subcategory = "Refills",
-            options = {"Don't", "On Threshold", "On Dungeon Start"},
-            size = OptionSize.DUAL
-    )
-    public static int jerryRefill = 0;
-
-    @Slider(
-            name = "Auto jerry refill threshold",
-            subcategory = "Refills",
-            min = 1,
-            max = 63,
-            step = 1
-    )
-    public static int jerryRefillThreshold = 16;
-
-    @Dropdown(
-            name = "Auto superboom refill",
-            description = "Automatically refills pearls from your sacks to inv",
-            subcategory = "Refills",
-            options = {"Don't", "On Threshold", "On Dungeon Start"},
-            size = OptionSize.DUAL
-    )
-    public static int superboomRefill = 0;
-
-    @Slider(
-            name = "Auto superboom refill threshold",
-            subcategory = "Refills",
-            min = 1,
-            max = 63,
-            step = 1
-    )
-    public static int superboomRefillThreshold = 16;
 
     //   PLAYER
     @Switch(
             name = "Custom player scale",
             description = "Enabled custom player scale",
-            category = "Player"
+            subcategory = "Player"
     )
     public static boolean customPlayerScale = false;
 
     @Slider(
             name = "Player scale X",
-            category = "Player",
+            subcategory = "Player",
             min = 0.1F,
             max = 3.0F
     )
@@ -124,7 +74,7 @@ public class ModConfig extends cc.polyfrost.oneconfig.config.Config {
 
     @Slider(
             name = "Player scale Y",
-            category = "Player",
+            subcategory = "Player",
             min = 0.1F,
             max = 3.0F
     )
@@ -132,11 +82,17 @@ public class ModConfig extends cc.polyfrost.oneconfig.config.Config {
 
     @Slider(
             name = "Player scale Z",
-            category = "Player",
+            subcategory = "Player",
             min = 0.1F,
             max = 3.0F
     )
     public static float playerScaleZ = 1.0F;
+
+    @Switch(
+            name = "Legacy axes",
+            subcategory = "Misc"
+    )
+    public static boolean legacyAxes = false;
 
     //    DUNGEONS
     @Switch(
@@ -240,6 +196,13 @@ public class ModConfig extends cc.polyfrost.oneconfig.config.Config {
     )
     public static boolean customTerminalTitles = false;
 
+    @Switch(
+            name = "Static color",
+            category = "Dungeons",
+            subcategory = "Terminals"
+    )
+    public static boolean terminalTitlesStaticColor = false;
+
     @Slider(
             name = "Title duration (s)",
             category = "Dungeons",
@@ -248,6 +211,67 @@ public class ModConfig extends cc.polyfrost.oneconfig.config.Config {
             max = 5.0F
     )
     public static float terminalTitleDuration = 3.0F;
+
+    //    Refills
+    @Dropdown(
+            name = "Auto pearl refill",
+            description = "Automatically refills pearls from your sacks to inv",
+            category = "Dungeons",
+            subcategory = "Refills",
+            options = {"Don't", "On Threshold", "On Dungeon Start"},
+            size = OptionSize.DUAL
+    )
+    public static int pearlRefill = 0;
+
+    @Slider(
+            name = "Auto pearl refill threshold",
+            category = "Dungeons",
+            subcategory = "Refills",
+            min = 1,
+            max = 15,
+            step = 1
+    )
+    public static int pearlRefillThreshold = 8;
+
+    @Dropdown(
+            name = "Auto jerry refill",
+            description = "Automatically refills pearls from your sacks to inv",
+            category = "Dungeons",
+            subcategory = "Refills",
+            options = {"Don't", "On Threshold", "On Dungeon Start"},
+            size = OptionSize.DUAL
+    )
+    public static int jerryRefill = 0;
+
+    @Slider(
+            name = "Auto jerry refill threshold",
+            category = "Dungeons",
+            subcategory = "Refills",
+            min = 1,
+            max = 63,
+            step = 1
+    )
+    public static int jerryRefillThreshold = 16;
+
+    @Dropdown(
+            name = "Auto superboom refill",
+            description = "Automatically refills pearls from your sacks to inv",
+            category = "Dungeons",
+            subcategory = "Refills",
+            options = {"Don't", "On Threshold", "On Dungeon Start"},
+            size = OptionSize.DUAL
+    )
+    public static int superboomRefill = 0;
+
+    @Slider(
+            name = "Auto superboom refill threshold",
+            category = "Dungeons",
+            subcategory = "Refills",
+            min = 1,
+            max = 63,
+            step = 1
+    )
+    public static int superboomRefillThreshold = 16;
 
     //    HUD
     @Switch(

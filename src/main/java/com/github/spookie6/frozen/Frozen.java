@@ -7,7 +7,7 @@ import com.github.spookie6.frozen.features.dungeons.*;
 import com.github.spookie6.frozen.features.hud.MaskTimers;
 import com.github.spookie6.frozen.features.hud.ReaperTimer;
 import com.github.spookie6.frozen.features.hud.Speed;
-import com.github.spookie6.frozen.features.hud.TerminalTitles;
+import com.github.spookie6.frozen.features.dungeons.TerminalTitles;
 import com.github.spookie6.frozen.features.misc.*;
 import com.github.spookie6.frozen.utils.SlotBindingUtils;
 import com.github.spookie6.frozen.utils.gui.overlays.*;
@@ -94,7 +94,8 @@ public class Frozen {
                 new CrystalTitle(),
                 new SlotBinding(),
                 new Gui(),
-                new TerminalTitles()
+                new TerminalTitles(),
+                new LegacyAxes()
         );
     }
 

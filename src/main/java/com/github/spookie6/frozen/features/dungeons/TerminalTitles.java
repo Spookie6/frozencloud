@@ -1,4 +1,4 @@
-package com.github.spookie6.frozen.features.hud;
+package com.github.spookie6.frozen.features.dungeons;
 
 import com.github.spookie6.frozen.config.ModConfig;
 import com.github.spookie6.frozen.events.impl.TitleEvent;
@@ -54,7 +54,9 @@ public class TerminalTitles {
         int total = Integer.parseInt(matcher.group(5));
 
         StringBuilder sb = new StringBuilder();
-        sb.append(applyThingColorCodes(completedThing));
+        if (ModConfig.terminalTitlesStaticColor) sb.append(completedThing);
+            else sb.append(applyThingColorCodes(completedThing));
+        sb.replace(0, 1, sb.substring(0, 1).toUpperCase());
         sb.append("&f(&a");
         sb.append(progress);
         sb.append("&f/&a");
@@ -75,7 +77,7 @@ public class TerminalTitles {
     private String applyThingColorCodes(String thing) {
         switch(thing) {
             case "lever":
-                return "&rLever&r";
+                return "&4Lever&r";
             case "terminal":
                 return "&5Terminal&r";
             case "device":
