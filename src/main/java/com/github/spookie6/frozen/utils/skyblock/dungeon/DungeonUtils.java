@@ -25,9 +25,9 @@ public class DungeonUtils {
     public static boolean getInBoss() {return (LocationUtils.currentDungeon != null && LocationUtils.currentDungeon.inBoss);}
     public static DungeonEnums.Floor getFloor() {return LocationUtils.currentDungeon != null ? LocationUtils.currentDungeon.floor : DungeonEnums.Floor.None;}
 
-    public List<DungeonEnums.DungeonPlayer> getDungeonPlayers() {
+    public static List<DungeonEnums.DungeonPlayer> getDungeonPlayers() {
         if (LocationUtils.currentDungeon == null) return new ArrayList<>();
-        return LocationUtils.currentDungeon.dungeonPlayers;
+        return LocationUtils.currentDungeon.getDungeonPlayers();
     }
 
     public DungeonEnums.DungeonPlayer getCurrentDungeonPlayer() {
@@ -97,5 +97,10 @@ public class DungeonUtils {
     @SubscribeEvent
     public void onEntityJoin(EntityJoinWorldEvent e) {
         if (LocationUtils.currentDungeon != null) LocationUtils.currentDungeon.onEntityJoin(e);
+    }
+
+    @SubscribeEvent
+    public void onTick(TickEvent.ClientTickEvent e) {
+        if (e.phase.equals(TickEvent.Phase.START) && LocationUtils.currentDungeon != null) LocationUtils.currentDungeon.onTick();
     }
 }

@@ -31,7 +31,7 @@ public class TerminalTitles {
                 "Terminal Title",
                 this::getText,
                 () -> DungeonUtils.getF7Phase().equals(DungeonEnums.M7Phases.P3) && showingTicks > 0,
-                "&5Terminal&r &f(&a4/7&f)&r"
+                "Terminal &f(&a4/7&f)&r"
         ));
     }
 
@@ -48,7 +48,6 @@ public class TerminalTitles {
         Matcher matcher = terminalsTitlePattern.matcher(raw);
         if (!matcher.find()) return;
 
-        String username = matcher.group(1);
         String completedThing = matcher.group(3);
         int progress = Integer.parseInt(matcher.group(4));
         int total = Integer.parseInt(matcher.group(5));

@@ -43,6 +43,7 @@ public class TextOverlay extends Overlay {
 
         if (inEditMode) {
             drawRect(0, 0, this.dimensions.width + padding * 2, this.dimensions.height + padding * 2, new Color(211, 211, 211, 70).getRGB());
+
         }
 
         for (int i = 0; i < lines.length; i++) {

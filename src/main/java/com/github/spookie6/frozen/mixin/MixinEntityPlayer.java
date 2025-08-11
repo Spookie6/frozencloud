@@ -27,12 +27,10 @@ public abstract class MixinEntityPlayer {
                 "STARRED_DAEDALUS_AXE".equals(id);
     }
 
-    @Inject(method = "getItemInUseCount", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "getItemInUseCount", at = @At("RETURN"), cancellable = true)
     public void onGetItemInUseCount(CallbackInfoReturnable<Integer> cir) {
         if (ModConfig.legacyAxes && frozen$isLegacyBlockedAxe(getHeldItem())) {
             cir.setReturnValue(0);
-        } else {
-            cir.setReturnValue(cir.getReturnValue());
         }
     }
 }

@@ -27,7 +27,7 @@ public class Renderer {
         GL11.glLineWidth(thickness);
         RenderUtils.setDepth(depth);
         GlStateManager.resetColor();
-        GlStateManager.color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
+        GlStateManager.color(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, color.getAlpha() / 255f);
 
         RenderUtils.addVertexesForOutlinedBox(aabb);
         tessellator.draw();
@@ -48,7 +48,7 @@ public class Renderer {
         RenderUtils.preRender(true);
         RenderUtils.setDepth(depth);
         GlStateManager.resetColor();
-        GlStateManager.color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
+        GlStateManager.color(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, color.getAlpha() / 255f);
 
         RenderUtils.addVertexesForFilledBox(aabb);
         tessellator.draw();

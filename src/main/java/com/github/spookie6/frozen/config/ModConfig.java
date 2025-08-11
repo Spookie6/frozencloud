@@ -1,5 +1,6 @@
 package com.github.spookie6.frozen.config;
 
+import cc.polyfrost.oneconfig.config.Config;
 import cc.polyfrost.oneconfig.config.annotations.*;
 import cc.polyfrost.oneconfig.config.core.OneColor;
 import cc.polyfrost.oneconfig.config.core.OneKeyBind;
@@ -14,7 +15,7 @@ import org.lwjgl.input.Keyboard;
 
 import static com.github.spookie6.frozen.Frozen.mc;
 
-public class ModConfig extends cc.polyfrost.oneconfig.config.Config {
+public class ModConfig extends Config {
 
     public ModConfig() {
         super(new Mod(Frozen.MODID, ModType.SKYBLOCK, "/frozen.svg"), Frozen.MODID + ".json");
@@ -55,6 +56,14 @@ public class ModConfig extends cc.polyfrost.oneconfig.config.Config {
     )
     public static boolean debugMessages = false;
 
+    @Switch(
+            name = "Debug overlays"
+    )
+    public static boolean debugOverlays = false;
+
+//    @Button(
+//            name = "Open Locational Messages", text = "Open GUI!", description = "Opens a gui where you can change your locational messages")
+//    Runnable runnable = () -> Frozen.guiLocationalMessagesList.open();
 
     //   PLAYER
     @Switch(
@@ -211,6 +220,38 @@ public class ModConfig extends cc.polyfrost.oneconfig.config.Config {
             max = 5.0F
     )
     public static float terminalTitleDuration = 3.0F;
+
+    @Switch(
+            name = "Relic timer",
+            description = "Timer for when relics will spawn",
+            category = "Dungeons",
+            subcategory = "Relics"
+    )
+    public static boolean relicTimer = false;
+
+    @Switch(
+            name = "Send relic times",
+            description = "Send relic times to chat",
+            category = "Dungeons",
+            subcategory = "Relics"
+    )
+    public static boolean sendRelicTimes = false;
+
+    @Switch(
+            name = "Block incorrect clicks",
+            description = "Blocks you from placing your relic on the wrong cauldron",
+            category = "Dungeons",
+            subcategory = "Relics"
+    )
+    public static boolean relicsBlockIncorrect = false;
+
+    @Dropdown(
+            name = "Highlight correct cauldron",
+            options = {"Disabled", "Outlined", "Filled"},
+            category = "Dungeons",
+            subcategory = "Relics"
+    )
+    public static int cauldronHighlight = 0;
 
     //    Refills
     @Dropdown(

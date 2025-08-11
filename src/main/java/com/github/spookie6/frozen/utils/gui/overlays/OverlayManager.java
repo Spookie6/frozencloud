@@ -25,4 +25,8 @@ public class OverlayManager {
     public static List<Overlay> getOverlays() {
         return overlays;
     }
+
+    public static Overlay getOverlay(String name) {
+        return getOverlays().stream().filter(x -> x.configName.equals(name)).findFirst().orElse(null);
+    }
 }

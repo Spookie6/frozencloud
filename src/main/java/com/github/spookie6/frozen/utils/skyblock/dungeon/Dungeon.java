@@ -3,6 +3,7 @@ package com.github.spookie6.frozen.utils.skyblock.dungeon;
 import com.github.spookie6.frozen.config.ModConfig;
 import com.github.spookie6.frozen.events.impl.PacketEvent;
 import com.github.spookie6.frozen.utils.ChatUtils;
+import com.github.spookie6.frozen.utils.skyblock.ScoreboardUtils;
 import com.mojang.realmsclient.gui.ChatFormatting;
 
 import net.minecraft.client.Minecraft;
@@ -17,9 +18,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import static com.github.spookie6.frozen.Frozen.mc;
+
 public class Dungeon {
     public boolean inBoss = false;
     public DungeonEnums.Floor floor = DungeonEnums.Floor.None;
+
+    public static final Pattern FLOOR_PATTERN = Pattern.compile(".*The Catacombs \\(([EMF1-7]+)\\)$");
 
     List<DungeonEnums.DungeonPlayer> dungeonPlayers = new ArrayList<>();
 
@@ -35,26 +40,26 @@ public class Dungeon {
     }
 
     public void onPacket(PacketEvent.Received e) {
-        if (e.getPacket() instanceof S3EPacketTeams) {
-            if (!this.floor.equals(DungeonEnums.Floor.None)) return;
-            S3EPacketTeams packet = (S3EPacketTeams) e.getPacket();
-            if (packet.getAction() != 2 || this.floor != DungeonEnums.Floor.None) return;
-            String txt = ChatFormatting.stripFormatting(packet.getPrefix() + packet.getSuffix());
-            if (txt == null || txt.isEmpty()) return;
-
-            Pattern pattern = Pattern.compile(".*The Catacombs \\(([EMF1-7]+)\\)$");
-            Matcher matcher = pattern.matcher(txt);
-
-            if (!matcher.find()) return;
-            DungeonEnums.Floor floor = DungeonEnums.Floor.getFloor(matcher.group(1));
-            if (floor == null) return;
-            this.floor = floor;
-        }
         if (e.getPacket() instanceof S38PacketPlayerListItem) {
             S38PacketPlayerListItem packet = (S38PacketPlayerListItem) e.getPacket();
             if (!packet.getAction().equals(S38PacketPlayerListItem.Action.ADD_PLAYER) && !packet.getAction().equals(S38PacketPlayerListItem.Action.UPDATE_DISPLAY_NAME)) return;
             List<String> tablistEntries = packet.getEntries().stream().map(x -> x.getDisplayName() == null ? "" : x.getDisplayName().getUnformattedText()).collect(Collectors.toList());
             this.updatePlayers(tablistEntries);
+        }
+    }
+
+    public void onTick() {
+        if (mc.theWorld == null || mc.thePlayer == null || !this.floor.equals(DungeonEnums.Floor.None)) return;
+
+        List<String> scoreboardLines = ScoreboardUtils.getScoreboardLines();
+
+        for (String line : scoreboardLines) {
+            Matcher matcher = FLOOR_PATTERN.matcher(line);
+            if (matcher.find()) {
+                this.floor = DungeonEnums.Floor.getFloor(matcher.group(1));
+                SplitsManager.initialize(this.floor);
+                break;
+            }
         }
     }
 

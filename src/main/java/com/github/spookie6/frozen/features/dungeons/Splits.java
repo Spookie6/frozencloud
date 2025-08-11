@@ -51,7 +51,7 @@ public class Splits {
                     return String.format("%.2f", (float) time / 1000);
                 },
                 () -> {
-                    if (SplitsManager.currentSplit.equals(SplitsManager.Split.BloodCleared) && LocationUtils.currentDungeon != null) {
+                    if (SplitsManager.currentSplit.equals(SplitsManager.Split.BloodCleared)) {
                         return LocationUtils.currentDungeon.getCurrentDungeonPlayer().equals(DungeonEnums.Class.MAGE);
                     }
                     return false;

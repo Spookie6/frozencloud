@@ -2,21 +2,15 @@ package com.github.spookie6.frozen.mixin;
 
 import com.github.spookie6.frozen.config.ModConfig;
 import com.github.spookie6.frozen.utils.skyblock.ItemUtils;
-import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(value = ItemStack.class, priority = 9999)
+@Mixin({ItemStack.class})
 public abstract class MixinItemStack {
-    @Shadow public abstract boolean hasTagCompound();
-
-    @Shadow private NBTTagCompound stackTagCompound;
 
     @Unique
     private boolean frozen$isLegacyBlockedAxe(ItemStack stack) {
@@ -29,31 +23,29 @@ public abstract class MixinItemStack {
                 "STARRED_DAEDALUS_AXE".equals(id);
     }
 
-    @Inject(method = "getDisplayName", at = @At("RETURN"), cancellable = true)
-    public void onGetDisplayName(CallbackInfoReturnable<String> cir) {
+    @Inject(method = "getDisplayName", at = @At("HEAD"), cancellable = true)
+    private void frozen$renameLegacyAxes(CallbackInfoReturnable<String> cir) {
         try {
-            if (!ModConfig.legacyAxes || !hasTagCompound() || !stackTagCompound.hasKey("ExtraAttributes", 10)) return;
-
-            String itemID = ItemUtils.getSkyBlockID((ItemStack) (Object) this);
-            if (itemID == null) return;
+            if (!ModConfig.legacyAxes) return;
 
             String originalName = cir.getReturnValue();
-
-            if (itemID.equals("AXE_OF_THE_SHREDDED")) {
-                cir.setReturnValue(originalName.replace("Halberd", "Axe"));
-            } else if (itemID.equals("DAEDALUS_AXE") || itemID.equals("STARRED_DAEDALUS_AXE")) {
-                cir.setReturnValue(originalName.replace("Blade", "Axe"));
-            } else if (itemID.equals("RAGNAROCK_AXE")) {
-                cir.setReturnValue(originalName.replace("Ragnarock", "Ragnarock Axe"));
+            String itemID = ItemUtils.getSkyBlockID((ItemStack) (Object) this);
+            if (itemID != null && !itemID.isEmpty() && frozen$isLegacyBlockedAxe((ItemStack) (Object) this)) {
+                switch(itemID) {
+                    case "AXE_OF_THE_SHREDDED":
+                        cir.setReturnValue(originalName.replace("Halbert", "Axe"));
+                        break;
+                    case "RAGNAROCK_AXE":
+                        cir.setReturnValue(originalName.replace("Ragnarock", "Ragnarock Axe"));
+                        break;
+                    case "DAEDALUS_AXE":
+                    case "STARRED_DAEDALUS_AXE":
+                        cir.setReturnValue(originalName.replace("Blade", "Axe"));
+                        break;
+                }
             }
-        } catch (Exception ignored) {}
-    }
-
-    @Inject(method = "getItemUseAction", at = @At("HEAD"), cancellable = true)
-    public void onGetItemUseAction(CallbackInfoReturnable<EnumAction> cir) {
-        if (!ModConfig.legacyAxes) return;
-        if (frozen$isLegacyBlockedAxe((ItemStack) (Object) this)) {
-            cir.setReturnValue(EnumAction.NONE);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

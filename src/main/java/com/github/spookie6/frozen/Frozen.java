@@ -10,12 +10,16 @@ import com.github.spookie6.frozen.features.hud.Speed;
 import com.github.spookie6.frozen.features.dungeons.TerminalTitles;
 import com.github.spookie6.frozen.features.misc.*;
 import com.github.spookie6.frozen.utils.SlotBindingUtils;
+import com.github.spookie6.frozen.utils.gui.lists.GuiListManager;
+import com.github.spookie6.frozen.utils.gui.lists.ListType;
 import com.github.spookie6.frozen.utils.gui.overlays.*;
 import com.github.spookie6.frozen.utils.skyblock.LocationUtils;
 import com.github.spookie6.frozen.utils.skyblock.PartyUtils;
+import com.github.spookie6.frozen.utils.skyblock.ScoreboardUtils;
 import com.github.spookie6.frozen.utils.skyblock.dungeon.DungeonUtils;
 import com.github.spookie6.frozen.utils.skyblock.dungeon.SplitsManager;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -23,24 +27,26 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 
+import javax.xml.stream.Location;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Mod(modid = "@ID@", useMetadata=true)
 public class Frozen {
     public static final String MODID = "@ID@";
     public static final String VERSION = "@VER@";
-
-    public static final GuiOverlayEditor guiOverlayEditor = new GuiOverlayEditor();
-
-    public static ModConfig config;
+    public static final String chatPrefix = "&f[&bFrozen&f] &8»&7 ";
 
     public static final Minecraft mc = Minecraft.getMinecraft();
+    public static ModConfig config;
 
-    public static final String chatPrefix = "&f[&bFrozen&f] &8»&7 ";
+    public static GuiScreen guiToOpen = null;
+    public static final GuiOverlayEditor guiOverlayEditor = new GuiOverlayEditor();
+//    public static GuiListManager guiLocationalMessagesList = new GuiListManager(ListType.LOCATIONAL_MESSAGE);
 
     private final ArrayList<Object> modules = new ArrayList<>();
 
@@ -73,6 +79,14 @@ public class Frozen {
         }
     }
 
+    @SubscribeEvent
+    public void onTick(TickEvent.ClientTickEvent e) {
+        if (e.phase.equals(TickEvent.Phase.END) || guiToOpen == null) return;
+
+        mc.displayGuiScreen(guiToOpen);
+        guiToOpen = null;
+    }
+
     private void addModules() {
         Collections.addAll(modules,
                 new EventDispatcher(),
@@ -95,12 +109,13 @@ public class Frozen {
                 new SlotBinding(),
                 new Gui(),
                 new TerminalTitles(),
-                new LegacyAxes()
+                new LegacyAxes(),
+                new Relics()
         );
     }
 
     private void initOverlays() {
-        com.github.spookie6.frozen.utils.gui.overlays.OverlayManager.register(new TextOverlay(
+        OverlayManager.register(new TextOverlay(
                 new BooleanConfigBinding(
                         () -> ModConfig.timeHud,
                         (val) -> ModConfig.timeHud = val
@@ -113,6 +128,55 @@ public class Frozen {
                 },
                 () -> true,
                 "00:00:00"
+        ));
+
+//        DEBUG OVERLAYS
+        OverlayManager.register(new TextOverlay(
+                new BooleanConfigBinding(
+                        () -> ModConfig.debugOverlays,
+                        (val) -> ModConfig.debugOverlays = val
+                ),
+                "Location Debug",
+                () -> {
+                    List<String> lines = new ArrayList<String>() {{
+                        add("Hypixel: " + LocationUtils.isOnHypixel);
+                        add("Gamemode: " + (LocationUtils.isInSkyblock ? "Skyblock" : "Other"));
+                        add("Area: " + LocationUtils.currentArea);
+                    }};
+                    return String.join("\n", lines);
+                },
+                () -> true,
+                "Location Debug Overlay"
+        ));
+
+        OverlayManager.register(new TextOverlay(
+                new BooleanConfigBinding(
+                        () -> ModConfig.debugOverlays,
+                        (val) -> ModConfig.debugOverlays = val
+                ),
+                "Dungeon Debug",
+                () -> {
+                    List<String> lines = new ArrayList<String>() {{
+                        add("Floor: " + DungeonUtils.getFloor().toString());
+                        add("MM: " + DungeonUtils.getFloor().isMM);
+                        add("Players:");
+                        add(DungeonUtils.getDungeonPlayers().stream().map(x -> x.username + " | " + x.clazz.toString() + " " + x.clazzLevel).collect(Collectors.joining("\n")));
+                    }};
+                    return String.join("\n", lines);
+                },
+                DungeonUtils::getInDungeon,
+                "Dungeon Debug Overlay"
+        ));
+
+        OverlayManager.register(new TextOverlay(
+                new BooleanConfigBinding(
+                        () -> ModConfig.debugOverlays,
+                        (val) -> ModConfig.debugOverlays = val
+                ),
+                "Scoreboard Debug",
+                () -> String.join("\n", ScoreboardUtils.getScoreboardLines()),
+                () -> true,
+                "Scoreboard Debug Overlay"
         ));
     }
 

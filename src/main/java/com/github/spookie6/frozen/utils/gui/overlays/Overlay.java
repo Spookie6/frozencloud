@@ -12,7 +12,7 @@ import static com.github.spookie6.frozen.Frozen.mc;
 
 public abstract class Overlay {
     protected int x, y;
-    protected boolean centerX, centerY = false;
+    protected boolean centerX, centerY;
 
     protected Dimensions dimensions;
     protected OverlayConfig config;
@@ -45,7 +45,7 @@ public abstract class Overlay {
         this.displayName = displayName;
         this.renderCondition = renderCondition;
 
-        this.padding = 3;
+        this.padding = 2;
 
         configName = displayName.trim().toLowerCase().replaceAll(" ", "_");
         config = OverlayConfigManager.getOverlayConfig(configName);
@@ -110,6 +110,7 @@ public abstract class Overlay {
         }
 
         updateDimensions();
+        updateDynamicPosition();
         updateConfig();
     }
 

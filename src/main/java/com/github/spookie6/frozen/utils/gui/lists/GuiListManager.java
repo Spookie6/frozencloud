@@ -1,16 +1,23 @@
 package com.github.spookie6.frozen.utils.gui.lists;
 
+import com.github.spookie6.frozen.Frozen;
+import com.github.spookie6.frozen.utils.gui.overlays.Overlay;
+import com.github.spookie6.frozen.utils.gui.overlays.OverlayConfigManager;
+import com.github.spookie6.frozen.utils.gui.overlays.OverlayManager;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
+import org.lwjgl.input.Keyboard;
 
 import java.io.IOException;
 import java.util.List;
 
 public class GuiListManager extends GuiScreen {
 
-    private ListType type;
+    private final ListType type;
     public ScaledResolution res;
+
+    public boolean opened = false;
 
     private List<Gui> components;
 
@@ -25,7 +32,9 @@ public class GuiListManager extends GuiScreen {
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-        ;
+        drawDefaultBackground();
+
+
     }
 
     @Override
@@ -35,24 +44,27 @@ public class GuiListManager extends GuiScreen {
     public void handleMouseInput() throws IOException {}
 
     @Override
-    protected void keyTyped(char typedChar, int keyCode) throws IOException {}
-
-    public void open() {
-        mc.addScheduledTask(() -> mc.displayGuiScreen(this));
+    protected void keyTyped(char typedChar, int keyCode) throws IOException {
+        super.keyTyped(typedChar, keyCode);
+        if (keyCode == Keyboard.KEY_ESCAPE) {
+            for (Overlay overlay : OverlayManager.getOverlays()) {
+                overlay.setEditMode(false);
+            }
+            OverlayConfigManager.saveOverlayConfigs();
+            saveConfig();
+            opened = false;
+        }
     }
 
-//    private void saveConfig() {
-//        Map<String, Object> data = new HashMap<>();
-//        data.put("show_invisible", showinvisible);
-//        data.put("snap", snap);
-//
-//        try (FileWriter writer = new FileWriter(configFile)) {
-//            GSON.toJson(data, writer);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
-//
+    public void open() {
+        Frozen.guiToOpen = this;
+        opened = true;
+    }
+
+    private void saveConfig() {
+        ;
+    }
+
 //    private void loadConfig() {
 //        configFile.getParentFile().mkdirs();
 //

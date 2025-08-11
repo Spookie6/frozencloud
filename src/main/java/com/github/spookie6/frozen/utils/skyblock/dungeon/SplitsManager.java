@@ -91,19 +91,6 @@ public class SplitsManager {
     }
 
     @SubscribeEvent
-    public void onChat(ChatPacketEvent e) {
-        if (!e.message.equals("Starting in 1 second.")) return;
-
-        DungeonEnums.Floor floor = DungeonUtils.getFloor();
-        if (floor == null) {
-            ChatUtils.sendModInfo("Failed to load dungeon!");
-            return;
-        }
-
-        initialize(floor);
-    }
-
-    @SubscribeEvent
     public void onServerTick(ServerTickEvent event) {
         if (!isInitialized()) return;
         if (!firstTick && runStarted[0] > 0) {

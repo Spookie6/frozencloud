@@ -1,5 +1,6 @@
 package com.github.spookie6.frozen.utils.gui.overlays;
 
+import com.github.spookie6.frozen.Frozen;
 import com.github.spookie6.frozen.utils.Button;
 import com.github.spookie6.frozen.utils.gui.components.ToggleSwitch;
 import com.google.gson.Gson;
@@ -7,8 +8,6 @@ import com.google.gson.reflect.TypeToken;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
@@ -22,7 +21,7 @@ public class GuiOverlayEditor extends GuiScreen {
     private OverlayConfigGui overlayConfigGui = null;
     private int dragOffsetX, dragOffsetY;
 
-    private boolean shouldOpen = false;
+    public boolean opened = false;
 
     private final int snapThreshold = 5;
     private boolean snappingX = false;
@@ -30,7 +29,6 @@ public class GuiOverlayEditor extends GuiScreen {
     private int snapLineX = -1;
     private int snapLineY = -1;
 
-    public boolean opened = false;
     private ToggleSwitch showInvisibleToggle;
     private ToggleSwitch snapToggle;
 
@@ -122,6 +120,7 @@ public class GuiOverlayEditor extends GuiScreen {
     @Override
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
         super.keyTyped(typedChar, keyCode);
+        showTip = false;
 
         if (keyCode == Keyboard.KEY_ESCAPE) {
             for (Overlay overlay : OverlayManager.getOverlays()) {
@@ -129,8 +128,9 @@ public class GuiOverlayEditor extends GuiScreen {
             }
             OverlayConfigManager.saveOverlayConfigs();
             saveConfig();
-            this.snappingX = false;
-            this.snappingY = false;
+            opened = false;
+            snappingX = false;
+            snappingY = false;
         }
         if (overlayConfigGui != null) {
             overlayConfigGui.keyTyped(typedChar, keyCode);
@@ -150,6 +150,7 @@ public class GuiOverlayEditor extends GuiScreen {
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
         super.mouseClicked(mouseX, mouseY, mouseButton);
         showTip = false;
+
         com.github.spookie6.frozen.utils.Button mouseBtn = com.github.spookie6.frozen.utils.Button.getButton(mouseButton);
         Overlay hoveringOverlay = getHoveredOverlay(mouseX, mouseY);
 
@@ -183,7 +184,7 @@ public class GuiOverlayEditor extends GuiScreen {
             if (hoveringOverlay != null) {
                 int mx = OverlayConfigGui.fits(mouseX, mouseY) ? mouseX : mouseX - OverlayConfigGui.width;
                 int my = OverlayConfigGui.fits(mouseX, mouseY) ? mouseY : mouseY - OverlayConfigGui.height;
-                this.overlayConfigGui = new OverlayConfigGui(hoveringOverlay, mx, my);
+                overlayConfigGui = new OverlayConfigGui(hoveringOverlay, mx, my);
             }
         }
     }
@@ -335,15 +336,8 @@ public class GuiOverlayEditor extends GuiScreen {
     }
 
     public void open() {
-        this.shouldOpen = true;
-    }
-
-    @SubscribeEvent
-    public void onClientTick(TickEvent.ClientTickEvent e) {
-        if (e.phase.equals(TickEvent.Phase.END) && this.shouldOpen) {
-            Minecraft.getMinecraft().displayGuiScreen(this);
-            this.shouldOpen = false;
-        }
+        Frozen.guiToOpen = this;
+        opened = true;
     }
 
     private void saveConfig() {
