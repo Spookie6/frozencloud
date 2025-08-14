@@ -58,6 +58,7 @@ public class Dungeon {
             if (matcher.find()) {
                 this.floor = DungeonEnums.Floor.getFloor(matcher.group(1));
                 SplitsManager.initialize(this.floor);
+                if (ModConfig.autoPotBag) ChatUtils.sendCommand("pb", false);
                 break;
             }
         }

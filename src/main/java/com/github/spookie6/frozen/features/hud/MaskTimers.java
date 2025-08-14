@@ -2,10 +2,8 @@ package com.github.spookie6.frozen.features.hud;
 
 import com.github.spookie6.frozen.config.ModConfig;
 import com.github.spookie6.frozen.utils.ChatUtils;
-import com.github.spookie6.frozen.utils.gui.overlays.BooleanConfigBinding;
-import com.github.spookie6.frozen.utils.gui.overlays.IntegerConfigBinding;
-import com.github.spookie6.frozen.utils.gui.overlays.OverlayManager;
-import com.github.spookie6.frozen.utils.gui.overlays.TextOverlay;
+import com.github.spookie6.frozen.utils.gui.overlays.*;
+import com.github.spookie6.frozen.utils.skyblock.dungeon.DungeonUtils;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
@@ -14,35 +12,36 @@ import com.github.spookie6.frozen.utils.skyblock.Island;
 import com.github.spookie6.frozen.utils.skyblock.LocationUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class MaskTimers {
     public MaskTimers() {
         OverlayManager.register(new TextOverlay(
-                        new BooleanConfigBinding(
-                                () -> ModConfig.maskTimers,
-                                (val) -> ModConfig.maskTimers = val
-                        ),
-                        "Mask timers",
-                        this::getText,
-                        () -> {
-                            if (!LocationUtils.isInSkyblock) return false;
-                            return !ModConfig.maskTimerDungeonsOnly || !LocationUtils.currentArea.isNotArea(Island.Dungeon);
-                        },
-                        "§9Bonzo:#§r§a" + ModConfig.maskTimerReadyTitle + "§r\n§fSpirit:#§r§a" + ModConfig.maskTimerReadyTitle + "§r\n§cPhoenix:#§r§a" + ModConfig.maskTimerReadyTitle + "§r"
+                new BooleanConfigBinding(
+                        () -> ModConfig.maskTimers,
+                        (val) -> ModConfig.maskTimers = val
+                ),
+                "Mask timers",
+                this::getText,
+                () -> {
+                    if (!LocationUtils.isInSkyblock) return false;
+                    return !ModConfig.maskTimerDungeonsOnly || !LocationUtils.currentArea.isNotArea(Island.Dungeon);
+                },
+                "§9Bonzo:#§r§a" + ModConfig.maskTimerReadyTitle + "§r\n§fSpirit:#§r§a" + ModConfig.maskTimerReadyTitle + "§r\n§cPhoenix:#§r§a" + ModConfig.maskTimerReadyTitle + "§r"
                 ).setRightAlign(new BooleanConfigBinding(() -> ModConfig.masktimersRightAlign, (val) -> ModConfig.masktimersRightAlign = val))
                 .setExtraWidth(new IntegerConfigBinding(() -> ModConfig.maskTimersExtraWidth, (val) -> ModConfig.maskTimersExtraWidth = val)));
 
         OverlayManager.register(new TextOverlay(
-                        new BooleanConfigBinding(
-                                () -> ModConfig.invincibilityTimer,
-                                (val) -> ModConfig.invincibilityTimer = val
-                        ),
-                        "Invincibility timer",
-                        () -> String.format("%.2fs", (float) (poppedAt + 3000 - System.currentTimeMillis()) / 1000),
-                        () -> LocationUtils.isInSkyblock && (poppedAt + 3000) > System.currentTimeMillis(),
-                        "3.00s"
-                )
+                new BooleanConfigBinding(
+                        () -> ModConfig.invincibilityTimer,
+                        (val) -> ModConfig.invincibilityTimer = val
+                ),
+                "Invincibility timer",
+                () -> String.format("%.2fs", (float) (poppedAt + 3000 - System.currentTimeMillis()) / 1000),
+                () -> LocationUtils.isInSkyblock && (poppedAt + 3000) > System.currentTimeMillis(),
+                "3.00s"
+            )
         );
     }
 
@@ -71,17 +70,17 @@ public class MaskTimers {
         switch (e.message) {
             case("Your (⚚)? Bonzo's Mask saved your life!"):
             case("Your Bonzo's Mask saved your life!"):
-                bonzoTime = now + 120 * 1000;
+                bonzoTime = now + DungeonUtils.getAbilityCooldown(120000);
                 poppedAt = System.currentTimeMillis();
                 mask = "Bonzo";
                 break;
             case("Second Wind Activated! Your Spirit Mask saved your life!"):
-                spiritTime = now + 30 * 1000;
+                spiritTime = now + DungeonUtils.getAbilityCooldown(30000);
                 poppedAt = System.currentTimeMillis();
                 mask = "Sprit";
                 break;
             case("Your Phoenix Pet saved you from certain death!"):
-                phoenixTime = now + 60 * 1000;
+                phoenixTime = now + DungeonUtils.getAbilityCooldown(60000);
                 poppedAt = System.currentTimeMillis();
                 mask = "Phoenix";
                 break;

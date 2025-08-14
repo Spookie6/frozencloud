@@ -5,6 +5,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
+import static com.github.spookie6.frozen.Frozen.mc;
+
 public class ItemUtils {
     public static String getSkyBlockID(ItemStack stack) {
         if (stack == null || !stack.hasTagCompound()) return null;

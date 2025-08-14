@@ -30,7 +30,7 @@ public class DungeonUtils {
         return LocationUtils.currentDungeon.getDungeonPlayers();
     }
 
-    public DungeonEnums.DungeonPlayer getCurrentDungeonPlayer() {
+    public static DungeonEnums.DungeonPlayer getCurrentDungeonPlayer() {
         return(getDungeonPlayers().stream()
                 .filter(x -> x.username.equals(Minecraft.getMinecraft().thePlayer.getDisplayNameString()))
                 .findFirst()
@@ -47,7 +47,7 @@ public class DungeonUtils {
         return SplitsManager.currentSplit.getM7Phase();
     }
 
-    public double getMageCooldownMultiplier() {
+    public static double getMageCooldownMultiplier() {
         DungeonEnums.DungeonPlayer currentDungeonPlayer = getCurrentDungeonPlayer();
         if (currentDungeonPlayer == null || !currentDungeonPlayer.clazz.equals(DungeonEnums.Class.MAGE)) return 1.0;
 
@@ -55,7 +55,7 @@ public class DungeonUtils {
         return 1 - 0.25 - (Math.floor(currentDungeonPlayer.clazzLevel / 2.0) / 100) * (amountOfMages == 1 ? 2 : 1);
     }
 
-    public long getAbilityCooldown(long baseCooldown) {
+    public static long getAbilityCooldown(long baseCooldown) {
         return Math.round(baseCooldown * getMageCooldownMultiplier());
     }
 

@@ -35,7 +35,6 @@ public class MainCommand extends CommandBase {
         add(helpCmdClickable("help", "Sends this message."));
         add(helpCmdClickable("moveoverlays", "Opens the overlay editor gui."));
         add(helpCmdClickable("location", "Returns your current location. (debug)"));
-        add(helpCmdClickable("splits", "Returns current dungeon's splits. (debug)"));
         add(helpCmdClickable("chatsim", "Simulates a chat message (debug)"));
         add(new ChatComponentText(" "));
     }};
@@ -79,15 +78,6 @@ public class MainCommand extends CommandBase {
             case "moveoverlays":
             case "mo":
                 Frozen.guiOverlayEditor.open();
-                break;
-            case "splits":
-                String txt = SplitsManager.getText();
-                if (txt.isEmpty()) ChatUtils.sendModInfo("No splits");
-                else {
-                    for (String line : txt.split("\n")) {
-                        ChatUtils.sendModInfo(line);
-                    }
-                }
                 break;
             case "chatsim": {
                 String stringToSim = String.join(" ", arguments);

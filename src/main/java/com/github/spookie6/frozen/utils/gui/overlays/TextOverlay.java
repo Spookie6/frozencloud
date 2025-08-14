@@ -5,7 +5,11 @@ import net.minecraft.client.gui.FontRenderer;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Set;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import static com.github.spookie6.frozen.Frozen.mc;
 import static net.minecraft.client.gui.Gui.drawRect;
@@ -18,6 +22,8 @@ public class TextOverlay extends Overlay {
     private IntegerConfigBinding extraWidth = null;
 
     private String cachedText = "";
+
+    private final String delimiter = "#";
 
     public TextOverlay(BooleanConfigBinding configOption, String displayName, Supplier<String> textSupplier, Supplier<Boolean> renderCondition, String exampleText) {
         super(configOption, displayName, renderCondition);
@@ -48,14 +54,22 @@ public class TextOverlay extends Overlay {
         for (int i = 0; i < lines.length; i++) {
             String line = lines[i].replaceAll("&", "§");
             if (rightAlign != null && rightAlign.get()) {
-                String delimiter = "#";
                 String[] parts = line.split(delimiter, 2);
                 String left = parts.length > 0 ? parts[0] : "";
                 String right = parts.length > 1 ? parts[1] : "";
                 int rightWidth = mc.fontRendererObj.getStringWidth(right);
                 mc.fontRendererObj.drawString(left, padding, padding + (i * (mc.fontRendererObj.FONT_HEIGHT + 1)), color.getRGB(), shadow);
-                mc.fontRendererObj.drawString(right, dimensions.width - padding - rightWidth, padding + (i * (mc.fontRendererObj.FONT_HEIGHT + 1)), color.getRGB(), shadow);
-            } else mc.fontRendererObj.drawString(line.replace("#", " "), padding, padding + (i * (mc.fontRendererObj.FONT_HEIGHT + 1)), color.getRGB(), shadow);
+                if (this.configName.equals("split")) {
+                    Set<Integer> listOfRight2Ints = Arrays.stream(lines).map(x -> mc.fontRendererObj.getStringWidth(x.split("#")[2])).collect(Collectors.toSet());
+                    int maxRight2Width = Collections.max(listOfRight2Ints);
+                    String right1 = right.split(delimiter)[0];
+                    String right2 = right1.split(delimiter)[1];
+                    mc.fontRendererObj.drawString(right2, dimensions.width - padding - mc.fontRendererObj.getStringWidth(right2), padding + (i * (mc.fontRendererObj.FONT_HEIGHT + 1)), color.getRGB(), shadow);
+                    mc.fontRendererObj.drawString(right1, dimensions.width - padding - mc.fontRendererObj.getStringWidth(right1) - maxRight2Width - 2, padding + (i * (mc.fontRendererObj.FONT_HEIGHT + 1)), color.getRGB(), shadow);
+                } else {
+                    mc.fontRendererObj.drawString(right, dimensions.width - padding - rightWidth, padding + (i * (mc.fontRendererObj.FONT_HEIGHT + 1)), color.getRGB(), shadow);
+                }
+            } else mc.fontRendererObj.drawString(line.replaceAll("#", " "), padding, padding + (i * (mc.fontRendererObj.FONT_HEIGHT + 1)), color.getRGB(), shadow);
         }
         GL11.glPopMatrix();
     }

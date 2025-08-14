@@ -10,8 +10,6 @@ import com.github.spookie6.frozen.features.hud.Speed;
 import com.github.spookie6.frozen.features.dungeons.TerminalTitles;
 import com.github.spookie6.frozen.features.misc.*;
 import com.github.spookie6.frozen.utils.SlotBindingUtils;
-import com.github.spookie6.frozen.utils.gui.lists.GuiListManager;
-import com.github.spookie6.frozen.utils.gui.lists.ListType;
 import com.github.spookie6.frozen.utils.gui.overlays.*;
 import com.github.spookie6.frozen.utils.skyblock.LocationUtils;
 import com.github.spookie6.frozen.utils.skyblock.PartyUtils;
@@ -29,7 +27,6 @@ import net.minecraftforge.fml.common.event.FMLServerStoppedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
-import javax.xml.stream.Location;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -110,7 +107,8 @@ public class Frozen {
                 new Gui(),
                 new TerminalTitles(),
                 new LegacyAxes(),
-                new Relics()
+                new Relics(),
+                new Dragons()
         );
     }
 

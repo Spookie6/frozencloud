@@ -1,7 +1,8 @@
 package com.github.spookie6.frozen.utils.skyblock.dungeon;
 
 import com.github.spookie6.frozen.config.ModConfig;
-import com.github.spookie6.frozen.utils.skyblock.Island;
+import com.github.spookie6.frozen.utils.gui.overlays.OverlayManager;
+import com.github.spookie6.frozen.utils.gui.overlays.TextOverlay;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -22,9 +23,6 @@ public class SplitsManager {
     private static long[] runStarted = {0, 0};
     private static long ticks = 0;
     private static boolean firstTick = false;
-
-    private static boolean showMins = false;
-    private static boolean showTickMins = false;
 
     private final static LinkedHashMap<Split, long[]> splits = new LinkedHashMap<>();
 
@@ -130,21 +128,17 @@ public class SplitsManager {
         return new long[]{0, 0};
     }
 
-    public static String getFormattedSplitTime(Split split) {
+    public static List<String> getFormattedSplitTime(Split split) {
         long[] time = getSplitTime(split);
-        return String.format("§a%s§r §8[§7%s§r§8]§r",
-                StringUtils.formatTime((float) time[0] / 1000, showMins),
-                StringUtils.formatTime((float) time[1] / 20, showTickMins)
+        String res = String.format("§a%s§r#§8[§7%s§r§8]§r",
+                StringUtils.formatTime((float) time[0] / 1000, ModConfig.splitsShowMinutes),
+                StringUtils.formatTime((float) time[1] / 20, ModConfig.splitsTickShowMinutes)
         );
+        return Arrays.asList(res.split("#"));
     }
 
     public static String getText() {
-        if (!isInitialized()) return "";
-        List<String> lines = new ArrayList<>();
-        for (Split split : splits.keySet()) {
-            lines.add(split.name + '#' + getFormattedSplitTime(split));
-        }
-        return String.join("\n", lines);
+        return splits.keySet().stream().map(x -> x.name + "#" + getFormattedSplitTime(x)).collect(Collectors.joining("\n"));
     }
 
     public void sendAllSplitsToChat() {
@@ -163,7 +157,6 @@ public class SplitsManager {
         ticks = 0;
         firstTick = false;
         currentSplit = Split.Unknown;
-
         splits.clear();
     }
 

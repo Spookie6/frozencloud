@@ -10,6 +10,8 @@ import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 
+import java.util.Collections;
+
 public class TickTimers {
     private int crystalTicks = -1;
     private int padTicks = -1;
@@ -20,51 +22,51 @@ public class TickTimers {
     public TickTimers() {
 //        Registering overlays
         OverlayManager.register(new TextOverlay(
-                        new BooleanConfigBinding(
-                                () -> ModConfig.crystalTicks,
-                                (val) -> ModConfig.crystalTicks = val
-                        ),
-                        "Energy crystal spawn ticks",
-                        () -> String.format("%.2f", (float) crystalTicks / 20),
-                        () -> crystalTicks > -1,
-                        "0.00"
-                )
+                new BooleanConfigBinding(
+                        () -> ModConfig.crystalTicks,
+                        (val) -> ModConfig.crystalTicks = val
+                ),
+                "Energy crystal spawn ticks",
+                () -> String.format("%.2f", (float) crystalTicks / 20),
+                () -> crystalTicks > -1,
+                "1.80"
+            )
         );
 
         OverlayManager.register(new TextOverlay(
-                        new BooleanConfigBinding(
-                                () -> ModConfig.padTicks,
-                                (val) -> ModConfig.padTicks = val
-                        ),
-                        "Storm pad ticks",
-                        () -> String.format("%.2f", (float) padTicks / 20),
-                        () -> padTicks > -1,
-                        "0.00"
-                )
+                new BooleanConfigBinding(
+                        () -> ModConfig.padTicks,
+                        (val) -> ModConfig.padTicks = val
+                ),
+                "Storm pad ticks",
+                () -> String.format("%.2f", (float) padTicks / 20),
+                () -> padTicks > -1,
+                "1.00"
+            )
         );
 
         OverlayManager.register(new TextOverlay(
-                        new BooleanConfigBinding(
-                                () -> ModConfig.crushTicks,
-                                (val) -> ModConfig.crushTicks = val
-                        ),
-                        "Storm crush ticks",
-                        () -> String.format("%.2f", (float) crushTicks / 20),
-                        () -> crushTicks > -1,
-                        "0.00"
-                )
+                new BooleanConfigBinding(
+                        () -> ModConfig.crushTicks,
+                        (val) -> ModConfig.crushTicks = val
+                ),
+                "Storm crush ticks",
+                () -> String.format("%.2f", (float) crushTicks / 20),
+                () -> crushTicks > -1,
+                "1.00"
+            )
         );
 
         OverlayManager.register(new TextOverlay(
-                        new BooleanConfigBinding(
-                                () -> ModConfig.startTimer,
-                                (val) -> ModConfig.startTimer = val
-                        ),
-                        "Goldor start timer",
-                        this::getStartTimer,
-                        () -> barrierTicks > -1,
-                        "0.00"
-                )
+                new BooleanConfigBinding(
+                        () -> ModConfig.startTimer,
+                        (val) -> ModConfig.startTimer = val
+                ),
+                "Goldor start timer",
+                this::getStartTimer,
+                () -> startTime > -1,
+                "5.20s"
+            )
         );
 
         OverlayManager.register(new TextOverlay(
@@ -73,16 +75,9 @@ public class TickTimers {
                         (val) -> ModConfig.barrierTicks = val
                 ),
                 "Goldor barrier ticks",
-                () -> {
-                    if (ModConfig.barrierTicksDynamicColors) {
-                        String prefix = barrierTicks > 40 ? "&a" : barrierTicks > 20 ? "&e" : "&c";
-                        return (prefix + String.format("%.2f", (float) barrierTicks / 20));
-                    }
-
-                    return String.format("%.2f", (float) barrierTicks / 20);
-                },
+                this::getBarrierTimer,
                 () -> barrierTicks > -1,
-                "0.00"
+                "3.00"
                 )
         );
     }
@@ -119,7 +114,16 @@ public class TickTimers {
         if (startTime < 0) return "";
         long remaining = startTime - System.currentTimeMillis();
         if (remaining < 0) startTime = -1;
-        return String.format("%.2f", (float) remaining / 1000);
+        return String.format("%.2fs", (float) remaining / 1000);
+    }
+
+    private String getBarrierTimer() {
+        if (ModConfig.barrierTicksDynamicColors) {
+            String prefix = barrierTicks > 40 ? "&a" : barrierTicks > 20 ? "&e" : "&c";
+            return (prefix + String.format("%.2f", (float) barrierTicks / 20));
+        }
+
+        return String.format("%.2f", (float) barrierTicks / 20);
     }
 
     @SubscribeEvent

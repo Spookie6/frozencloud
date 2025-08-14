@@ -11,21 +11,23 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import com.github.spookie6.frozen.utils.skyblock.ItemUtils;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
+import java.util.Collections;
+
 import static com.github.spookie6.frozen.Frozen.mc;
 
 public class ReaperTimer  {
 
     public ReaperTimer() {
         OverlayManager.register(new TextOverlay(
-                        new BooleanConfigBinding(
-                                () -> ModConfig.reaperTimer,
-                                (val) -> ModConfig.reaperTimer = val
-                        ),
-                        "Reaper timer",
-                        () -> String.format("%.2f", (float) (reaperUsed + 6000 - System.currentTimeMillis()) /1000),
-                        () -> reaperUsed + 6000 - System.currentTimeMillis() >= 0,
-                        "6.00"
-                )
+                new BooleanConfigBinding(
+                        () -> ModConfig.reaperTimer,
+                        (val) -> ModConfig.reaperTimer = val
+                ),
+                "Reaper timer",
+                () -> String.format("%.2f", (float) (reaperUsed + 6000 - System.currentTimeMillis()) /1000),
+                () -> reaperUsed + 6000 - System.currentTimeMillis() >= 0,
+                "6.00"
+            )
         );
     }
 

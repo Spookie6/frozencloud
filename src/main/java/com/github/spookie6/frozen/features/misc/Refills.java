@@ -53,7 +53,7 @@ public class Refills {
             }
 
             if (ModConfig.superboomRefill == 2) {
-                refillItem("Superboom TNT", -2);
+                refillItem("Superboom TNT", -1);
             }
         }
     }

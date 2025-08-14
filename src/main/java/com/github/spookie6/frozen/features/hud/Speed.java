@@ -7,21 +7,23 @@ import com.github.spookie6.frozen.utils.gui.overlays.TextOverlay;
 import com.github.spookie6.frozen.utils.skyblock.LocationUtils;
 import net.minecraft.client.entity.EntityPlayerSP;
 
+import java.util.Collections;
+
 import static com.github.spookie6.frozen.Frozen.mc;
 
 public class Speed {
 
     public Speed() {
         OverlayManager.register(new TextOverlay(
-                        new BooleanConfigBinding(
-                                () -> ModConfig.speedHud,
-                                (val) -> ModConfig.speedHud = val
-                        ),
-                        "Speed",
-                        this::getText,
-                        () -> LocationUtils.isInSkyblock,
-                "✦500"
-                )
+                new BooleanConfigBinding(
+                        () -> ModConfig.speedHud,
+                        (val) -> ModConfig.speedHud = val
+                ),
+                "Speed",
+                this::getText,
+                () -> LocationUtils.isInSkyblock,
+        "✦500"
+            )
         );
     }
 

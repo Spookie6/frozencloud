@@ -118,6 +118,13 @@ public class ModConfig extends Config {
     )
     public static boolean autoDraft = false;
 
+    @Switch(
+            name = "Auto potion bag",
+            description = "Auto opend potion bag opun entering a dungeon",
+            category = "Dungeons"
+    )
+    public static boolean autoPotBag = false;
+
 //    Leaping
     @Dropdown(
         name = "Hide players after leaping",
@@ -176,14 +183,14 @@ public class ModConfig extends Config {
     public static boolean crushTicks = false;
 
     @Switch(
-            name = "Barrier Timer",
+            name = "Barrier timer",
             category = "Dungeons",
             subcategory = "Tick Timers"
     )
     public static boolean barrierTicks = false;
 
     @Switch(
-            name = "Dynamic colors",
+            name = "Dynamic barrier colors",
             description = "Dynamic colors red -> yellow -> green for barrier timer",
             category = "Dungeons",
             subcategory = "Tick Timers"
@@ -191,11 +198,26 @@ public class ModConfig extends Config {
     public static boolean barrierTicksDynamicColors = false;
 
     @Switch(
-            name = "Start Timer",
+            name = "Start timer",
             category = "Dungeons",
             subcategory = "Tick Timers"
     )
     public static boolean startTimer = false;
+
+    @Switch(
+            name = "Dragon spawn timer",
+            category = "Dungeons",
+            subcategory = "Tick Timers"
+    )
+    public static boolean dragonTimer = false;
+
+    @Switch(
+            name = "Dynamic dragon timer colors",
+            description = "Dynamic colors according to drag prio for timer",
+            category = "Dungeons",
+            subcategory = "Tick Timers"
+    )
+    public static boolean dragonSpawnTimerDynamicColors = false;
 
     @Switch(
             name = "Custom terminal titles",
@@ -342,27 +364,31 @@ public class ModConfig extends Config {
     //    INVINCIBILITY
     @Switch(
             name = "Mask timers",
-            category = "Invincibility"
+            category = "HUD",
+            subcategory = "Invincibility"
     )
     public static boolean maskTimers = false;
 
     @Switch(
             name = "Invincibility timer",
-            category = "Invincibility"
+            category = "HUD",
+            subcategory = "Invincibility"
     )
     public static boolean invincibilityTimer = false;
 
     @Switch(
             name = "Right align",
             description = "Align timers to the right",
-            category = "Invincibility"
+            category = "HUD",
+            subcategory = "Invincibility"
     )
     public static boolean masktimersRightAlign = false;
 
     @Slider(
             name = "Extra width",
             description = "How much extra width to add to the mask timers overlay",
-            category = "Invincibility",
+            category = "HUD",
+            subcategory = "Invincibility",
             min = 0,
             max = 50,
             step = 1
@@ -371,7 +397,8 @@ public class ModConfig extends Config {
 
     @Switch(
             name = "Send chat notification",
-            category = "Invincibility",
+            category = "HUD",
+            subcategory = "Invincibility",
             description = "Sends a message to party chat about a mask popping",
             size = 2
     )
@@ -379,14 +406,16 @@ public class ModConfig extends Config {
 
     @Switch(
             name = "Dungeons only",
-            category = "Invincibility",
+            category = "HUD",
+            subcategory = "Invincibility",
             description = "Whether to show the overlay outside of dungeon servers"
     )
     public static boolean maskTimerDungeonsOnly = true;
 
     @Text(
             name = "Avaiable title",
-            category = "Invincibility",
+            category = "HUD",
+            subcategory = "Invincibility",
             description = "Text to show when mask is available",
             placeholder = "Available"
     )
@@ -394,7 +423,8 @@ public class ModConfig extends Config {
 
     @Info(
             text = "Use {mask} in the chat message for the mask type",
-            category = "Invincibility",
+            category = "HUD",
+            subcategory = "Invincibility",
             type = InfoType.INFO,
             size = OptionSize.DUAL
     )
@@ -402,7 +432,8 @@ public class ModConfig extends Config {
 
     @Text(
             name = "Chat message",
-            category = "Invincibility",
+            category = "HUD",
+            subcategory = "Invincibility",
             description = "Text to send to chat",
             placeholder = "{mask} procced!",
             size = OptionSize.DUAL
@@ -412,26 +443,46 @@ public class ModConfig extends Config {
 //        SPLITS
     @Switch(
             name = "Run splits",
-            category = "Splits"
+            category = "HUD",
+            subcategory = "Splits"
     )
     public static boolean splits = false;
 
     @Switch(
             name = "Blood timer",
-            category = "Splits"
+            category = "HUD",
+            subcategory = "Splits"
     )
     public static boolean bloodSplit = false;
 
     @Switch(
+            name = "Show minutes",
+            description = "Format like \"1m 20s\" instead of \"80s\"",
+            category = "HUD",
+            subcategory = "Splits"
+    )
+    public static boolean splitsShowMinutes;
+
+    @Switch(
+            name = "Show tick minutes",
+            description = "Format like \"1m 20s\" instead of \"80s\"",
+            category = "HUD",
+            subcategory = "Splits"
+    )
+    public static boolean splitsTickShowMinutes;
+
+    @Switch(
             name = "Right align",
             description = "Align timers to the right",
-            category = "Splits"
+            category = "HUD",
+            subcategory = "Splits"
     )
     public static boolean splitsRightAlign = false;
 
     @Switch(
             name = "Send splits",
-            category = "Splits",
+            category = "HUD",
+            subcategory = "Splits",
             description = "Send the splits to chat at the end of the run",
             size = 2
     )
@@ -440,7 +491,8 @@ public class ModConfig extends Config {
     @Slider(
             name = "Extra width",
             description = "How much extra width to add to the splits overlay",
-            category = "Splits",
+            category = "HUD",
+            subcategory = "Splits",
             min = 0,
             max = 50,
             step = 1
@@ -449,7 +501,8 @@ public class ModConfig extends Config {
 
     @Dropdown(
             name = "Show boss split",
-            category = "Splits",
+            category = "HUD",
+            subcategory = "Splits",
             options = {
                     "Always",
                     "Never",

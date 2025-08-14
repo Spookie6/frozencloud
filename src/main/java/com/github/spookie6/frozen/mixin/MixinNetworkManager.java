@@ -23,25 +23,5 @@ public abstract class MixinNetworkManager extends SimpleChannelInboundHandler<Pa
     @Inject(method = "channelRead0*", at = @At("HEAD"), cancellable = true)
     private void onReceivePacket(ChannelHandlerContext context, Packet<?> packet, CallbackInfo ci) {
         MinecraftForge.EVENT_BUS.post(new PacketEvent.Received(packet));
-
-        if (packet instanceof S32PacketConfirmTransaction) MinecraftForge.EVENT_BUS.post(new ServerTickEvent());
-        if (packet instanceof S0DPacketCollectItem) MinecraftForge.EVENT_BUS.post(new CollectItemEvent((S0DPacketCollectItem) packet));
-        if (packet instanceof S38PacketPlayerListItem) MinecraftForge.EVENT_BUS.post(new TablistUpdateEvent((S38PacketPlayerListItem) packet));
-        if (packet instanceof S02PacketChat) MinecraftForge.EVENT_BUS.post(new ChatPacketEvent(((S02PacketChat) packet).getChatComponent().getUnformattedText(), (S02PacketChat) packet));
-
-        if (packet instanceof S45PacketTitle) {
-            S45PacketTitle titlePacket = (S45PacketTitle) packet;
-            S45PacketTitle.Type type = titlePacket.getType();
-            IChatComponent component = titlePacket.getMessage();
-
-            if (component != null) {
-                TitleEvent.Incoming event = new TitleEvent.Incoming(type, component);
-                MinecraftForge.EVENT_BUS.post(event);
-
-                if (event.isCanceled()) {
-                    ci.cancel();
-                }
-            }
-        }
     }
 }

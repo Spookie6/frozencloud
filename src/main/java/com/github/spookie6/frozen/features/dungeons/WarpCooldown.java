@@ -7,19 +7,21 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import com.github.spookie6.frozen.config.ModConfig;
 import com.github.spookie6.frozen.events.impl.ChatPacketEvent;
 
+import java.util.Collections;
+
 public class WarpCooldown  {
 
     public WarpCooldown() {
         OverlayManager.register(new TextOverlay(
-                        new BooleanConfigBinding(
-                                () -> ModConfig.warpCooldown,
-                                (val) -> ModConfig.warpCooldown = val
-                        ),
-                        "Warp cooldown",
-                        () -> String.format("Warp Cooldown: %.2fs", (float) (lastWarp + 30000 - System.currentTimeMillis()) / 1000),
-                        () -> lastWarp + 30000 > System.currentTimeMillis(),
-                        "Warp Cooldown: 30s"
-                )
+                new BooleanConfigBinding(
+                        () -> ModConfig.warpCooldown,
+                        (val) -> ModConfig.warpCooldown = val
+                ),
+                "Warp cooldown",
+                () -> String.format("Warp Cooldown: %.2fs", (float) (lastWarp + 30000 - System.currentTimeMillis()) / 1000),
+                    () -> lastWarp + 30000 > System.currentTimeMillis(),
+                    "Warp Cooldown: 30s"
+            )
         );
     }
 

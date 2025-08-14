@@ -6,6 +6,7 @@ import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.util.MathHelper;
 
 import java.awt.*;
+import java.util.List;
 import java.util.function.Supplier;
 
 import static com.github.spookie6.frozen.Frozen.mc;

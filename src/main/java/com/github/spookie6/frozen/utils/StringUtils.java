@@ -62,11 +62,12 @@ public abstract class StringUtils {
 
     public static String formatTime(float timestamp, boolean showMins) {
         if (timestamp == 0) return "0.00s";
-        int mins = (int) Math.floorDiv((long) timestamp, 60);
+
+        int mins = (int) (timestamp / 60);
         if (showMins && mins >= 1) {
             float secs = timestamp % 60;
-            return (mins + "m " + String.format("%.2f", secs) + "s");
+            return mins + "m " + String.format("%.2f", secs) + "s";
         }
-        return (String.format("%.2f", timestamp) + "s");
+        return String.format("%.2f", timestamp) + "s";
     }
 }

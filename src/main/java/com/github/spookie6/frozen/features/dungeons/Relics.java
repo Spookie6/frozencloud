@@ -1,6 +1,5 @@
 package com.github.spookie6.frozen.features.dungeons;
 
-import cc.polyfrost.oneconfig.libs.universal.UChat;
 import com.github.spookie6.frozen.config.ModConfig;
 import com.github.spookie6.frozen.utils.gui.overlays.BooleanConfigBinding;
 import com.github.spookie6.frozen.utils.gui.overlays.OverlayManager;
@@ -24,6 +23,7 @@ import com.github.spookie6.frozen.utils.render.Renderer;
 import com.github.spookie6.frozen.utils.skyblock.dungeon.DungeonUtils;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -51,7 +51,7 @@ public class Relics {
                 ),
                 "Relic Timer",
                 this::getText,
-                DungeonUtils::getInDungeon,
+                () -> true,
                 "2.1"
         ));
         OverlayManager.register(new TextOverlay(
@@ -60,7 +60,7 @@ public class Relics {
                         (val) -> ModConfig.debugOverlays = val
                 ),
                 "Relics Debug Overlay",
-                () -> "Relic: " + (currentRelic == null ? "No relic" : currentRelic.name) + "\n Placed: " + placed,
+                () -> "Relic: " + (currentRelic == null ? "No relic" : currentRelic.name) + "\nPlaced: " + placed + "\np5Start: " + p5Start + "\nTicks: " + ticks,
                 () -> true,
                 "Relics debug overlay"
         ));
@@ -73,6 +73,7 @@ public class Relics {
 
     @SubscribeEvent(receiveCanceled = true)
     public void onChatPacket(ChatPacketEvent e) {
+        if (!DungeonUtils.getInDungeon()) return;
         Pattern p = Pattern.compile("\\[BOSS] Necron: All this, for nothing\\.\\.\\.");
         if (p.matcher(e.message).find()) {
             ticks = 42;
@@ -80,16 +81,15 @@ public class Relics {
             p5Start = System.currentTimeMillis();
         }
 
-        Pattern pa = Pattern.compile("(\\w+) picked the Corrupted (\\w+) Relic!");
+        Pattern pa = Pattern.compile(mc.thePlayer.getDisplayNameString() + " picked the Corrupted (\\w+) Relic!");
         Matcher m = pa.matcher(e.message);
 
         if (m.find()) {
-            String username = m.group(1);
-            String relicName = m.group(2);
+            String relicName = m.group(1);
             DungeonEnums.Relic relic = DungeonEnums.Relic.getRelicByName(relicName);
 
-            if (username.equals(mc.thePlayer.getName())) currentRelic = relic;
-            else relicTimes.put(relic, System.currentTimeMillis());
+            currentRelic = relic;
+            pickedUp = System.currentTimeMillis();
         }
     }
 
@@ -101,7 +101,7 @@ public class Relics {
         if (!event.action.equals(PlayerInteractEvent.Action.LEFT_CLICK_BLOCK) && !event.action.equals(PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK)) return;
 
         String itemID = ItemUtils.getSkyBlockID(ItemUtils.getHeldItem());
-        if (itemID == null || !itemID.contains("RELIC") || ItemUtils.getItemInSlot(9) != ItemUtils.getHeldItem()) return;
+        if (itemID == null || !itemID.contains("RELIC") ||  mc.thePlayer.inventory.getStackInSlot(8) != ItemUtils.getHeldItem()) return;
 
         BlockPos pos = event.pos;
         Block block = event.world.getBlockState(pos).getBlock();
@@ -112,7 +112,7 @@ public class Relics {
             placed = System.currentTimeMillis();
             if (ModConfig.sendRelicTimes) {
                 relicTimes.put(currentRelic, System.currentTimeMillis() - p5Start);
-                ChatUtils.sendModInfo(String.format("&%s%sRelic &7placed in &a%.2fs.", currentRelic.colorCode, currentRelic.name, (float) (placed - pickedUp) / 1000));
+                ChatUtils.sendModInfo(String.format("&%s%s Relic &7placed in &a%.2fs.", currentRelic.colorCode, currentRelic.name, (float) (placed - pickedUp) / 1000));
                 ChatUtils.sendModInfo(String.format("&7Relic spawned in &a%.2fs.", (float) (relicsSpawned - p5Start) / 1000));
                 ChatUtils.sendModInfo(String.format("&7Relic picked up in &a%.2fs.", (float) (pickedUp - relicsSpawned) / 1000));
                 ChatUtils.sendModInfo(String.format("&7Relic placed &a%.2fs &7into P5.", (float) (placed - p5Start) / 1000));
@@ -131,20 +131,24 @@ public class Relics {
 
     @SubscribeEvent
     public void onTick(TickEvent.ClientTickEvent e) {
-        if (e.phase.equals(TickEvent.Phase.END) || mc.theWorld == null || p5Start < 0) return;
+        if (e.phase != TickEvent.Phase.END || mc.theWorld == null || !inP5) return;
         if (mc.theWorld.getLoadedEntityList().isEmpty()) return;
 
         for (Entity entity : mc.theWorld.getLoadedEntityList()) {
-            if (!(entity instanceof EntityArmorStand)) return;
+            if (!(entity instanceof EntityArmorStand)) continue;
             EntityArmorStand armorStand = (EntityArmorStand) entity;
 
-            if (armorStand.getEquipmentInSlot(4) != null && ItemUtils.getSkyBlockID(armorStand.getEquipmentInSlot(4)).contains("RELIC")) {
+            ItemStack helmet = armorStand.getEquipmentInSlot(4);
+            if (helmet != null && ItemUtils.getSkyBlockID(helmet) != null && ItemUtils.getSkyBlockID(helmet).contains("RELIC")) {
+
+                // First relic spawn detection
                 if (relicsSpawned <= 0) {
                     relicsSpawned = System.currentTimeMillis();
-                    break;
-                } else {
-                    for (DungeonEnums.Relic relic : DungeonEnums.Relic.values()) {
-                        if (relicTimes.get(relic) == null) continue;
+                }
+
+                // Placement detection
+                for (DungeonEnums.Relic relic : DungeonEnums.Relic.values()) {
+                    if (!relicTimes.containsKey(relic)) { // not placed yet
                         if (relic.cauldronPos.distanceSq(armorStand.getPosition()) < 4) {
                             relicTimes.put(relic, System.currentTimeMillis() - p5Start);
                         }
@@ -152,7 +156,11 @@ public class Relics {
                 }
             }
         }
-        if (relicTimes.size() >= 5 && placed > 0 && ModConfig.sendRelicTimes) sendRelicMessages();
+
+        if (relicTimes.size() == 5 && placed > 0 && ModConfig.sendRelicTimes) {
+            sendRelicMessages();
+            relicTimes.clear();
+        }
     }
 
     @SubscribeEvent
@@ -167,7 +175,7 @@ public class Relics {
 
     private void sendRelicMessages() {
         for (DungeonEnums.Relic teammateRelic : relicTimes.keySet()) {
-            ChatUtils.sendModInfo(String.format("%s%s&7Relic placed in &a%.2fs.", teammateRelic.colorCode, teammateRelic.name, (float) relicTimes.get(teammateRelic) / 1000));
+            ChatUtils.sendModInfo(String.format("&%s%s &7Relic placed in &a%.2fs.", teammateRelic.colorCode, teammateRelic.name, (float) relicTimes.get(teammateRelic) / 1000));
         }
     }
 

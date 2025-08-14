@@ -11,6 +11,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
+import java.util.Collections;
+
 import static com.github.spookie6.frozen.Frozen.mc;
 
 public class CrystalTitle {
@@ -19,15 +21,15 @@ public class CrystalTitle {
 
     public CrystalTitle() {
         OverlayManager.register(new TextOverlay(
-                        new BooleanConfigBinding(
-                                () -> ModConfig.crystalTitle,
-                                (val) -> ModConfig.crystalTitle = val
-                        ),
-                        "Energy crystal spawn ticks",
-                        () -> "Place Crystal!",
-                        () -> pickedUp > -1,
-                        "Place Crystal!"
-                )
+                new BooleanConfigBinding(
+                        () -> ModConfig.crystalTitle,
+                        (val) -> ModConfig.crystalTitle = val
+                ),
+                "Energy crystal spawn ticks",
+                () -> "Place Crystal!",
+                () -> pickedUp > -1,
+                "Place Crystal!"
+            )
         );
     }
 
