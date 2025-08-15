@@ -128,13 +128,12 @@ public class SplitsManager {
         return new long[]{0, 0};
     }
 
-    public static List<String> getFormattedSplitTime(Split split) {
+    public static String getFormattedSplitTime(Split split) {
         long[] time = getSplitTime(split);
-        String res = String.format("§a%s§r#§8[§7%s§r§8]§r",
+        return String.format("§a%s§r#§8[§7%s§r§8]§r",
                 StringUtils.formatTime((float) time[0] / 1000, ModConfig.splitsShowMinutes),
                 StringUtils.formatTime((float) time[1] / 20, ModConfig.splitsTickShowMinutes)
         );
-        return Arrays.asList(res.split("#"));
     }
 
     public static String getText() {

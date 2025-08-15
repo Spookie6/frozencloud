@@ -107,25 +107,105 @@ public class ModConfig extends Config {
     @Switch(
             name = "Explosive shot",
             description = "Lets you know how much damage your explosion shot did per enemy",
-            category = "Dungeons"
+            category = "Dungeons",
+            subcategory = "General"
     )
     public static boolean exploShot = false;
 
     @Switch(
             name = "Auto architects draft",
             description = "Automatically gets a darft from your sack if you fail a puzzle",
-            category = "Dungeons"
+            category = "Dungeons",
+            subcategory = "General"
     )
     public static boolean autoDraft = false;
 
     @Switch(
             name = "Auto potion bag",
             description = "Auto opend potion bag opun entering a dungeon",
-            category = "Dungeons"
+            category = "Dungeons",
+            subcategory = "General"
     )
     public static boolean autoPotBag = false;
 
-//    Leaping
+    @Switch(
+            name = "Crystal place title",
+            description = "Displays a title on your screen when you have a crystal",
+            category = "Dungeons",
+            subcategory = "General"
+    )
+    public static boolean crystalTitle = false;
+
+    @Switch(
+            name = "Crystal time message",
+            description = "Sends a message how long it took you to place your crystal",
+            category = "Dungeons",
+            subcategory = "General"
+    )
+    public static boolean sendCrystalTime = false;
+
+    //    Refills
+    @Dropdown(
+            name = "Auto pearl refill",
+            description = "Automatically refills pearls from your sacks to inv",
+            category = "Dungeons",
+            subcategory = "Refills",
+            options = {"Don't", "On Threshold", "On Dungeon Start"},
+            size = OptionSize.DUAL
+    )
+    public static int pearlRefill = 0;
+
+    @Slider(
+            name = "Auto pearl refill threshold",
+            category = "Dungeons",
+            subcategory = "Refills",
+            min = 1,
+            max = 15,
+            step = 1
+    )
+    public static int pearlRefillThreshold = 8;
+
+    @Dropdown(
+            name = "Auto jerry refill",
+            description = "Automatically refills pearls from your sacks to inv",
+            category = "Dungeons",
+            subcategory = "Refills",
+            options = {"Don't", "On Threshold", "On Dungeon Start"},
+            size = OptionSize.DUAL
+    )
+    public static int jerryRefill = 0;
+
+    @Slider(
+            name = "Auto jerry refill threshold",
+            category = "Dungeons",
+            subcategory = "Refills",
+            min = 1,
+            max = 63,
+            step = 1
+    )
+    public static int jerryRefillThreshold = 16;
+
+    @Dropdown(
+            name = "Auto superboom refill",
+            description = "Automatically refills pearls from your sacks to inv",
+            category = "Dungeons",
+            subcategory = "Refills",
+            options = {"Don't", "On Threshold", "On Dungeon Start"},
+            size = OptionSize.DUAL
+    )
+    public static int superboomRefill = 0;
+
+    @Slider(
+            name = "Auto superboom refill threshold",
+            category = "Dungeons",
+            subcategory = "Refills",
+            min = 1,
+            max = 63,
+            step = 1
+    )
+    public static int superboomRefillThreshold = 16;
+
+    //    Leaping
     @Dropdown(
         name = "Hide players after leaping",
         description = "When to hide players",
@@ -145,21 +225,6 @@ public class ModConfig extends Config {
             max = 60
     )
     public static int hidePlayersAfterLeapDuration = 5;
-
-
-    @Switch(
-            name = "Crystal place title",
-            description = "Displays a title on your screen when you have a crystal",
-            category = "Dungeons"
-    )
-    public static boolean crystalTitle = false;
-
-    @Switch(
-            name = "Crystal time message",
-            description = "Sends a message how long it took you to place your crystal",
-            category = "Dungeons"
-    )
-    public static boolean sendCrystalTime = false;
 
     @Switch(
             name = "Crystal spawn timer",
@@ -244,6 +309,80 @@ public class ModConfig extends Config {
     public static float terminalTitleDuration = 3.0F;
 
     @Switch(
+            name = "Main toggle",
+            description = "Main toggle for locational message features",
+            category = "Dungeons",
+            subcategory = "Locational Messages",
+            size = OptionSize.DUAL
+    )
+    public static boolean locationalMessages = false;
+
+    @Slider(
+            name = "Title duration (s)",
+            category = "Dungeons",
+            subcategory = "Locational Messages",
+            min = 1.0F,
+            max = 5.0F
+    )
+    public static float locationMessageTitleDuration = 1.5F;
+
+    @Switch(
+            name = "Simon says",
+            category = "Dungeons",
+            subcategory = "Locational Messages"
+    )
+    public static boolean locationsMessageSimonSays = false;
+
+    @Switch(
+            name = "Early enter 2",
+            category = "Dungeons",
+            subcategory = "Locational Messages"
+    )
+    public static boolean locationsMessageEarlyEnter2 = false;
+
+    @Switch(
+            name = "Safe spot 2",
+            category = "Dungeons",
+            subcategory = "Locational Messages"
+    )
+    public static boolean locationsMessageSafeSpot2 = false;
+
+    @Switch(
+            name = "Early enter 3",
+            category = "Dungeons",
+            subcategory = "Locational Messages"
+    )
+    public static boolean locationsMessageEarlyEnter3 = false;
+
+    @Switch(
+            name = "Safe spot 3",
+            category = "Dungeons",
+            subcategory = "Locational Messages"
+    )
+    public static boolean locationsMessageSafeSpot3;
+
+    @Switch(
+            name = "Core",
+            category = "Dungeons",
+            subcategory = "Locational Messages"
+    )
+    public static boolean locationsMessageCore;
+
+    @Switch(
+            name = "Tunnel",
+            category = "Dungeons",
+            subcategory = "Locational Messages"
+    )
+    public static boolean locationsMessageTunnel;
+
+    @Switch(
+            name = "Mid",
+            category = "Dungeons",
+            subcategory = "Locational Messages"
+    )
+    public static boolean locationsMessageMid;
+
+    @Switch(
             name = "Relic timer",
             description = "Timer for when relics will spawn",
             category = "Dungeons",
@@ -274,67 +413,6 @@ public class ModConfig extends Config {
             subcategory = "Relics"
     )
     public static int cauldronHighlight = 0;
-
-    //    Refills
-    @Dropdown(
-            name = "Auto pearl refill",
-            description = "Automatically refills pearls from your sacks to inv",
-            category = "Dungeons",
-            subcategory = "Refills",
-            options = {"Don't", "On Threshold", "On Dungeon Start"},
-            size = OptionSize.DUAL
-    )
-    public static int pearlRefill = 0;
-
-    @Slider(
-            name = "Auto pearl refill threshold",
-            category = "Dungeons",
-            subcategory = "Refills",
-            min = 1,
-            max = 15,
-            step = 1
-    )
-    public static int pearlRefillThreshold = 8;
-
-    @Dropdown(
-            name = "Auto jerry refill",
-            description = "Automatically refills pearls from your sacks to inv",
-            category = "Dungeons",
-            subcategory = "Refills",
-            options = {"Don't", "On Threshold", "On Dungeon Start"},
-            size = OptionSize.DUAL
-    )
-    public static int jerryRefill = 0;
-
-    @Slider(
-            name = "Auto jerry refill threshold",
-            category = "Dungeons",
-            subcategory = "Refills",
-            min = 1,
-            max = 63,
-            step = 1
-    )
-    public static int jerryRefillThreshold = 16;
-
-    @Dropdown(
-            name = "Auto superboom refill",
-            description = "Automatically refills pearls from your sacks to inv",
-            category = "Dungeons",
-            subcategory = "Refills",
-            options = {"Don't", "On Threshold", "On Dungeon Start"},
-            size = OptionSize.DUAL
-    )
-    public static int superboomRefill = 0;
-
-    @Slider(
-            name = "Auto superboom refill threshold",
-            category = "Dungeons",
-            subcategory = "Refills",
-            min = 1,
-            max = 63,
-            step = 1
-    )
-    public static int superboomRefillThreshold = 16;
 
     //    HUD
     @Switch(

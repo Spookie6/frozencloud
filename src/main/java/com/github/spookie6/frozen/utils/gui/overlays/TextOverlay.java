@@ -59,13 +59,13 @@ public class TextOverlay extends Overlay {
                 String right = parts.length > 1 ? parts[1] : "";
                 int rightWidth = mc.fontRendererObj.getStringWidth(right);
                 mc.fontRendererObj.drawString(left, padding, padding + (i * (mc.fontRendererObj.FONT_HEIGHT + 1)), color.getRGB(), shadow);
-                if (this.configName.equals("split")) {
-                    Set<Integer> listOfRight2Ints = Arrays.stream(lines).map(x -> mc.fontRendererObj.getStringWidth(x.split("#")[2])).collect(Collectors.toSet());
-                    int maxRight2Width = Collections.max(listOfRight2Ints);
+                if (this.configName.equals("splits")) {
+                    int maxRight2Width = mc.fontRendererObj.getStringWidth("[10m 00.00s]");
                     String right1 = right.split(delimiter)[0];
-                    String right2 = right1.split(delimiter)[1];
-                    mc.fontRendererObj.drawString(right2, dimensions.width - padding - mc.fontRendererObj.getStringWidth(right2), padding + (i * (mc.fontRendererObj.FONT_HEIGHT + 1)), color.getRGB(), shadow);
-                    mc.fontRendererObj.drawString(right1, dimensions.width - padding - mc.fontRendererObj.getStringWidth(right1) - maxRight2Width - 2, padding + (i * (mc.fontRendererObj.FONT_HEIGHT + 1)), color.getRGB(), shadow);
+                    String right2 = right.split(delimiter)[1];
+                    int maxWidth = mc.fontRendererObj.getStringWidth("Blood Clear 10m 00.00s [10m 00.00s]") + this.extraWidth.get();
+                    mc.fontRendererObj.drawString(right2, maxWidth - padding - mc.fontRendererObj.getStringWidth(right2), padding + (i * (mc.fontRendererObj.FONT_HEIGHT + 1)), color.getRGB(), shadow);
+                    mc.fontRendererObj.drawString(right1, maxWidth - padding - mc.fontRendererObj.getStringWidth(right1) - maxRight2Width - mc.fontRendererObj.getStringWidth(" "), padding + (i * (mc.fontRendererObj.FONT_HEIGHT + 1)), color.getRGB(), shadow);
                 } else {
                     mc.fontRendererObj.drawString(right, dimensions.width - padding - rightWidth, padding + (i * (mc.fontRendererObj.FONT_HEIGHT + 1)), color.getRGB(), shadow);
                 }

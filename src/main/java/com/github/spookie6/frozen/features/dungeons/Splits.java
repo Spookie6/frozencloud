@@ -11,7 +11,7 @@ import java.util.List;
 
 public class Splits {
     private static List<String> EXAMPLE_LINES = new ArrayList<String>() {{
-        add("§4Blood Open§r#§a0.00s§r#§8[§70.00s§r§8]§r");
+        add("§4Blood Open§r#§a10m 00.00s§r#§8[§710m 00.00s§r§8]§r");
         add("§cBlood Clear§r#§a0.00s§r#§8[§70.00s§r§8]§r");
         add("§dPortal§r#§a0.00s§r#§8[§70.00s§r§8]§r");
         add("§9Boss Entry§r#§a0.00s§r#§8[§70.00s§r§8]§r");

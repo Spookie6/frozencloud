@@ -108,7 +108,8 @@ public class Frozen {
                 new TerminalTitles(),
                 new LegacyAxes(),
                 new Relics(),
-                new Dragons()
+                new Dragons(),
+                new LocationalMessage()
         );
     }
 
