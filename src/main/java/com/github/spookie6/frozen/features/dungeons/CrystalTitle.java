@@ -25,7 +25,7 @@ public class CrystalTitle {
                         () -> ModConfig.crystalTitle,
                         (val) -> ModConfig.crystalTitle = val
                 ),
-                "Energy crystal spawn ticks",
+                "Energy crystal title",
                 () -> "Place Crystal!",
                 () -> pickedUp > -1,
                 "Place Crystal!"

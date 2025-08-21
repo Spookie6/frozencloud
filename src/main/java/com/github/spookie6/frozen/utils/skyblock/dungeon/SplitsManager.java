@@ -73,7 +73,7 @@ public class SplitsManager {
                 currentSplit = Split.Unknown;
                 return;
             }
-            if (ModConfig.sendSplits) ChatUtils.sendModInfo(currentSplit.name + " &7took " + getFormattedSplitTime(currentSplit));
+            if (ModConfig.sendSplits) ChatUtils.sendModInfo(currentSplit.name + " &7took " + getFormattedSplitTime(currentSplit).replace("#", " "));
 
             // Set new current split
             List<Split> remaining = splits.keySet().stream()
@@ -142,7 +142,7 @@ public class SplitsManager {
 
     public void sendAllSplitsToChat() {
         for (Split split : splits.keySet()) {
-            ChatUtils.sendModInfo(split.name + " &7took " + getFormattedSplitTime(split));
+            ChatUtils.sendModInfo(split.name + " &7took " + getFormattedSplitTime(split).replace("#", " "));
         }
     }
 

@@ -108,15 +108,6 @@ public class PartyUtils {
         inParty = size >0;
     }
 
-//    DEBUG OVERLAY
-//    @Subscribe
-//    public void onHudRender(HudRenderEvent event) {
-//        NanoVGHelper.INSTANCE.setupAndDraw((vg) -> {
-//                NanoVGHelper.INSTANCE.drawText(vg, "Party: (" + String.valueOf(size) + ")", 10, 200, -1, 26f, Fonts.REGULAR);
-//                NanoVGHelper.INSTANCE.drawText(vg, String.join(", ", members.keySet()) , 10, 225, -1, 26f, Fonts.REGULAR);
-//        });
-//    }
-
     public static void addMember(String user, String rank) {
         members.put(user, rank);
 

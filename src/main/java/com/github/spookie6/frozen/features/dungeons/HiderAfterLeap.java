@@ -24,6 +24,7 @@ public class HiderAfterLeap {
     @SubscribeEvent
     public void onRenderPlayer(RenderPlayerEvent.Pre e) {
         if (hiddenTill == -1) return;
+        if (LocationUtils.currentDungeon.getDungeonPlayers().stream().filter(x -> x.username.equals(((EntityPlayer) e.entity).getDisplayNameString())).findAny().orElse(null) == null) return;
         if (e.entityPlayer.equals(mc.thePlayer)) return;
 
         long remaining = hiddenTill - System.currentTimeMillis();
@@ -39,6 +40,7 @@ public class HiderAfterLeap {
     public void onRenderLiving(RenderLivingEvent.Pre event) {
         if (hiddenTill == -1) return;
         if (!(event.entity instanceof EntityPlayer)) return;
+        if (LocationUtils.currentDungeon.getDungeonPlayers().stream().filter(x -> x.username.equals(((EntityPlayer) event.entity).getDisplayNameString())).findAny().orElse(null) == null) return;
         if (event.entity.equals(mc.thePlayer)) return;
 
         long remaining = hiddenTill - System.currentTimeMillis();

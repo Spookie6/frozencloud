@@ -2,6 +2,7 @@ package com.github.spookie6.frozen.utils.render;
 
 import cc.polyfrost.oneconfig.config.core.OneColor;
 import com.github.spookie6.frozen.mixin.AccessorGuiContainer;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
@@ -10,6 +11,7 @@ import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
@@ -183,5 +185,43 @@ public class GuiRenderer {
                 cx + dx * scale,
                 cy + dy * scale
         };
+    }
+
+    public static void drawTintedOverlay(ResourceLocation texture, int x, int y, OneColor color, float alpha) {
+        GlStateManager.pushMatrix();
+        GlStateManager.disableLighting();
+        GlStateManager.enableDepth();
+        GlStateManager.enableBlend();
+        GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+
+        mc.getTextureManager().bindTexture(texture);
+
+        GlStateManager.color(
+                color.getRed() / 255f,
+                color.getGreen() / 255f,
+                color.getBlue() / 255f,
+                alpha
+        );
+
+        Gui.drawModalRectWithCustomSizedTexture(x, y, 0, 0, 16, 16, 16, 16);
+
+        GlStateManager.disableBlend();
+        GlStateManager.enableLighting();
+        GlStateManager.popMatrix();
+    }
+
+    public enum RenderShape {
+        CIRCLE(new ResourceLocation("frozen", "textures/gui/rarity.png")),
+        SQUARE(new ResourceLocation("frozen", "textures/gui/rarity2.png")),
+        FADE_IN(new ResourceLocation("frozen", "textures/gui/rarity3.png")),
+        OUTLINED(new ResourceLocation("frozen", "textures/gui/rarity4.png"));
+
+        private final ResourceLocation tex;
+
+        RenderShape(ResourceLocation tex) {
+            this.tex = tex;
+        }
+
+        public ResourceLocation getTex() {return this.tex;}
     }
 }

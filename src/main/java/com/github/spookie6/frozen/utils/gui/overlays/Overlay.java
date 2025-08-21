@@ -25,7 +25,7 @@ public abstract class Overlay {
     protected Color color;
     protected boolean shadow = false;
 
-    protected double scale = 1.0;
+    protected double scale = 1.0d;
     protected final double MAX_SCALE = 5;
     protected final double MIN_SCALE = .25;
 
@@ -36,6 +36,7 @@ public abstract class Overlay {
     public void setEditMode(boolean bool) {
         this.inEditMode = bool;
         this.updateDimensions();
+        this.updateDynamicPosition();
     }
 
     public abstract void render(Minecraft mc);
@@ -52,6 +53,8 @@ public abstract class Overlay {
         config = OverlayConfigManager.getOverlayConfig(configName);
         this.x = config.x;
         this.y = config.y;
+        this.centerX = config.centerX;
+        this.centerY = config.centerY;
         this.color = new Color(config.color);
         this.scale = config.scale;
         this.shadow = config.shadow;
@@ -72,8 +75,7 @@ public abstract class Overlay {
         this.x = x;
         this.y = y;
 
-        this.updateDynamicPosition();
-
+        updateDynamicPosition();
         updateConfig();
     }
 
@@ -126,6 +128,8 @@ public abstract class Overlay {
     public void reset() {
         this.x = 0;
         this.y = 0;
+        this.centerX = false;
+        this.centerY = false;
         this.scale = 1;
         this.color = new Color(255, 255, 255);
     }

@@ -7,8 +7,6 @@ public abstract class StringUtils {
 
     private static final String[] profile_types = {"normal", "ironman", "stranded"};
 
-    public static HashMap<String, String> Colors = new HashMap<String, String>();
-
     public static String removeUnicode(String str) {
         Pattern pattern = Pattern.compile("[^\\u0000-\\u007F]", Pattern.CASE_INSENSITIVE);
         Matcher matcher = pattern.matcher(str);
@@ -16,9 +14,7 @@ public abstract class StringUtils {
     }
 
     public static String removeFormatting(String str) {
-        Pattern pattern = Pattern.compile("§.", Pattern.CASE_INSENSITIVE);
-        Matcher matcher = pattern.matcher(str);
-        return matcher.replaceAll("");
+        return str.replaceAll("§.", "");
     }
 
     public static byte getProfileType(String profile_type_name) {

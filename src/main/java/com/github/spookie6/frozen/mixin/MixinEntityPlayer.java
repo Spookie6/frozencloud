@@ -28,7 +28,7 @@ public abstract class MixinEntityPlayer {
     }
 
     @Inject(method = "getItemInUseCount", at = @At("RETURN"), cancellable = true)
-    public void onGetItemInUseCount(CallbackInfoReturnable<Integer> cir) {
+    public void frozen$onGetItemInUseCount(CallbackInfoReturnable<Integer> cir) {
         if (ModConfig.legacyAxes && frozen$isLegacyBlockedAxe(getHeldItem())) {
             cir.setReturnValue(0);
         }

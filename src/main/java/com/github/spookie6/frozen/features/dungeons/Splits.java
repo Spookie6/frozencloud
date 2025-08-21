@@ -55,5 +55,24 @@ public class Splits {
                 },
                 "0.00"
         ));
+
+        OverlayManager.register(new TextOverlay(
+                new BooleanConfigBinding(
+                        () -> ModConfig.stormSplit,
+                        (val) -> ModConfig.stormSplit = val
+                ),
+                "Storm split",
+                () -> {
+                    long time = SplitsManager.getSplitTime(SplitsManager.Split.Storm)[0];
+                    return String.format("%.2f", (float) time / 1000);
+                },
+                () -> {
+                    if (SplitsManager.currentSplit.equals(SplitsManager.Split.Storm)) {
+                        return (DungeonUtils.getCurrentDungeonPlayer() != null && DungeonUtils.getCurrentDungeonPlayer().clazz.equals(DungeonEnums.Class.MAGE));
+                    }
+                    return false;
+                },
+                "0.00"
+        ));
     }
 }

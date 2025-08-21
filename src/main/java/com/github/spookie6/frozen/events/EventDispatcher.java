@@ -6,7 +6,6 @@ import com.github.spookie6.frozen.utils.skyblock.dungeon.DungeonUtils;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.*;
 import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.IChatComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
@@ -19,17 +18,6 @@ public class EventDispatcher {
         if (packet instanceof S0DPacketCollectItem) MinecraftForge.EVENT_BUS.post(new CollectItemEvent((S0DPacketCollectItem) packet));
         if (packet instanceof S38PacketPlayerListItem) MinecraftForge.EVENT_BUS.post(new TablistUpdateEvent((S38PacketPlayerListItem) packet));
         if (packet instanceof S02PacketChat) MinecraftForge.EVENT_BUS.post(new ChatPacketEvent(((S02PacketChat) packet).getChatComponent().getUnformattedText(), (S02PacketChat) packet));
-
-        if (packet instanceof S45PacketTitle) {
-            S45PacketTitle titlePacket = (S45PacketTitle) packet;
-            S45PacketTitle.Type type = titlePacket.getType();
-            IChatComponent component = titlePacket.getMessage();
-
-            if (component != null) {
-                TitleEvent.Incoming event = new TitleEvent.Incoming(type, component);
-                MinecraftForge.EVENT_BUS.post(event);
-            }
-        }
 
 //        M7 Dragons
         if (packet instanceof S2APacketParticles) {

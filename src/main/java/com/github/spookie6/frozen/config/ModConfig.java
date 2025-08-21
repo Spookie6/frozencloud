@@ -11,6 +11,7 @@ import cc.polyfrost.oneconfig.config.data.ModType;
 import cc.polyfrost.oneconfig.config.data.OptionSize;
 import cc.polyfrost.oneconfig.libs.universal.UKeyboard;
 import com.github.spookie6.frozen.Frozen;
+import com.github.spookie6.frozen.utils.ApiUtils;
 import org.lwjgl.input.Keyboard;
 
 import static com.github.spookie6.frozen.Frozen.mc;
@@ -30,6 +31,7 @@ public class ModConfig extends Config {
         wardrobeAutoClose = false;
 
         addListener("legacyAxes", mc::refreshResources);
+        addListener("apiKey", () -> ApiUtils.apiKey = apiKey);
 
         addDependency("wardrobePreventUnequip", "wardrobePackets");
         addDependency("wdKeyOne", "wardrobePackets");
@@ -50,20 +52,24 @@ public class ModConfig extends Config {
     )
     public static OneKeyBind moveOverlaysKeybind = new OneKeyBind(UKeyboard.KEY_RCONTROL);
 
+    @Text(
+            name = "Api Key",
+            size = OptionSize.DUAL
+    )
+    public static String apiKey = "";
+
     // Debug control
     @Switch(
-            name = "Debug messages"
+            name = "Debug messages",
+            subcategory = "Debugging"
     )
     public static boolean debugMessages = false;
 
     @Switch(
-            name = "Debug overlays"
+            name = "Debug overlays",
+            subcategory = "Debugging"
     )
     public static boolean debugOverlays = false;
-
-//    @Button(
-//            name = "Open Locational Messages", text = "Open GUI!", description = "Opens a gui where you can change your locational messages")
-//    Runnable runnable = () -> Frozen.guiLocationalMessagesList.open();
 
     //   PLAYER
     @Switch(
@@ -439,6 +445,12 @@ public class ModConfig extends Config {
     )
     public static boolean reaperTimer = false;
 
+    @Switch(
+            name = "Armor HUD",
+            category = "HUD"
+    )
+    public static boolean armorHud = false;
+
     //    INVINCIBILITY
     @Switch(
             name = "Mask timers",
@@ -534,6 +546,13 @@ public class ModConfig extends Config {
     public static boolean bloodSplit = false;
 
     @Switch(
+            name = "Storm timer",
+            category = "HUD",
+            subcategory = "Splits"
+    )
+    public static boolean stormSplit = false;
+
+    @Switch(
             name = "Show minutes",
             description = "Format like \"1m 20s\" instead of \"80s\"",
             category = "HUD",
@@ -619,6 +638,39 @@ public class ModConfig extends Config {
             category = "Gui"
     )
     public static boolean tradesPacket = false;
+
+    @Switch(
+            name = "Rarity highlight",
+            description = "Adds a rarity background to items.",
+            category = "Gui",
+            subcategory = "Rarity highlight"
+    )
+    public static boolean rarityHighlight = false;
+
+    @Switch(
+            name = "Show rarity in hotbar",
+            category = "Gui",
+            subcategory = "Rarity highlight"
+    )
+    public static boolean rarityShowInHotbar = false;
+
+    @Dropdown(
+            name = "Type",
+            category = "Gui",
+            subcategory = "Rarity highlight",
+            options = {"Circle", "Square", "Outline", "Faded"}
+    )
+    public static int rarityHighlightType = 0;
+
+    @Slider(
+            name = "Opacity",
+            category = "Gui",
+            subcategory = "Rarity highlight",
+            min = 0,
+            max = 100,
+            step = 1
+    )
+    public static int rarityHighlightOpacity = 80;
 
     @Switch(
             name = "Enable wardrobe keybinds",

@@ -7,6 +7,8 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import java.util.UUID;
+
 import static com.github.spookie6.frozen.Frozen.mc;
 
 public class PlayerRenderer {
@@ -14,7 +16,8 @@ public class PlayerRenderer {
     @SideOnly(Side.CLIENT)
     @SubscribeEvent
     public void onEntityRenderPre(RenderPlayerEvent.Pre e) {
-        if (!ModConfig.customPlayerScale || e.entity != mc.thePlayer) return;
+        if (e.entity != mc.thePlayer) return;
+        if (!ModConfig.customPlayerScale) return;
         GlStateManager.pushMatrix();
 
         double x = e.x;
@@ -30,7 +33,8 @@ public class PlayerRenderer {
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
     public void onEntityRenderPost(RenderPlayerEvent.Post e) {
-        if (!ModConfig.customPlayerScale || e.entity != mc.thePlayer) return;
+        if (e.entity != mc.thePlayer) return;
+        if (!ModConfig.customPlayerScale) return;
         GlStateManager.popMatrix();
     }
 }

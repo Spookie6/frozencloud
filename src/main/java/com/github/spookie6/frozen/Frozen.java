@@ -4,6 +4,7 @@ import com.github.spookie6.frozen.commands.MainCommand;
 import com.github.spookie6.frozen.config.ModConfig;
 import com.github.spookie6.frozen.events.EventDispatcher;
 import com.github.spookie6.frozen.features.dungeons.*;
+import com.github.spookie6.frozen.features.hud.ArmorHud;
 import com.github.spookie6.frozen.features.hud.MaskTimers;
 import com.github.spookie6.frozen.features.hud.ReaperTimer;
 import com.github.spookie6.frozen.features.hud.Speed;
@@ -109,7 +110,8 @@ public class Frozen {
                 new LegacyAxes(),
                 new Relics(),
                 new Dragons(),
-                new LocationalMessage()
+                new LocationalMessage(),
+                new ArmorHud()
         );
     }
 

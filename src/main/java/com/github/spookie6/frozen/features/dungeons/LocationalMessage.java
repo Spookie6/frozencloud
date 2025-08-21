@@ -13,8 +13,7 @@ import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -38,8 +37,25 @@ public class LocationalMessage {
                 ),
                 "Location messages",
                 this::getText,
-                () -> DungeonUtils.getF7Phase().equals(DungeonEnums.M7Phases.P3),
+                () -> DungeonUtils.getFloor().isFloor(7) && DungeonUtils.getInBoss(),
                 "Healer is at Mid!"
+        ));
+
+        OverlayManager.register(new TextOverlay(
+                new BooleanConfigBinding(
+                        () -> ModConfig.debugOverlays,
+                        (val) -> ModConfig.debugOverlays = val
+                ),
+                "Locational msgs debug overlay",
+                () -> {
+                    List<String> res = new ArrayList<>();
+                    for (DungeonEnums.LocationEnums loc : this.messageSent.keySet()) {
+                        res.add(loc.message + ": " + messageSent.get(loc));
+                    }
+                    return String.join("\n", res);
+                },
+                () -> true,
+                "Loc debug overlay"
         ));
 
         for (DungeonEnums.LocationEnums loc : DungeonEnums.LocationEnums.values()) {
@@ -49,7 +65,7 @@ public class LocationalMessage {
 
     private String getText() {
         if (time <= 0) return "";
-        long remaining = time + (long) ModConfig.locationMessageTitleDuration * 1000 - System.currentTimeMillis();
+        long remaining = time + ((long) (ModConfig.locationMessageTitleDuration * 1000)) - System.currentTimeMillis();
         if (remaining <= 0) {
             this.time = -1;
             this.action = null;
@@ -64,18 +80,23 @@ public class LocationalMessage {
 
     @SubscribeEvent
     public void onChatPacket(ChatPacketEvent e) {
-        if (!DungeonUtils.getF7Phase().equals(DungeonEnums.M7Phases.P3)) return;
+        if (!DungeonUtils.getInBoss() && !DungeonUtils.getFloor().isFloor(7)) return;
+        if (!ModConfig.locationalMessages) return;
 
         Matcher matcher = LOC_MSG_PATTERN.matcher(e.message);
 
         if (matcher.find()) {
-            DungeonEnums.DungeonPlayer player = DungeonUtils.getDungeonPlayers().stream().filter(x -> x.username.equals(matcher.group(1))).findFirst().orElse(null);
-            if (player != null) {
-                this.time = System.currentTimeMillis();
-                this.action = matcher.group(2);
-                this.loc = matcher.group(3);
-                this.clazz = player.clazz;
-            }
+            DungeonEnums.DungeonPlayer player = DungeonUtils.getDungeonPlayers().stream().filter(x -> x.username.equalsIgnoreCase(matcher.group(1))).findFirst().orElse(null);
+            DungeonEnums.LocationEnums loc = DungeonEnums.LocationEnums.getLocationEnumByMessage(matcher.group(2) + " " + matcher.group(3));
+
+            if (loc == null || player == null || !loc.configSupplier.get()) return;
+
+            if (!player.clazz.equals(loc.clazz) && !(loc.equals(DungeonEnums.LocationEnums.SAFE_SPOT_3) && player.clazz.equals(DungeonEnums.Class.BERSERK))) return;
+
+            this.time = System.currentTimeMillis();
+            this.action = matcher.group(2);
+            this.loc = matcher.group(3);
+            this.clazz = player.clazz;
         }
 
         if (e.message.equals("[BOSS] Goldor: Who dares trespass into my domain?")) {
@@ -92,14 +113,16 @@ public class LocationalMessage {
 
     @SubscribeEvent
     public void onTick(TickEvent.ClientTickEvent e) {
-        if (!e.phase.equals(TickEvent.Phase.END)) return;
-        if (!DungeonUtils.getF7Phase().equals(DungeonEnums.M7Phases.P3)) return;
+        if (!e.phase.equals(TickEvent.Phase.END) || !ModConfig.locationalMessages || mc.theWorld == null || mc.thePlayer == null) return;
+        if (!DungeonUtils.getInBoss() && !DungeonUtils.getFloor().isFloor(7)) return;
 
         BlockPos playerPos = mc.thePlayer.getPosition();
 
         for (DungeonEnums.LocationEnums loc: DungeonEnums.LocationEnums.values()) {
-            if (loc.isAtLocation(playerPos) && loc.clazz.equals(DungeonUtils.getCurrentDungeonPlayer().clazz) && !this.messageSent.get(loc)) {
-                ChatUtils.sendCommand("pc " + loc.message, true);
+            if (loc.isAtLocation(playerPos) && !this.messageSent.get(loc) && loc.configSupplier.get()) {
+                DungeonEnums.Class clazz = DungeonUtils.getCurrentDungeonPlayer().clazz;
+                if (!clazz.equals(loc.clazz) && !(loc.equals(DungeonEnums.LocationEnums.SAFE_SPOT_3) && clazz.equals(DungeonEnums.Class.BERSERK))) return;
+                ChatUtils.sendCommand("pc " + loc.message, false);
                 this.messageSent.put(loc, true);
             }
         }

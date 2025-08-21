@@ -29,7 +29,7 @@ public class WarpCooldown  {
 
     @SubscribeEvent(receiveCanceled = true)
     public void onChatPacket(ChatPacketEvent e) {
-        if (e.message.matches("^-*\\n\\[[^]]+] (\\w+) entered (?:MM )?\\w+ Catacombs, Floor (\\w+)!\\n-*$") && lastWarp + 30000 < System.currentTimeMillis()) {
+        if (e.message.matches("^-*\\n\\[[^]]+] (\\w+) entered (?:MM )?\\w+ Catacombs, (Floor (\\w+)|Entrance)!\\n-*$") && lastWarp + 30000 < System.currentTimeMillis()) {
             lastWarp = System.currentTimeMillis();
         }
     }

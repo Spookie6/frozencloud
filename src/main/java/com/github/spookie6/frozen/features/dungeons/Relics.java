@@ -13,8 +13,10 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import com.github.spookie6.frozen.events.impl.ChatPacketEvent;
 import com.github.spookie6.frozen.events.impl.ServerTickEvent;
@@ -23,10 +25,10 @@ import com.github.spookie6.frozen.utils.render.Renderer;
 import com.github.spookie6.frozen.utils.skyblock.dungeon.DungeonUtils;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
-import java.util.Collections;
-import java.util.HashMap;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import static com.github.spookie6.frozen.Frozen.mc;
 
@@ -51,8 +53,8 @@ public class Relics {
                 ),
                 "Relic Timer",
                 this::getText,
-                () -> true,
-                "2.1"
+                () -> inP5,
+                "2.10"
         ));
         OverlayManager.register(new TextOverlay(
                 new BooleanConfigBinding(
@@ -98,30 +100,17 @@ public class Relics {
     public void onPlayerInteract(PlayerInteractEvent event) {
         if (event.world == null || event.entityPlayer == null) return;
         if (!inP5 || currentRelic == DungeonEnums.Relic.NONE) return;
-        if (!event.action.equals(PlayerInteractEvent.Action.LEFT_CLICK_BLOCK) && !event.action.equals(PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK)) return;
+        if (!event.action.equals(PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK)) return;
 
-        String itemID = ItemUtils.getSkyBlockID(ItemUtils.getHeldItem());
-        if (itemID == null || !itemID.contains("RELIC") ||  mc.thePlayer.inventory.getStackInSlot(8) != ItemUtils.getHeldItem()) return;
+        onCauldronInteract(event.pos, event);
+    }
 
-        BlockPos pos = event.pos;
-        Block block = event.world.getBlockState(pos).getBlock();
+    @SubscribeEvent
+    public void onPlayerBreaking(PlayerEvent.BreakSpeed event) {
+        if (mc.theWorld == null || event.entityPlayer == null) return;
+        if (!inP5 || currentRelic == DungeonEnums.Relic.NONE) return;
 
-        if (block != Blocks.cauldron && block != Blocks.anvil) return;
-
-        if (pos.equals(currentRelic.cauldronPos) || pos.equals(currentRelic.cauldronPos.down())) {
-            placed = System.currentTimeMillis();
-            if (ModConfig.sendRelicTimes) {
-                relicTimes.put(currentRelic, System.currentTimeMillis() - p5Start);
-                ChatUtils.sendModInfo(String.format("&%s%s Relic &7placed in &a%.2fs.", currentRelic.colorCode, currentRelic.name, (float) (placed - pickedUp) / 1000));
-                ChatUtils.sendModInfo(String.format("&7Relic spawned in &a%.2fs.", (float) (relicsSpawned - p5Start) / 1000));
-                ChatUtils.sendModInfo(String.format("&7Relic picked up in &a%.2fs.", (float) (pickedUp - relicsSpawned) / 1000));
-                ChatUtils.sendModInfo(String.format("&7Relic placed &a%.2fs &7into P5.", (float) (placed - p5Start) / 1000));
-            }
-            currentRelic = DungeonEnums.Relic.NONE;
-        } else if (ModConfig.relicsBlockIncorrect) {
-            event.setCanceled(true);
-            ChatUtils.sendModInfo("Wrong Cauldron! dw tho, i gotchu pookie <3");
-        }
+        onCauldronInteract(event.pos, event);
     }
 
     @SubscribeEvent
@@ -159,6 +148,12 @@ public class Relics {
 
         if (relicTimes.size() == 5 && placed > 0 && ModConfig.sendRelicTimes) {
             sendRelicMessages();
+            ticks = -1;
+            pickedUp = -1;
+            relicsSpawned = -1;
+            p5Start = -1;
+            inP5 = false;
+            currentRelic = DungeonEnums.Relic.NONE;
             relicTimes.clear();
         }
     }
@@ -168,13 +163,15 @@ public class Relics {
         ticks = -1;
         pickedUp = -1;
         p5Start = -1;
+        relicsSpawned = -1;
         inP5 = false;
         currentRelic = DungeonEnums.Relic.NONE;
         relicTimes.clear();
     }
 
     private void sendRelicMessages() {
-        for (DungeonEnums.Relic teammateRelic : relicTimes.keySet()) {
+        Map<DungeonEnums.Relic, Long> sorted = this.relicTimes.entrySet().stream().sorted(Map.Entry.comparingByValue()).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (oldValue, newValue) -> oldValue, LinkedHashMap::new));
+        for (DungeonEnums.Relic teammateRelic : sorted.keySet()) {
             ChatUtils.sendModInfo(String.format("&%s%s &7Relic placed in &a%.2fs.", teammateRelic.colorCode, teammateRelic.name, (float) relicTimes.get(teammateRelic) / 1000));
         }
     }
@@ -188,6 +185,30 @@ public class Relics {
         }
         if (ModConfig.cauldronHighlight == 2) {
             Renderer.drawFilledBlock(currentRelic.cauldronPos, currentRelic.color, false);
+        }
+    }
+
+    public void onCauldronInteract(BlockPos pos, Event event) {
+        String itemID = ItemUtils.getSkyBlockID(ItemUtils.getHeldItem());
+        if (itemID == null || !itemID.contains("RELIC") ||  mc.thePlayer.inventory.getStackInSlot(8) != ItemUtils.getHeldItem()) return;
+
+        Block block = mc.theWorld.getBlockState(pos).getBlock();
+
+        if (block != Blocks.cauldron && block != Blocks.anvil) return;
+
+        if (pos.equals(currentRelic.cauldronPos) || pos.equals(currentRelic.cauldronPos.down())) {
+            placed = System.currentTimeMillis();
+            if (ModConfig.sendRelicTimes) {
+                relicTimes.put(currentRelic, System.currentTimeMillis() - p5Start);
+                ChatUtils.sendModInfo(String.format("&%s%s Relic &7placed in &a%.2fs.", currentRelic.colorCode, currentRelic.name, (float) (placed - pickedUp) / 1000));
+                ChatUtils.sendModInfo(String.format("&7Relic spawned in &a%.2fs.", (float) (relicsSpawned - p5Start) / 1000));
+                ChatUtils.sendModInfo(String.format("&7Relic picked up in &a%.2fs.", (float) (pickedUp - relicsSpawned) / 1000));
+                ChatUtils.sendModInfo(String.format("&7Relic placed &a%.2fs &7into P5.", (float) (placed - p5Start) / 1000));
+            }
+            currentRelic = DungeonEnums.Relic.NONE;
+        } else if (ModConfig.relicsBlockIncorrect) {
+            event.setCanceled(true);
+            ChatUtils.sendModInfo("Wrong Cauldron! dw tho, i gotchu pookie <3");
         }
     }
 }

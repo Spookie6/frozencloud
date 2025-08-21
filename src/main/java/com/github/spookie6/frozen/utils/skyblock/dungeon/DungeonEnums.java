@@ -1,6 +1,7 @@
 package com.github.spookie6.frozen.utils.skyblock.dungeon;
 
 import cc.polyfrost.oneconfig.config.core.OneColor;
+import com.github.spookie6.frozen.config.ModConfig;
 import com.github.spookie6.frozen.utils.render.Color;
 import com.github.spookie6.frozen.utils.StringUtils;
 import net.minecraft.entity.player.EntityPlayer;
@@ -8,6 +9,8 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.Vec3;
 
 import java.util.Arrays;
+import java.util.function.Supplier;
+import java.util.regex.Pattern;
 
 public class DungeonEnums {
     public static class DungeonPlayer {
@@ -189,32 +192,40 @@ public class DungeonEnums {
     }
 
     public enum LocationEnums {
-        SIMONSAYS(new BlockPos(108, 120, 94), 2.5, "At SS!", DungeonEnums.Class.HEALER),
-        EARLY_ENTER_2(new BlockPos(55, 109, 130), 2.5, "At Pre Enter 2!", DungeonEnums.Class.ARCHER),
-        SAFE_SPOT_2(new BlockPos(48, 109, 121.988), 2.5, "At 2 Safespot!", DungeonEnums.Class.ARCHER),
-        EARLY_ENTER_3(new BlockPos(1, 109, 104), 2.5, "At Pre Enter 3!", DungeonEnums.Class.HEALER),
-        SAFE_SPOT_3(new BlockPos(18, 121, 97), 2.5, "At 3 Safespot!", DungeonEnums.Class.HEALER),
-        CORE(new BlockPos(54, 115, 50), 2.5, "At Core!", DungeonEnums.Class.MAGE),
-        TUNNEL(new BlockPos(54, 115, 56), 2.5, "Inside Goldor Tunnel!", DungeonEnums.Class.MAGE),
-        MID(new BlockPos(54.5, 65, 76.5), 7.8, "At Mid!", DungeonEnums.Class.HEALER);
+        SIMONSAYS(new BlockPos(108, 120, 94), 4, "At SS!", Pattern.compile("At (SS|Simon *Says)!", Pattern.CASE_INSENSITIVE), Class.HEALER, () -> ModConfig.locationsMessageSimonSays),
+        EARLY_ENTER_2(new BlockPos(56, 109, 131), 2.5, "At Pre Enter 2!", Pattern.compile("At (2 *)*(pre enter|early *enter|EE) *(2 *)*!", Pattern.CASE_INSENSITIVE), Class.ARCHER, () -> ModConfig.locationsMessageEarlyEnter2),
+        SAFE_SPOT_2(new BlockPos(48, 109, 121.988), 2.5, "At 2 Safespot!", Pattern.compile("At (2 *)*Safe *Spot *(2 *)*!", Pattern.CASE_INSENSITIVE), Class.ARCHER, () -> ModConfig.locationsMessageSafeSpot2),
+        EARLY_ENTER_3(new BlockPos(1, 109, 104), 6, "At Pre Enter 3!", Pattern.compile("At (3 *)*(pre enter|early *enter|EE)( *3)*!", Pattern.CASE_INSENSITIVE), Class.HEALER, () -> ModConfig.locationsMessageEarlyEnter3),
+        SAFE_SPOT_3(new BlockPos(18, 121, 93), 4, "At 3 Safespot!", Pattern.compile("At (3 *)*Safe *Spot *(3 *)*!", Pattern.CASE_INSENSITIVE), Class.HEALER, () -> ModConfig.locationsMessageSafeSpot3),
+        CORE(new BlockPos(54, 115, 50), 2.5, "At Core!", Pattern.compile("At Core!", Pattern.CASE_INSENSITIVE), Class.MAGE, () -> ModConfig.locationsMessageCore),
+        TUNNEL(new BlockPos(54, 115, 57), 4, "Inside Tunnel!", Pattern.compile("(Inside|At) (Goldor )*Tunnel!", Pattern.CASE_INSENSITIVE), Class.MAGE, () -> ModConfig.locationsMessageTunnel),
+        MID(new BlockPos(54.5, 65, 76.5), 49, "At Mid!", Pattern.compile("At (Mid|Necron)!", Pattern.CASE_INSENSITIVE), Class.HEALER, () -> ModConfig.locationsMessageMid);
 
-        public BlockPos pos;
-        public double range;
-        public String message;
-        public DungeonEnums.Class clazz;
+        public final BlockPos pos;
+        public final double range;
+        public final String message;
+        public final Pattern pattern;
+        public final Class clazz;
+        public final Supplier<Boolean> configSupplier;
 
-        LocationEnums(BlockPos pos, double range, String message, DungeonEnums.Class clazz) {
+        LocationEnums(BlockPos pos, double range, String message, Pattern pattern, Class clazz, Supplier<Boolean> configSupplier) {
             this.pos = pos;
             this.range = range;
             this.message = message;
+            this.pattern = pattern;
             this.clazz = clazz;
+            this.configSupplier = configSupplier;
         }
 
         public boolean isAtLocation(BlockPos pos) {
             if (this.equals(SAFE_SPOT_2)) {
-                return this.pos.distanceSq(pos.getX(), pos.getY(), pos.getZ()) < 5 && this.pos.getZ() == pos.getZ();
+                return this.pos.distanceSq(pos.getX(), pos.getY(), pos.getZ()) < this.range && pos.getZ() <= 121.990;
             }
-            return this.pos.distanceSq(pos.getX(), pos.getY(), pos.getZ()) < 5;
+            return this.pos.distanceSq(pos.getX(), pos.getY(), pos.getZ()) < this.range;
+        }
+
+        public static LocationEnums getLocationEnumByMessage(String msg) {
+            return Arrays.stream(LocationEnums.values()).filter(x -> x.pattern.matcher(msg).find()).findFirst().orElse(null);
         }
     }
 }

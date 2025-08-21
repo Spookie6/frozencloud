@@ -1,15 +1,12 @@
 package com.github.spookie6.frozen.utils.gui.overlays;
 
+import cc.polyfrost.oneconfig.libs.universal.UChat;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Set;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import static com.github.spookie6.frozen.Frozen.mc;
 import static net.minecraft.client.gui.Gui.drawRect;
@@ -31,16 +28,21 @@ public class TextOverlay extends Overlay {
         this.exampleText = exampleText;
 
         updateDimensions();
+        updateDynamicPosition();
+        updateConfig();
     }
 
     public void render(Minecraft mc) {
-        if (getText().isEmpty()) return;
-        String[] lines = getText().split("\n");
+        String text = getText();
+        if (text.isEmpty()) return;
+        String[] lines = text.split("\n");
 
-        if (!getText().equals(cachedText)) {
-            cachedText = getText();
+        Dimensions newDim = calculateTextDimensions(text);
+        if (!text.equals(cachedText) || !newDim.equals(dimensions)) {
+            cachedText = text;
             updateDimensions();
-            this.updateDynamicPosition();
+            updateDynamicPosition();
+            updateConfig();
         }
 
         GL11.glPushMatrix();
@@ -119,6 +121,11 @@ public class TextOverlay extends Overlay {
         }
 
         return new Dimensions((rightAlign != null && rightAlign.get()) ? maxWidth + (extraWidth == null ? 0 : extraWidth.get()) : maxWidth, totalHeight);
+    }
+
+    @Override
+    public boolean isVisible() {
+        return super.isVisible() && !getText().isEmpty();
     }
 
     public TextOverlay setExtraWidth(IntegerConfigBinding extraWidth) {

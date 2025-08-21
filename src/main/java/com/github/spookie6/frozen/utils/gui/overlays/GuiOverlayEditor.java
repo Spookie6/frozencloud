@@ -29,9 +29,11 @@ public class GuiOverlayEditor extends GuiScreen {
     private int snapLineX = -1;
     private int snapLineY = -1;
 
+    private ToggleSwitch showDisabledToggle;
     private ToggleSwitch showInvisibleToggle;
     private ToggleSwitch snapToggle;
 
+    private boolean showDisabled = false;
     private boolean showinvisible = false;
     private boolean snap = false;
 
@@ -54,11 +56,12 @@ public class GuiOverlayEditor extends GuiScreen {
         this.showTip = true;
 
         int margin = 5;
-        int yBase = height - 50;
+        int yBase = height - 74;
 
         loadConfig();
-        showInvisibleToggle = new ToggleSwitch(margin, yBase, showinvisible, "Show Invisible");
-        snapToggle = new ToggleSwitch(margin, yBase + 24, snap, "Snapping");
+        showDisabledToggle = new ToggleSwitch(margin, yBase, showDisabled, "Show Disabled");
+        showInvisibleToggle = new ToggleSwitch(margin, yBase + 24, showinvisible, "Show Invisible");
+        snapToggle = new ToggleSwitch(margin, yBase + 48, snap, "Snapping");
 
         for (Overlay overlay : OverlayManager.getOverlays()) {
             overlay.setEditMode(true);
@@ -70,9 +73,36 @@ public class GuiOverlayEditor extends GuiScreen {
         drawDefaultBackground();
         this.res = new ScaledResolution(mc);
 
-        if (draggedOverlay != null) {
+        if (draggedOverlay != null && Mouse.isButtonDown(0)) {
+            int newX = mouseX - dragOffsetX;
+            int newY = mouseY - dragOffsetY;
+
+            int screenWidth = res.getScaledWidth();
+            int screenHeight = res.getScaledHeight();
+
+            newX = Math.max(0, Math.min(screenWidth - draggedOverlay.getWidth(), newX));
+            newY = Math.max(0, Math.min(screenHeight - draggedOverlay.getHeight(), newY));
+
+            if (snapToggle.getState()) {
+                newX = snapToOtherOverlays(newX, 1, res);
+                newY = snapToOtherOverlays(newY, 2, res);
+            }
+
+            draggedOverlay.setPosition(newX, newY);
+
             String str = String.format("%sx ; %sy", draggedOverlay.x, draggedOverlay.y);
             fontRendererObj.drawStringWithShadow(str, (float) res.getScaledWidth() / 2 - (float) fontRendererObj.getStringWidth(str) / 2, res.getScaledHeight() - 20, 0xff00ff);
+        }
+
+        if (draggedOverlay != null || getHoveredOverlay(mouseX, mouseY) != null) {
+            Overlay ov = draggedOverlay != null ? draggedOverlay : getHoveredOverlay(mouseX, mouseY);
+
+            assert ov != null;
+            drawHorizontalLine(ov.x, ov.x + ov.getWidth(), ov.y, new Color(255, 255, 255, 255).getRGB());
+            drawHorizontalLine(ov.x, ov.x + ov.getWidth(), ov.y + ov.getHeight(), new Color(255, 255, 255, 255).getRGB());
+
+            drawVerticalLine(ov.x, ov.y, ov.y + ov.getHeight(), new Color(255, 255, 255, 255).getRGB());
+            drawVerticalLine(ov.x + ov.getWidth(), ov.y, ov.y + ov.getHeight(), new Color(255, 255, 255, 255).getRGB());
         }
 
         if (scaledOverlay != null) {
@@ -93,11 +123,12 @@ public class GuiOverlayEditor extends GuiScreen {
         }
 
         for (Overlay overlay : OverlayManager.getOverlays()) {
-            if (overlay.isVisible() || showInvisibleToggle.getState()) {
+            if (overlay.isVisible() || (showInvisibleToggle.getState() && overlay.configOption.get()) || (showDisabledToggle.getState() && !overlay.configOption.get())) {
                 overlay.render(mc);
             }
         }
 
+        showDisabledToggle.draw(mc, partialTicks);
         showInvisibleToggle.draw(mc, partialTicks);
         snapToggle.draw(mc, partialTicks);
 
@@ -138,11 +169,11 @@ public class GuiOverlayEditor extends GuiScreen {
             int scaledMouseX = Mouse.getX() * res.getScaledWidth() / mc.displayWidth;
             int scaledMouseY = res.getScaledHeight() - Mouse.getY() * res.getScaledHeight() / mc.displayHeight - 1;
 
-            Overlay hoveredOverlay = getHoveredOverlay(scaledMouseX, scaledMouseY);
-            if (hoveredOverlay == null) return;
-            if (keyCode == Keyboard.KEY_1) hoveredOverlay.centerX = !hoveredOverlay.centerX;
-            if (keyCode == Keyboard.KEY_2) hoveredOverlay.centerY = !hoveredOverlay.centerY;
-            hoveredOverlay.updateDynamicPosition();
+            Overlay target = this.draggedOverlay == null ? getHoveredOverlay(scaledMouseX, scaledMouseY) : this.draggedOverlay;
+            if (target == null) return;
+            if (keyCode == Keyboard.KEY_1) target.centerX = !target.centerX;
+            if (keyCode == Keyboard.KEY_2) target.centerY = !target.centerY;
+            target.updateDynamicPosition();
         }
     }
 
@@ -162,6 +193,11 @@ public class GuiOverlayEditor extends GuiScreen {
                     overlayConfigGui = null;
                 }
                 return;
+            }
+
+            if (showDisabledToggle.isMouseOver(mouseX, mouseY)) {
+                showDisabledToggle.toggle();
+                showDisabled = showDisabledToggle.getState();
             }
 
             if (showInvisibleToggle.isMouseOver(mouseX, mouseY)) {
@@ -205,9 +241,9 @@ public class GuiOverlayEditor extends GuiScreen {
             return;
         }
 
-        // Decide which overlay we are resizing
-        Overlay target = getHoveredOverlay(mouseX, mouseY);
+        Overlay target = this.draggedOverlay != null ? this.draggedOverlay : getHoveredOverlay(mouseX, mouseY);
 
+        if (target == null) return;
         lastScaleChange = System.currentTimeMillis();
         scaledOverlay = target;
         if (dWheel > 0) {
@@ -231,31 +267,9 @@ public class GuiOverlayEditor extends GuiScreen {
         }
     }
 
-    @Override
-    protected void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
-        if (!com.github.spookie6.frozen.utils.Button.getButton(clickedMouseButton).equals(com.github.spookie6.frozen.utils.Button.MOUSE_LEFT)) return;
-        if (draggedOverlay != null) {
-            int newX = mouseX - dragOffsetX;
-            int newY = mouseY - dragOffsetY;
-
-            int screenWidth = res.getScaledWidth();
-            int screenHeight = res.getScaledHeight();
-
-            newX = Math.max(0, Math.min(screenWidth - draggedOverlay.getWidth(), newX));
-            newY = Math.max(0, Math.min(screenHeight - draggedOverlay.getHeight(), newY));
-
-            if (snapToggle.getState()) {
-                newX = snapToOtherOverlays(newX, 1, res);
-                newY = snapToOtherOverlays(newY, 2, res);
-            }
-
-            draggedOverlay.setPosition(newX, newY);
-        }
-    }
-
     private Overlay getHoveredOverlay(int mouseX, int mouseY) {
         for (Overlay overlay : OverlayManager.getOverlays()) {
-            if ((overlay.isVisible() || showInvisibleToggle.getState()) && isMouseOverOverlay(overlay, mouseX, mouseY)) {
+            if ((overlay.isVisible() || (showInvisibleToggle.getState() && overlay.configOption.get()) || (showDisabledToggle.getState() && !overlay.configOption.get())) && isMouseOverOverlay(overlay, mouseX, mouseY)) {
                 return overlay;
             }
         }
@@ -301,7 +315,7 @@ public class GuiOverlayEditor extends GuiScreen {
 
             // Snap to other overlays
             for (Overlay other : OverlayManager.getOverlays()) {
-                if (!other.isVisible() && !showInvisibleToggle.getState()) continue;
+                if (!other.isVisible() && !(showInvisibleToggle.getState() && other.configOption.get()) && !(showDisabledToggle.getState() && !other.configOption.get())) continue;
                 if (other == dragged) continue;
 
                 for (Edge targetEdge : targetEdges) {
@@ -343,6 +357,7 @@ public class GuiOverlayEditor extends GuiScreen {
     private void saveConfig() {
         Map<String, Object> data = new HashMap<>();
         data.put("show_invisible", showinvisible);
+        data.put("show_disabled", showDisabled);
         data.put("snap", snap);
 
         try (FileWriter writer = new FileWriter(configFile)) {
@@ -363,6 +378,7 @@ public class GuiOverlayEditor extends GuiScreen {
         try (FileReader reader = new FileReader(configFile)) {
             loaded = GSON.fromJson(reader, type);
             showinvisible = loaded.get("show_invisible") instanceof Boolean && (boolean) loaded.get("show_invisible");
+            showinvisible = loaded.get("show_disabled") instanceof Boolean && (boolean) loaded.get("show_disabled");
             snap = loaded.get("snap") instanceof Boolean && (boolean) loaded.get("snap");
         } catch (IOException | ClassCastException e) {
             e.printStackTrace(); // optionally show an error dialog/log

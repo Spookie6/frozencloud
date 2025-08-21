@@ -1,5 +1,6 @@
 package com.github.spookie6.frozen.utils.gui.components;
 
+import com.github.spookie6.frozen.mixin.AccessorMinecraft;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 
@@ -12,7 +13,7 @@ public class ToggleSwitch extends Gui {
     // Animation
     private float knobXAnimated = 0;
     private float knobXAnimatedLast = 0;
-    private final int animationSpeed = 10; // higher is faster
+    private final int animationSpeed = 10;
 
     public ToggleSwitch(int x, int y, boolean initialState, String label) {
         this.x = x;
@@ -37,7 +38,6 @@ public class ToggleSwitch extends Gui {
         knobXAnimated += (targetX - knobXAnimated) / animationSpeed;
         int knobX = (int) (knobXAnimatedLast + (knobXAnimated - knobXAnimatedLast) * partialTicks);
 
-        // Draw knob (white circle)
         int knobSize = height - 4;
         drawRect(knobX, y + 2, (int) knobXAnimated + knobSize, y + 2 + knobSize, 0xFFFFFFFF);
     }
