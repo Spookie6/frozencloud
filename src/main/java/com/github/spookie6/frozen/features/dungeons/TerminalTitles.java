@@ -54,7 +54,7 @@ public class TerminalTitles {
 
         StringBuilder sb = new StringBuilder();
         if (ModConfig.terminalTitlesStaticColor) sb.append(completedThing);
-            else sb.append(applyThingColorCodes(completedThing));
+            else sb.append(applyThingColorCodes(completedThing) + " ");
         sb.replace(0, 1, sb.substring(0, 1).toUpperCase());
         sb.append("&f(&a");
         sb.append(progress);

@@ -2,6 +2,8 @@ package com.github.spookie6.frozen.events.impl;
 
 import com.github.spookie6.frozen.utils.Button;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.inventory.GuiChest;
+import net.minecraft.inventory.ContainerChest;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import org.lwjgl.input.Mouse;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -16,6 +18,20 @@ public class GuiScreenEvent extends Event {
     }
 
     public void cancel() { this.cbi.cancel(); }
+
+    public static class ChestOpened extends GuiScreenEvent {
+        private final String lowerContainerName;
+
+        public ChestOpened(GuiChest gui, CallbackInfo cbi) {
+            super(gui, cbi);
+
+            this.lowerContainerName = ((ContainerChest) gui.inventorySlots).getLowerChestInventory().getName();
+        }
+
+        public String getLowerContainerName() {
+            return lowerContainerName;
+        }
+    }
 
     public static class MouseClicked extends GuiScreenEvent {
         public final Button btn;

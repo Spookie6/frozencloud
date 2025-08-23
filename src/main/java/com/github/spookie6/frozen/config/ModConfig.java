@@ -315,6 +315,22 @@ public class ModConfig extends Config {
     public static float terminalTitleDuration = 3.0F;
 
     @Switch(
+            name = "Terminal times",
+            description = "Sends how long into a section/p3 the terminal was completed.",
+            category = "Dungeons",
+            subcategory = "Terminals"
+    )
+    public static boolean terminalTimes = false;
+
+    @Switch(
+            name = "Send terminal splits",
+            description = "Sends all terminal splits at the end of p3",
+            category = "Dungeons",
+            subcategory = "Terminals"
+    )
+    public static boolean sendTerminalSplits = false;
+
+    @Switch(
             name = "Main toggle",
             description = "Main toggle for locational message features",
             category = "Dungeons",
@@ -438,6 +454,12 @@ public class ModConfig extends Config {
             category = "HUD"
     )
     public static boolean warpCooldown = false;
+
+    @Text(
+            name = "Warp cooldown title",
+            category = "HUD"
+    )
+    public static String warpCooldownTitle = "Warp Cooldown: ";
 
     @Switch(
             name = "Reaper timer",
@@ -658,7 +680,7 @@ public class ModConfig extends Config {
             name = "Type",
             category = "Gui",
             subcategory = "Rarity highlight",
-            options = {"Circle", "Square", "Outline", "Faded"}
+            options = {"Circle", "Square", "Faded", "Outline"}
     )
     public static int rarityHighlightType = 0;
 

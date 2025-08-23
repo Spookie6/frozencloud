@@ -15,7 +15,6 @@ public class ColorPicker {
     private static int colorFieldSize = 100;
     private static int brightnessHeight = 10;
 
-    private static int width = colorFieldSize;
     private static int height = colorFieldSize + brightnessHeight + 10;
 
     // Color state
@@ -150,10 +149,19 @@ public class ColorPicker {
     }
 
     private void updateInputsFromColor() {
+        updateRGBFromColor();
+        updateHexFromColor();
+    }
+
+    private void updateRGBFromColor() {
         Color c = Color.getHSBColor(hue, saturation, brightness);
         inputR.setValue(String.valueOf(c.getRed()));
         inputG.setValue(String.valueOf(c.getGreen()));
         inputB.setValue(String.valueOf(c.getBlue()));
+    }
+
+    private void updateHexFromColor() {
+        Color c = Color.getHSBColor(hue, saturation, brightness);
         inputHex.setText(String.format("%02X%02X%02X", c.getRed(), c.getGreen(), c.getBlue()));
     }
 
@@ -168,6 +176,7 @@ public class ColorPicker {
                 this.hue = hsb[0];
                 this.saturation = hsb[1];
                 this.brightness = hsb[2];
+                updateHexFromColor();
             } catch (NumberFormatException ignored) {
             }
         } else if (inputHex.isFocused()) {
@@ -183,11 +192,11 @@ public class ColorPicker {
                     this.hue = hsb[0];
                     this.saturation = hsb[1];
                     this.brightness = hsb[2];
+                    updateRGBFromColor();
                 }
             } catch (NumberFormatException ignored) {
             }
         }
-        updateInputsFromColor();
     }
 
     private int clampInput(String text) {

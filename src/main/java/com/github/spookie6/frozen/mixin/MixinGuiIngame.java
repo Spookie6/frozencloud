@@ -23,6 +23,8 @@ public class MixinGuiIngame {
         ItemStack itemStack = player.inventory.getStackInSlot(index);
         if (itemStack == null) return;
 
+        if (ItemUtils.getSkyBlockID(itemStack) == null) return;
+
         Rarity rarity = ItemUtils.getSkyblockRarity(itemStack);
         if (rarity.equals(Rarity.UNKNOWN)) return;
 

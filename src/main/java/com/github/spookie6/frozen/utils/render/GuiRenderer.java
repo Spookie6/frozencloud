@@ -213,8 +213,8 @@ public class GuiRenderer {
     public enum RenderShape {
         CIRCLE(new ResourceLocation("frozen", "textures/gui/rarity.png")),
         SQUARE(new ResourceLocation("frozen", "textures/gui/rarity2.png")),
-        FADE_IN(new ResourceLocation("frozen", "textures/gui/rarity3.png")),
-        OUTLINED(new ResourceLocation("frozen", "textures/gui/rarity4.png"));
+        OUTLINED(new ResourceLocation("frozen", "textures/gui/rarity3.png")),
+        FADE_IN(new ResourceLocation("frozen", "textures/gui/rarity4.png"));
 
         private final ResourceLocation tex;
 

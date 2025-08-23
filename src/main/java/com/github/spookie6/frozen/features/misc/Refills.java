@@ -2,6 +2,7 @@ package com.github.spookie6.frozen.features.misc;
 
 import com.github.spookie6.frozen.config.ModConfig;
 import com.github.spookie6.frozen.events.impl.ChatPacketEvent;
+import com.github.spookie6.frozen.utils.skyblock.LocationUtils;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
@@ -21,7 +22,7 @@ public class Refills {
 
     @SubscribeEvent
     public void onTick(TickEvent.ClientTickEvent e) {
-        if (e.phase.equals(TickEvent.Phase.END)) return;
+        if (!e.phase.equals(TickEvent.Phase.END) || !LocationUtils.isInSkyblock) return;
         long now = Minecraft.getSystemTime();
         if (now - lastUpdate < 2000) return;
         lastUpdate = now;

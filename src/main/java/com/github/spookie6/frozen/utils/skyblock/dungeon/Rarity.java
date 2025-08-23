@@ -41,4 +41,19 @@ public enum Rarity {
         }
         return UNKNOWN;
     }
+
+    public static Rarity getRarityByColorCode(String colorCode) {
+        if (colorCode == null || colorCode.isEmpty()) return UNKNOWN;
+        switch (colorCode) {
+            case "b": return DIVINE;
+            case "d": return MYTHIC;
+            case "6": return LEGENDARY;
+            case "5": return EPIC;
+            case "9": return RARE;
+            case "a": return UNCOMMON;
+            case "f": return COMMON;
+        }
+
+        return UNKNOWN;
+    }
 }

@@ -1,8 +1,10 @@
 package com.github.spookie6.frozen.utils.gui.components;
 
+import cc.polyfrost.oneconfig.libs.universal.UChat;
 import com.github.spookie6.frozen.utils.Button;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
+import org.lwjgl.input.Keyboard;
 
 public class HexTextInput extends Gui {
     private int x, y, width, height;
@@ -38,12 +40,12 @@ public class HexTextInput extends Gui {
 
     public void keyTyped(char typedChar, int keyCode) {
         if (!focused) return;
-        if (keyCode == 14 && !text.isEmpty()) {
+
+        if (keyCode == Keyboard.KEY_BACK && text.length() > 1) {
             text = text.substring(0, text.length() - 1);
         } else if (isAllowedChar(typedChar)) {
             text += Character.toUpperCase(typedChar);
         }
-        if (!text.startsWith("#")) text = "#" + text;
         if (text.length() > 7) text = text.substring(0, 7);
     }
 

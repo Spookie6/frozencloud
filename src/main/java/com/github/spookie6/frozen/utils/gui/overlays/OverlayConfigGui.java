@@ -1,10 +1,7 @@
 package com.github.spookie6.frozen.utils.gui.overlays;
 
 import com.github.spookie6.frozen.Frozen;
-import com.github.spookie6.frozen.utils.gui.components.Button;
-import com.github.spookie6.frozen.utils.gui.components.ColorPicker;
-import com.github.spookie6.frozen.utils.gui.components.IntegerInput;
-import com.github.spookie6.frozen.utils.gui.components.ToggleSwitch;
+import com.github.spookie6.frozen.utils.gui.components.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
@@ -14,13 +11,14 @@ import java.io.IOException;
 public class OverlayConfigGui extends Gui {
     public final int x, y;
     public static final int width = 200;
-    public static final int height = 176;
+    public static final int height = 200;
 
     private final Overlay overlay;
 
     private final int margin = 3;
     private ColorPicker colorPicker = null;
 
+    private TabsRow tabsRow;
     private ToggleSwitch configOptiontoggle;
     private Button resetButton;
     private ToggleSwitch shadowToggle;
@@ -33,7 +31,8 @@ public class OverlayConfigGui extends Gui {
         this.y = my;
 
         int baseY = my + Minecraft.getMinecraft().fontRendererObj.FONT_HEIGHT + margin * 2;
-        this.colorPicker = new ColorPicker(mx + margin, baseY, overlay.color);
+        this.tabsRow = new TabsRow(mx + margin, baseY, new String[]{"Title", "Body"}, "Title");
+        this.colorPicker = new ColorPicker(mx + margin, baseY + 22, overlay.color);
         this.configOptiontoggle = new ToggleSwitch(mx + 110, baseY, overlay.configOption.get(), "Enabled");
         this.resetButton = new Button(mx + 110, baseY + 24, "Reset", () -> {
             overlay.reset();
@@ -50,6 +49,7 @@ public class OverlayConfigGui extends Gui {
         drawRect(this.x, this.y, this.x + this.width, this.y + this.height, 0xFF424242);
         mc.fontRendererObj.drawString(overlay.displayName, x + margin, y + margin, 0xFFC1C1C1);
 
+        tabsRow.draw(mx, my, mc);
         colorPicker.draw(mx, my, mc);
         overlay.setColor(colorPicker.getColor());
 
@@ -68,6 +68,9 @@ public class OverlayConfigGui extends Gui {
         colorPicker.mouseClicked(button, mouseX, mouseY);
         overlay.setColor(colorPicker.getColor());
 
+        if (tabsRow.isMouseOver(mouseX, mouseY)) {
+            tabsRow.mouseClicked(button, mouseX, mouseY);
+        }
         if (configOptiontoggle.isMouseOver(mouseX, mouseY)) {
             configOptiontoggle.toggle();
             overlay.configOption.set(configOptiontoggle.getState());

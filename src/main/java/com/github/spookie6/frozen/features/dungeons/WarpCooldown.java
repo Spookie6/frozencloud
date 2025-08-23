@@ -18,10 +18,10 @@ public class WarpCooldown  {
                         (val) -> ModConfig.warpCooldown = val
                 ),
                 "Warp cooldown",
-                () -> String.format("Warp Cooldown: %.2fs", (float) (lastWarp + 30000 - System.currentTimeMillis()) / 1000),
+                () -> String.format("%.2fs", (float) (lastWarp + 30000 - System.currentTimeMillis()) / 1000),
                     () -> lastWarp + 30000 > System.currentTimeMillis(),
-                    "Warp Cooldown: 30s"
-            )
+                    "30s"
+            ).setTitleSupplier(() -> ModConfig.warpCooldownTitle)
         );
     }
 

@@ -44,8 +44,6 @@ public class Frozen {
 
     public static GuiScreen guiToOpen = null;
     public static final GuiOverlayEditor guiOverlayEditor = new GuiOverlayEditor();
-//    public static GuiListManager guiLocationalMessagesList = new GuiListManager(ListType.LOCATIONAL_MESSAGE);
-
     private final ArrayList<Object> modules = new ArrayList<>();
 
     @Mod.EventHandler
@@ -111,7 +109,8 @@ public class Frozen {
                 new Relics(),
                 new Dragons(),
                 new LocationalMessage(),
-                new ArmorHud()
+                new ArmorHud(),
+                new TerminalSplits()
         );
     }
 

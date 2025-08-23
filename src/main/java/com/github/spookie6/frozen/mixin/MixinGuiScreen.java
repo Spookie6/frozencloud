@@ -12,17 +12,17 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class MixinGuiScreen extends net.minecraft.client.gui.GuiScreen {
 
     @Inject(method = "mouseClicked", at = @At("HEAD"))
-    private void onMouseClicked(int mouseX, int mouseY, int mouseButton, CallbackInfo ci) {
+    private void frozen$onMouseClicked(int mouseX, int mouseY, int mouseButton, CallbackInfo ci) {
         MinecraftForge.EVENT_BUS.post(new GuiScreenEvent.MouseClicked(this, mouseX, mouseY, mouseButton, ci));
     }
 
     @Inject(method = "mouseReleased", at = @At("HEAD"))
-    private void onMouseReleased(int mouseX, int mouseY, int state, CallbackInfo ci) {
+    private void frozen$onMouseReleased(int mouseX, int mouseY, int state, CallbackInfo ci) {
         MinecraftForge.EVENT_BUS.post(new GuiScreenEvent.MouseReleased(this, mouseX, mouseY, state, ci));
     }
 
     @Inject(method = "keyTyped", at = @At("HEAD"))
-    private void onKeyTyped(char typedChar, int keyCode, CallbackInfo ci) {
+    private void frozen$onKeyTyped(char typedChar, int keyCode, CallbackInfo ci) {
         MinecraftForge.EVENT_BUS.post(new GuiScreenEvent.KeyTyped(this, keyCode, typedChar, ci));
     }
 }

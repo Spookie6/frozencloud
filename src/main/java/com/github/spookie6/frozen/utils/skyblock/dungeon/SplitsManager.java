@@ -1,8 +1,6 @@
 package com.github.spookie6.frozen.utils.skyblock.dungeon;
 
 import com.github.spookie6.frozen.config.ModConfig;
-import com.github.spookie6.frozen.utils.gui.overlays.OverlayManager;
-import com.github.spookie6.frozen.utils.gui.overlays.TextOverlay;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;

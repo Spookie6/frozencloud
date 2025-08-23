@@ -7,6 +7,7 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.*;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class EventDispatcher {
@@ -14,10 +15,12 @@ public class EventDispatcher {
     public void onPacket(PacketEvent.Received e) {
         Packet<?> packet = e.getPacket();
 
-        if (packet instanceof S32PacketConfirmTransaction) MinecraftForge.EVENT_BUS.post(new ServerTickEvent());
-        if (packet instanceof S0DPacketCollectItem) MinecraftForge.EVENT_BUS.post(new CollectItemEvent((S0DPacketCollectItem) packet));
-        if (packet instanceof S38PacketPlayerListItem) MinecraftForge.EVENT_BUS.post(new TablistUpdateEvent((S38PacketPlayerListItem) packet));
-        if (packet instanceof S02PacketChat) MinecraftForge.EVENT_BUS.post(new ChatPacketEvent(((S02PacketChat) packet).getChatComponent().getUnformattedText(), (S02PacketChat) packet));
+        Event event = null;
+
+        if (packet instanceof S32PacketConfirmTransaction) {event = new ServerTickEvent();}
+        if (packet instanceof S0DPacketCollectItem) event = new CollectItemEvent((S0DPacketCollectItem) packet);
+        if (packet instanceof S38PacketPlayerListItem) event = new TablistUpdateEvent((S38PacketPlayerListItem) packet);
+        if (packet instanceof S02PacketChat) event = new ChatPacketEvent(((S02PacketChat) packet).getChatComponent().getUnformattedText(), (S02PacketChat) packet);
 
 //        M7 Dragons
         if (packet instanceof S2APacketParticles) {
@@ -25,8 +28,15 @@ public class EventDispatcher {
             if (particlePacket.getParticleType().equals(EnumParticleTypes.ENCHANTMENT_TABLE) && DungeonUtils.getF7Phase().equals(DungeonEnums.M7Phases.P5)) {
                 DungeonEnums.Dragon dragon = determineDragon(particlePacket);
                 if (dragon == null) return;
-                MinecraftForge.EVENT_BUS.post(new DragonSpawnEvent(particlePacket, dragon));
+                event = new DragonSpawnEvent(particlePacket, dragon);
             }
+        }
+
+        if (event == null) return;
+
+        MinecraftForge.EVENT_BUS.post(event);
+        if (event.isCanceled()) {
+            e.setCanceled(true);
         }
     }
 

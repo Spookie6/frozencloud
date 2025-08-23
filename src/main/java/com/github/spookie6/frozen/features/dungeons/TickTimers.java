@@ -10,8 +10,6 @@ import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 
-import java.util.Collections;
-
 public class TickTimers {
     private int crystalTicks = -1;
     private int padTicks = -1;
@@ -65,7 +63,7 @@ public class TickTimers {
                 "Goldor start timer",
                 this::getStartTimer,
                 () -> startTime > -1,
-                "5.20s"
+                "5.20"
             )
         );
 
@@ -114,7 +112,7 @@ public class TickTimers {
         if (startTime < 0) return "";
         long remaining = startTime - System.currentTimeMillis();
         if (remaining < 0) startTime = -1;
-        return String.format("%.2fs", (float) remaining / 1000);
+        return String.format("%.2f", (float) remaining / 1000);
     }
 
     private String getBarrierTimer() {

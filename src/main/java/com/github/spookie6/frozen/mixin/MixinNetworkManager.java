@@ -21,8 +21,12 @@ public abstract class MixinNetworkManager extends SimpleChannelInboundHandler<Pa
     }
 
     @Inject(method = "channelRead0*", at = @At("HEAD"), cancellable = true)
-    private void onReceivePacket(ChannelHandlerContext context, Packet<?> packet, CallbackInfo ci) {
-        MinecraftForge.EVENT_BUS.post(new PacketEvent.Received(packet));
+    private void frozen$onReceivePacket(ChannelHandlerContext context, Packet<?> packet, CallbackInfo ci) {
+        PacketEvent.Received event = new PacketEvent.Received(packet);
+        MinecraftForge.EVENT_BUS.post(event);
+        if (event.isCanceled()) {
+            ci.cancel();
+        }
 
         if (packet instanceof S45PacketTitle) {
             S45PacketTitle titlePacket = (S45PacketTitle) packet;
@@ -30,10 +34,10 @@ public abstract class MixinNetworkManager extends SimpleChannelInboundHandler<Pa
             IChatComponent component = titlePacket.getMessage();
 
             if (component != null) {
-                TitleEvent.Incoming event = new TitleEvent.Incoming(type, component);
-                MinecraftForge.EVENT_BUS.post(event);
+                TitleEvent.Incoming titleEvent = new TitleEvent.Incoming(type, component);
+                MinecraftForge.EVENT_BUS.post(titleEvent);
 
-                if (event.isCanceled()) {
+                if (titleEvent.isCanceled()) {
                     ci.cancel();
                 }
             }

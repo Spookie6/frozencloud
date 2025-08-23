@@ -215,8 +215,7 @@ public class GuiOverlayEditor extends GuiScreen {
                 dragOffsetX = mouseX - hoveringOverlay.getX();
                 dragOffsetY = mouseY - hoveringOverlay.getY();
             }
-        }
-        if (mouseBtn.equals(Button.MOUSE_RIGHT)) {
+        } else if (mouseBtn.equals(Button.MOUSE_RIGHT)) {
             if (hoveringOverlay != null) {
                 int mx = OverlayConfigGui.fits(mouseX, mouseY) ? mouseX : mouseX - OverlayConfigGui.width;
                 int my = OverlayConfigGui.fits(mouseX, mouseY) ? mouseY : mouseY - OverlayConfigGui.height;
@@ -378,7 +377,7 @@ public class GuiOverlayEditor extends GuiScreen {
         try (FileReader reader = new FileReader(configFile)) {
             loaded = GSON.fromJson(reader, type);
             showinvisible = loaded.get("show_invisible") instanceof Boolean && (boolean) loaded.get("show_invisible");
-            showinvisible = loaded.get("show_disabled") instanceof Boolean && (boolean) loaded.get("show_disabled");
+            showDisabled = loaded.get("show_disabled") instanceof Boolean && (boolean) loaded.get("show_disabled");
             snap = loaded.get("snap") instanceof Boolean && (boolean) loaded.get("snap");
         } catch (IOException | ClassCastException e) {
             e.printStackTrace(); // optionally show an error dialog/log

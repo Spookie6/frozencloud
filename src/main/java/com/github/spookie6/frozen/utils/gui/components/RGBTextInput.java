@@ -47,8 +47,12 @@ public class RGBTextInput extends Gui {
     public void keyTyped(char typedChar, int keyCode) {
         if (!focused) return;
 
-        if (keyCode == Keyboard.KEY_BACK && !text.isEmpty()) {
-            text = text.substring(0, text.length() - 1);
+        if (keyCode == Keyboard.KEY_BACK) {
+            if (text.length() <= 1) {
+                text = "";
+            } else {
+                text = text.substring(0, text.length() - 1);
+            }
         } else if (Character.isDigit(typedChar)) {
             if (text.length() >= 3) return;
             String newText = text + typedChar;
@@ -64,7 +68,7 @@ public class RGBTextInput extends Gui {
     }
 
     public String getValue() {
-        return text;
+        return text.isEmpty() ? "0" : text;
     }
 
     public int getIntValue() {
