@@ -173,7 +173,7 @@ public class DungeonEnums {
 
     public enum Dragon {
         GREEN( "Green", 'a', Color.MINECRAFT_GREEN.getColor(), new int[]{3, 2}),
-        PURPLE("Purple", '5', Color.MINECRAFT_LIGHT_PURPLE.getColor(), new int[]{0, 4}),
+        PURPLE("Purple", 'd', Color.MINECRAFT_LIGHT_PURPLE.getColor(), new int[]{0, 4}),
         BLUE("Blue",'b', Color.MINECRAFT_AQUA.getColor(), new int[]{1, 0}),
         ORANGE("Orange", '6', Color.MINECRAFT_GOLD.getColor(), new int[]{4, 3}),
         RED("Red", 'c', Color.MINECRAFT_RED.getColor(), new int[]{2, 1});
@@ -219,7 +219,7 @@ public class DungeonEnums {
 
         public boolean isAtLocation(BlockPos pos) {
             if (this.equals(SAFE_SPOT_2)) {
-                return this.pos.distanceSq(pos.getX(), pos.getY(), pos.getZ()) < this.range && pos.getZ() <= 121.990;
+                return this.pos.distanceSq(pos.getX(), pos.getY(), pos.getZ()) < this.range && pos.getZ() <= 121.800;
             }
             return this.pos.distanceSq(pos.getX(), pos.getY(), pos.getZ()) < this.range;
         }

@@ -61,11 +61,6 @@ public class TerminalSplits {
         }
     }
 
-    @SubscribeEvent
-    public void onChestOpen(GuiScreenEvent.ChestOpened e) {
-        if (ModConfig.debugMessages) ChatUtils.sendModInfo(e.getLowerContainerName());
-    }
-
     private void sendSectionTimes() {
         ChatUtils.sendModInfo(String.format("Terminals: &b1: &a%.2fs &7| &b2: &a%.2fs &7| &b3: &a%.2fs &7| &b4: &a%.2fs &7| &bTotal: &a%.2fs", (sectionTimes.get(0) - p3Start) / 1000.0, (sectionTimes.get(1) - sectionTimes.get(0)) / 1000.0, (sectionTimes.get(2) - sectionTimes.get(1)) / 1000.0, (sectionTimes.get(3) - sectionTimes.get(2)) / 1000.0, (sectionTimes.get(3) - p3Start) / 1000.0));
     }

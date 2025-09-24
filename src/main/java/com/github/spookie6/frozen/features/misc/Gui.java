@@ -24,6 +24,7 @@ public class Gui {
     private void handleGuiInput(boolean mouseInput, GuiScreenEvent e) {
         if (mc.theWorld == null) return;
 
+        if (e.gui == null) return;
         if (!(e.gui instanceof GuiChest)) return;
         GuiChest gui = (GuiChest) e.gui;
         if (!(gui.inventorySlots instanceof ContainerChest)) return;

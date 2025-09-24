@@ -12,7 +12,6 @@ import com.github.spookie6.frozen.utils.skyblock.Island;
 import com.github.spookie6.frozen.utils.skyblock.LocationUtils;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class MaskTimers {

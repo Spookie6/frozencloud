@@ -9,6 +9,7 @@ import cc.polyfrost.oneconfig.config.data.Mod;
 import cc.polyfrost.oneconfig.config.data.ModType;
 
 import cc.polyfrost.oneconfig.config.data.OptionSize;
+import cc.polyfrost.oneconfig.libs.checker.fenum.qual.SwingTextOrientation;
 import cc.polyfrost.oneconfig.libs.universal.UKeyboard;
 import com.github.spookie6.frozen.Frozen;
 import com.github.spookie6.frozen.utils.ApiUtils;
@@ -25,8 +26,6 @@ public class ModConfig extends Config {
         registerKeyBind(moveOverlaysKeybind, Frozen.guiOverlayEditor::open);
 
         addDependency("bloodTimer", "split");
-//        addDependency("slotbinding", false);
-//        addDependency("wardrobeAutoClose", false);
         slotbinding = false;
         wardrobeAutoClose = false;
 
@@ -102,6 +101,53 @@ public class ModConfig extends Config {
             max = 3.0F
     )
     public static float playerScaleZ = 1.0F;
+
+    // BLOCK OVERLAY
+    @Switch(
+            name = "Block overlay",
+            description = "Renders a custom block overlay",
+            subcategory = "Block overlay"
+    )
+    public static boolean blockOverlay = false;
+
+    @Dropdown(
+            name = "Render type",
+            subcategory = "Block overlay",
+            options = {"Outlined", "Filled", "Filled Outline"}
+    )
+    public static int blockOverlayRenderType = 0;
+
+    @Color(
+            name = "Fill color",
+            subcategory = "Block overlay"
+    )
+    public static OneColor blockOverlayFillColor = new OneColor(255, 255, 255, 125);
+
+    @Color(
+            name = "Line color",
+            subcategory = "Block overlay"
+    )
+    public static OneColor blockOverlayLineColor = new OneColor(255, 255, 255, 125);
+
+    @Switch(
+            name = "Depth check",
+            subcategory = "Block overlay"
+    )
+    public static boolean blockOverlayDepthCheck = true;
+
+    @Switch(
+            name = "Smooth lines",
+            subcategory = "Block overlay"
+    )
+    public static boolean blockOverlaySmoothLines = false;
+
+    @Slider(
+            name = "Line width",
+            subcategory = "Block overlay",
+            min = 0.1f,
+            max = 20.0f
+    )
+    public static float blockOverlayLineWidth = 2f;
 
     @Switch(
             name = "Legacy axes",
@@ -231,6 +277,17 @@ public class ModConfig extends Config {
             max = 60
     )
     public static int hidePlayersAfterLeapDuration = 5;
+
+    @Slider(
+            name = "Player hide distance",
+            description = "In what range to hide players (Sphere)",
+            category = "Dungeons",
+            subcategory = "Leap menu",
+            step = 1,
+            min = 1,
+            max = 10
+    )
+    public static int hidePlayersAfterLeapRange = 4;
 
     @Switch(
             name = "Crystal spawn timer",
@@ -630,6 +687,67 @@ public class ModConfig extends Config {
             }
     )
     public static int showBossSplit = 0;
+
+    // NOTIFICATIONS
+    @Switch(
+            name = "Main toggle",
+            category = "HUD",
+            subcategory = "Notifications",
+            description = "Main toggle for notifications"
+    )
+    public static boolean notifications = false;
+
+    @Switch(
+            name = "Fade out effect",
+            category = "HUD",
+            subcategory = "Notifications",
+            description = "Adds a smooth fade out animation"
+    )
+    public static boolean notificationsFadeOut = false;
+
+    @Slider(
+            name = "Title duration (s)",
+            category = "HUD",
+            subcategory = "Notifications",
+            min = 1.0F,
+            max = 5.0F
+    )
+    public static float notificationsTitleDuration = 3.0F;
+
+    @Switch(
+            name = "Wish notification",
+            category = "HUD",
+            subcategory = "Notifications"
+    )
+    public static boolean notificationsWish = false;
+
+    @Switch(
+            name = "Wished notification",
+            category = "HUD",
+            subcategory = "Notifications"
+    )
+    public static boolean notificationsWished = false;
+
+    @Switch(
+            name = "Upcrush notification",
+            category = "HUD",
+            subcategory = "Notifications"
+    )
+    public static boolean notificationsUpcrush = false;
+
+    @Switch(
+            name = "Castle of stone notification",
+            category = "HUD",
+            subcategory = "Notifications"
+    )
+    public static boolean notificationsCastle = false;
+
+    @Switch(
+            name = "Ragnarock notification",
+            category = "HUD",
+            subcategory = "Notifications"
+    )
+    public static boolean notificationsRag = false;
 
 //    GUI OPTIONS
     @Info(

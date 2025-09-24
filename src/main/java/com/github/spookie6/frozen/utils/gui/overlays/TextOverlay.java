@@ -3,10 +3,13 @@ package com.github.spookie6.frozen.utils.gui.overlays;
 import cc.polyfrost.oneconfig.libs.universal.UChat;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.renderer.GlStateManager;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 import java.util.function.Supplier;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.github.spookie6.frozen.Frozen.mc;
 import static net.minecraft.client.gui.Gui.drawRect;
@@ -14,7 +17,7 @@ import static net.minecraft.client.gui.Gui.drawRect;
 public class TextOverlay extends Overlay {
     private final Supplier<String> textSupplier;
     private Supplier<String> titleSupplier = null;
-    private Color titleColor = new Color(255, 255, 255, 255);
+    protected Color titleColor;
     private final String exampleText;
 
     private BooleanConfigBinding rightAlign = null;
@@ -28,6 +31,8 @@ public class TextOverlay extends Overlay {
         super(configOption, displayName, renderCondition);
         this.textSupplier = textSupplier;
         this.exampleText = exampleText;
+
+        this.titleColor = config.titleColor == null ? null : new Color(config.titleColor);
 
         updateDimensions();
         updateDynamicPosition();
@@ -47,6 +52,9 @@ public class TextOverlay extends Overlay {
         }
 
         GL11.glPushMatrix();
+        GlStateManager.enableBlend();
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        GlStateManager.disableDepth();
         GL11.glTranslated(x, y, 0);
         GL11.glScaled(scale, scale, 1.0);
 
@@ -55,9 +63,9 @@ public class TextOverlay extends Overlay {
         }
 
         if (this.titleSupplier != null && lines.length == 1) {
-            mc.fontRendererObj.drawString(titleSupplier.get(), padding, padding, titleColor.getRGB(), shadow);
-            mc.fontRendererObj.drawString(getText(), padding + mc.fontRendererObj.getStringWidth(titleSupplier.get()), padding, color.getRGB(), shadow);
-        } else {
+            mc.fontRendererObj.drawString(titleSupplier.get().replaceAll("&", "§"), padding, padding, titleColor.getRGB(), shadow);
+            mc.fontRendererObj.drawString(getText().replaceAll("&", "§"), padding + mc.fontRendererObj.getStringWidth(titleSupplier.get()), padding, color.getRGB(), shadow);
+        } else  {
             for (int i = 0; i < lines.length; i++) {
                 String line = lines[i].replaceAll("&", "§");
                 if (rightAlign != null && rightAlign.get()) {
@@ -83,6 +91,8 @@ public class TextOverlay extends Overlay {
             }
         }
         GL11.glPopMatrix();
+        GlStateManager.disableBlend();
+        GlStateManager.enableDepth();
     }
 
     public void updateDimensions() {
@@ -153,8 +163,13 @@ public class TextOverlay extends Overlay {
     }
 
     public TextOverlay setTitleSupplier(Supplier<String> supplier) {
+        if (titleColor == null) titleColor = new Color(255, 255, 255, 255);
         this.titleSupplier = supplier;
         return this;
+    }
+
+    public void setTitleColor(Color titleColor) {
+        this.titleColor = titleColor;
     }
 
     public BooleanConfigBinding getRightAlign() {

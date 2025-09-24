@@ -29,7 +29,7 @@ public enum Rarity {
         switch (input) {
             case "ADMIND": return ADMIN;
             case "ULTIMATE": return ULTIMATE;
-            case "VERY SPECIAL": return VERY_SPECIAL;
+            case "VERY_SPECIAL": return VERY_SPECIAL;
             case "SPECIAL": return SPECIAL;
             case "DIVINE": return DIVINE;
             case "MYTHIC": return MYTHIC;

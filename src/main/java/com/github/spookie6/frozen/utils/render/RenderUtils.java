@@ -1,5 +1,7 @@
 package com.github.spookie6.frozen.utils.render;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockCompressedPowered;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
@@ -8,6 +10,7 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Vec3;
 import org.lwjgl.opengl.GL11;
@@ -159,5 +162,13 @@ public class RenderUtils {
 
         wr.pos(box.minX, box.minY, box.maxZ).endVertex();  // (3)
         wr.pos(box.minX, box.maxY, box.maxZ).endVertex();  // (7)
+    }
+
+    public static double distance3D (Vec3 vec1, Vec3 vec2) {
+        return vec1.distanceTo(vec2);
+    }
+    public static double distance3D (BlockPos pos1, BlockPos pos2) {
+        Vec3 delta = new Vec3(pos1.subtract(pos2));
+        return Math.sqrt(Math.pow(delta.xCoord, 2) + Math.pow(delta.yCoord, 2) + Math.pow(delta.zCoord, 2));
     }
 }

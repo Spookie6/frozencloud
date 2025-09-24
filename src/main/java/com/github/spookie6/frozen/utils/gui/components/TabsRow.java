@@ -10,7 +10,7 @@ public class TabsRow extends Gui {
     private final int x, y;
     private final int width;
     private final int height = 16;
-    private final int TAB_WIDTH = 32;
+    private final int TAB_WIDTH = 48;
 
     private final int backgroundColor = 0xFF323232;
     private final int backgroundColorSelected = 0xFF222222;

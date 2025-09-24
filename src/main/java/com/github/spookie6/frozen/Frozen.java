@@ -4,10 +4,7 @@ import com.github.spookie6.frozen.commands.MainCommand;
 import com.github.spookie6.frozen.config.ModConfig;
 import com.github.spookie6.frozen.events.EventDispatcher;
 import com.github.spookie6.frozen.features.dungeons.*;
-import com.github.spookie6.frozen.features.hud.ArmorHud;
-import com.github.spookie6.frozen.features.hud.MaskTimers;
-import com.github.spookie6.frozen.features.hud.ReaperTimer;
-import com.github.spookie6.frozen.features.hud.Speed;
+import com.github.spookie6.frozen.features.hud.*;
 import com.github.spookie6.frozen.features.dungeons.TerminalTitles;
 import com.github.spookie6.frozen.features.misc.*;
 import com.github.spookie6.frozen.utils.SlotBindingUtils;
@@ -69,7 +66,7 @@ public class Frozen {
 
     @SubscribeEvent
     public void onRenderOverlay(RenderGameOverlayEvent.Post event) {
-        if (Frozen.guiOverlayEditor.opened) return;
+        if (mc.currentScreen != null && mc.currentScreen.equals(guiOverlayEditor)) return;
         if (event.type == RenderGameOverlayEvent.ElementType.ALL) {
             OverlayManager.renderOverlays();
         }
@@ -110,7 +107,9 @@ public class Frozen {
                 new Dragons(),
                 new LocationalMessage(),
                 new ArmorHud(),
-                new TerminalSplits()
+                new TerminalSplits(),
+                new Notifications(),
+                new BlockOverlay()
         );
     }
 

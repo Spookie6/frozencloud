@@ -9,5 +9,8 @@ public class OverlayConfig {
     public int color = new Color(255, 255, 255).getRGB();
     public boolean shadow = false;
 
+//    Optional fields
+    public Integer titleColor = null;
+
     public OverlayConfig() {}
 }

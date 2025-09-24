@@ -72,8 +72,8 @@ public class ItemUtils {
             // 4) find rarity token anywhere on the line
             java.util.regex.Matcher m = RARITY_PATTERN.matcher(cleaned);
             if (m.find()) {
-                String token = m.group(1).replace(' ', '_'); // VERY SPECIAL -> VERY_SPECIAL if your enum uses underscores
-                Rarity r = Rarity.getRarityByString(token);   // adapt to your enum factory
+                String token = m.group(1).replace(' ', '_');
+                Rarity r = Rarity.getRarityByString(token);
                 if (r != null && r != Rarity.UNKNOWN) return r;
             }
         }

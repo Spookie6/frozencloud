@@ -5,6 +5,7 @@ import com.github.spookie6.frozen.events.impl.TitleEvent;
 import com.github.spookie6.frozen.utils.StringUtils;
 import com.github.spookie6.frozen.utils.TitleType;
 import com.github.spookie6.frozen.utils.gui.overlays.BooleanConfigBinding;
+import com.github.spookie6.frozen.utils.gui.overlays.Overlay;
 import com.github.spookie6.frozen.utils.gui.overlays.OverlayManager;
 import com.github.spookie6.frozen.utils.gui.overlays.TextOverlay;
 import com.github.spookie6.frozen.utils.skyblock.Island;
@@ -19,6 +20,7 @@ import java.util.regex.Pattern;
 
 public class TerminalTitles {
     private static final Pattern terminalsTitlePattern = Pattern.compile("^(\\w{2,18}) (activated|completed) a (\\w+)! \\((\\d)\\/(\\d)\\)$");
+    private String completedThing = "";
     private String text = "";
     private int showingTicks = 0;
 
@@ -29,14 +31,20 @@ public class TerminalTitles {
                         (val) -> ModConfig.customTerminalTitles = val
                 ),
                 "Terminal Title",
-                this::getText,
+                () -> text,
                 () -> DungeonUtils.getF7Phase().equals(DungeonEnums.M7Phases.P3) && showingTicks > 0,
-                "Terminal &f(&a4/7&f)&r"
-        ));
+                " (4/7)"
+        ).setTitleSupplier(this::getTitle));
     }
 
-    public String getText() {
-        return text;
+    public String getTitle() {
+        Overlay overlay = OverlayManager.getOverlay("terminal_title");
+
+        if (overlay.getInEditMode()) {
+            return "Terminal";
+        } else {
+            return this.completedThing;
+        }
     }
 
     @SubscribeEvent
@@ -53,17 +61,20 @@ public class TerminalTitles {
         int total = Integer.parseInt(matcher.group(5));
 
         StringBuilder sb = new StringBuilder();
-        if (ModConfig.terminalTitlesStaticColor) sb.append(completedThing);
-            else sb.append(applyThingColorCodes(completedThing) + " ");
-        sb.replace(0, 1, sb.substring(0, 1).toUpperCase());
-        sb.append("&f(&a");
+        sb.append(" ");
+        if (!ModConfig.terminalTitlesStaticColor) sb.append("&f");
+        sb.append("(");
+        if (!ModConfig.terminalTitlesStaticColor) sb.append("&a");
         sb.append(progress);
-        sb.append("&f/&a");
+        sb.append("/");
         sb.append(total);
-        sb.append("&f)&r");
+        if (!ModConfig.terminalTitlesStaticColor) sb.append("&f");
+        sb.append(")");
         text = sb.toString();
         showingTicks = (int) (ModConfig.terminalTitleDuration * 20);
 
+        this.completedThing = (ModConfig.terminalTitlesStaticColor) ? completedThing : applyThingColorCodes(completedThing);
+        this.completedThing = this.completedThing.substring(0, 1).toUpperCase() + this.completedThing.substring(1);
         event.setCanceled(true);
     }
 

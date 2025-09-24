@@ -7,13 +7,15 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class OverlayConfigGui extends Gui {
     public final int x, y;
     public static final int width = 200;
-    public static final int height = 200;
+    public static int height = 200;
 
-    private final Overlay overlay;
+    protected final Overlay overlay;
 
     private final int margin = 3;
     private ColorPicker colorPicker = null;
@@ -31,8 +33,23 @@ public class OverlayConfigGui extends Gui {
         this.y = my;
 
         int baseY = my + Minecraft.getMinecraft().fontRendererObj.FONT_HEIGHT + margin * 2;
-        this.tabsRow = new TabsRow(mx + margin, baseY, new String[]{"Title", "Body"}, "Title");
-        this.colorPicker = new ColorPicker(mx + margin, baseY + 22, overlay.color);
+        if (overlay instanceof TextOverlay) {
+            TextOverlay ov = (TextOverlay) overlay;
+            List<String> options = new ArrayList<>();
+            if (ov.getTitleSupplier() != null) options.add("Title");
+            if (options.isEmpty()) {
+                height = 176;
+            } else {
+                options.add("Body");
+                String[] arr = new String[options.size()];
+                options.toArray(arr);
+                this.tabsRow = new TabsRow(mx + margin, baseY, arr, "Body");
+            }
+        } else {
+            height = 176;
+        }
+
+        this.colorPicker = new ColorPicker(mx + margin, this.tabsRow == null ? baseY : baseY + 22, overlay.color);
         this.configOptiontoggle = new ToggleSwitch(mx + 110, baseY, overlay.configOption.get(), "Enabled");
         this.resetButton = new Button(mx + 110, baseY + 24, "Reset", () -> {
             overlay.reset();
@@ -46,12 +63,13 @@ public class OverlayConfigGui extends Gui {
     }
 
     public void draw(int mx, int my, Minecraft mc, float partialTicks) {
-        drawRect(this.x, this.y, this.x + this.width, this.y + this.height, 0xFF424242);
+        drawRect(x, y, x + width, this.y + height, 0xFF424242);
         mc.fontRendererObj.drawString(overlay.displayName, x + margin, y + margin, 0xFFC1C1C1);
 
-        tabsRow.draw(mx, my, mc);
+        if (tabsRow != null) tabsRow.draw(mx, my, mc);
         colorPicker.draw(mx, my, mc);
-        overlay.setColor(colorPicker.getColor());
+
+        updateColor();
 
         configOptiontoggle.draw(mc, partialTicks);
         resetButton.draw(mx, my, mc);
@@ -66,9 +84,9 @@ public class OverlayConfigGui extends Gui {
 
     public void mouseClicked(com.github.spookie6.frozen.utils.Button button, int mouseX, int mouseY) {
         colorPicker.mouseClicked(button, mouseX, mouseY);
-        overlay.setColor(colorPicker.getColor());
+        updateColor();
 
-        if (tabsRow.isMouseOver(mouseX, mouseY)) {
+        if (tabsRow != null && tabsRow.isMouseOver(mouseX, mouseY)) {
             tabsRow.mouseClicked(button, mouseX, mouseY);
         }
         if (configOptiontoggle.isMouseOver(mouseX, mouseY)) {
@@ -90,11 +108,22 @@ public class OverlayConfigGui extends Gui {
             ((TextOverlay) overlay).getExtraWidth().set(extraWidthInput.getValue());
             overlay.updateDimensions();
         }
+        if (tabsRow != null) {
+            String selected = tabsRow.getSelected();
+            switch (selected) {
+                case "Title":
+                    colorPicker.setColor(((TextOverlay) overlay).titleColor);
+                    break;
+                case "Body":
+                    colorPicker.setColor(overlay.color);
+                    break;
+            }
+        }
     }
 
     public void mouseReleased() {
         colorPicker.mouseReleased();
-        overlay.setColor(colorPicker.getColor());
+        updateColor();
         overlay.updateConfig();
     }
 
@@ -108,7 +137,22 @@ public class OverlayConfigGui extends Gui {
 
     public void keyTyped(char typedChar, int keyCode) throws IOException {
         colorPicker.keyTyped(typedChar, keyCode);
-        overlay.setColor(colorPicker.getColor());
+        updateColor();
+    }
+
+    private void updateColor() {
+        if  (tabsRow == null) {
+            overlay.setColor(colorPicker.getColor());
+        } else {
+            switch (tabsRow.getSelected()) {
+                case "Title":
+                    ((TextOverlay) overlay).setTitleColor(colorPicker.getColor());
+                    break;
+                case "Body":
+                    overlay.setColor(colorPicker.getColor());
+                    break;
+            }
+        }
     }
 
     public static boolean fits(int mx, int my) {

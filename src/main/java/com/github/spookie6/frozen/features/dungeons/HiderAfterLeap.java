@@ -23,9 +23,8 @@ public class HiderAfterLeap {
 
     @SubscribeEvent
     public void onRenderPlayer(RenderPlayerEvent.Pre e) {
-        if (hiddenTill == -1) return;
-        if (LocationUtils.currentDungeon.getDungeonPlayers().stream().filter(x -> x.username.equals(((EntityPlayer) e.entity).getDisplayNameString())).findAny().orElse(null) == null) return;
-        if (e.entityPlayer.equals(mc.thePlayer)) return;
+        if (hiddenTill == -1 || e.entity.getUniqueID().version() == 2 || e.entityPlayer.equals(mc.thePlayer)) return;
+        if (mc.thePlayer.getPosition().distanceSq(e.entityPlayer.getPosition()) > (ModConfig.hidePlayersAfterLeapRange * ModConfig.hidePlayersAfterLeapRange)) return;
 
         long remaining = hiddenTill - System.currentTimeMillis();
         if (remaining > 0) {
@@ -34,28 +33,6 @@ public class HiderAfterLeap {
             hiddenTill = -1;
             ChatUtils.sendModInfo("Revealing players!");
         }
-    }
-
-    @SubscribeEvent
-    public void onRenderLiving(RenderLivingEvent.Pre event) {
-        if (hiddenTill == -1) return;
-        if (!(event.entity instanceof EntityPlayer)) return;
-        if (LocationUtils.currentDungeon.getDungeonPlayers().stream().filter(x -> x.username.equals(((EntityPlayer) event.entity).getDisplayNameString())).findAny().orElse(null) == null) return;
-        if (event.entity.equals(mc.thePlayer)) return;
-
-        long remaining = hiddenTill - System.currentTimeMillis();
-        if (remaining > 0) event.setCanceled(true);
-    }
-
-    @SubscribeEvent
-    public void onRenderLivingSpecials(RenderLivingEvent.Specials.Pre event) {
-        if (hiddenTill == -1) return;
-        if (!(event.entity instanceof EntityPlayer)) return;
-        if (LocationUtils.currentDungeon.getDungeonPlayers().stream().filter(x -> x.username.equals(((EntityPlayer) event.entity).getDisplayNameString())).findAny().orElse(null) == null) return;
-        if (event.entity.equals(mc.thePlayer)) return;
-
-        long remaining = hiddenTill - System.currentTimeMillis();
-        if (remaining > 0) event.setCanceled(true);
     }
 
     @SubscribeEvent(receiveCanceled = true)

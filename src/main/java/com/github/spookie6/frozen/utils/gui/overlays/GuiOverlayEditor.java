@@ -94,8 +94,8 @@ public class GuiOverlayEditor extends GuiScreen {
             fontRendererObj.drawStringWithShadow(str, (float) res.getScaledWidth() / 2 - (float) fontRendererObj.getStringWidth(str) / 2, res.getScaledHeight() - 20, 0xff00ff);
         }
 
-        if (draggedOverlay != null || getHoveredOverlay(mouseX, mouseY) != null) {
-            Overlay ov = draggedOverlay != null ? draggedOverlay : getHoveredOverlay(mouseX, mouseY);
+        if (draggedOverlay != null || getHoveredOverlay(mouseX, mouseY) != null || overlayConfigGui != null) {
+            Overlay ov = overlayConfigGui != null ? overlayConfigGui.overlay : draggedOverlay != null ? draggedOverlay : getHoveredOverlay(mouseX, mouseY);
 
             assert ov != null;
             drawHorizontalLine(ov.x, ov.x + ov.getWidth(), ov.y, new Color(255, 255, 255, 255).getRGB());
@@ -162,6 +162,7 @@ public class GuiOverlayEditor extends GuiScreen {
             opened = false;
             snappingX = false;
             snappingY = false;
+            draggedOverlay = null;
         }
         if (overlayConfigGui != null) {
             overlayConfigGui.keyTyped(typedChar, keyCode);
@@ -217,6 +218,7 @@ public class GuiOverlayEditor extends GuiScreen {
             }
         } else if (mouseBtn.equals(Button.MOUSE_RIGHT)) {
             if (hoveringOverlay != null) {
+                overlayConfigGui = null;
                 int mx = OverlayConfigGui.fits(mouseX, mouseY) ? mouseX : mouseX - OverlayConfigGui.width;
                 int my = OverlayConfigGui.fits(mouseX, mouseY) ? mouseY : mouseY - OverlayConfigGui.height;
                 overlayConfigGui = new OverlayConfigGui(hoveringOverlay, mx, my);
@@ -246,12 +248,10 @@ public class GuiOverlayEditor extends GuiScreen {
         lastScaleChange = System.currentTimeMillis();
         scaledOverlay = target;
         if (dWheel > 0) {
-            assert target != null;
-            target.incrementScale();
+            target.incrementScale(Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) ? 2 : 1);
         }
         else {
-            assert target != null;
-            target.decrementScale();
+            target.decrementScale(Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) ? 2 : 1);
         }
     }
 

@@ -1,6 +1,7 @@
 package com.github.spookie6.frozen.mixin;
 
 import cc.polyfrost.oneconfig.config.core.OneColor;
+import cc.polyfrost.oneconfig.libs.universal.UChat;
 import com.github.spookie6.frozen.config.ModConfig;
 import com.github.spookie6.frozen.events.impl.GuiScreenEvent;
 import com.github.spookie6.frozen.utils.render.GuiRenderer;
@@ -43,7 +44,7 @@ public abstract class MixinGuiContainer {
 
             String lowerChestName = chest.getLowerChestInventory().getName().toLowerCase();
 
-            if (lowerChestName.matches("^pets( (\\d/\\d))*")) {
+            if (lowerChestName.matches("^pets( \\(\\d/\\d\\)) *")) {
                 Matcher m = frozen$petsPattern.matcher(stack.getDisplayName());
                 if (m.find()) {
                     String colorCode = m.group(1);

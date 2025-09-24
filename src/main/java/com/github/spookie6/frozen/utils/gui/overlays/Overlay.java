@@ -5,6 +5,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.util.MathHelper;
 
+import javax.xml.soap.Text;
 import java.awt.*;
 import java.util.List;
 import java.util.function.Supplier;
@@ -68,6 +69,12 @@ public abstract class Overlay {
         config.color = color.getRGB();
         config.scale = scale;
         config.shadow = shadow;
+        config.titleColor =
+                (this instanceof TextOverlay)
+                    ? ((TextOverlay) this).getTitleSupplier() == null
+                        ? null
+                        : ((TextOverlay) this).titleColor.getRGB()
+                    : null;
         OverlayConfigManager.updateOverlayConfig(configName, config);
     }
 
@@ -91,6 +98,10 @@ public abstract class Overlay {
     }
     public int getHeight() {
         return (int) ((this.dimensions.height + padding * 2) * scale);
+    }
+
+    public boolean getInEditMode() {
+        return this.inEditMode;
     }
 
     public boolean isVisible() {
@@ -117,12 +128,12 @@ public abstract class Overlay {
         updateConfig();
     }
 
-    public void incrementScale() {
-        updateScale(scale + .05);
+    public void incrementScale(double multiplier) {
+        updateScale(scale + .05 * multiplier);
     }
 
-    public void decrementScale() {
-        updateScale(scale - .05);
+    public void decrementScale(double multiplier) {
+        updateScale(scale - .05 * multiplier);
     }
 
     public void reset() {
@@ -135,6 +146,10 @@ public abstract class Overlay {
     }
 
     public void setColor(Color color) { this.color = color; }
+
+    public Color getColor() {
+        return color;
+    }
 
     public boolean hasShadow() { return this.shadow; }
     public void setShadow(boolean bool) { this.shadow = bool; }

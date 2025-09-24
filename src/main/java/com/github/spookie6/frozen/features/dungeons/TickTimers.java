@@ -117,10 +117,9 @@ public class TickTimers {
 
     private String getBarrierTimer() {
         if (ModConfig.barrierTicksDynamicColors) {
-            String prefix = barrierTicks > 40 ? "&a" : barrierTicks > 20 ? "&e" : "&c";
+            String prefix = barrierTicks > 40 ? "&a" : barrierTicks > 20 ? "&d" : "&c";
             return (prefix + String.format("%.2f", (float) barrierTicks / 20));
         }
-
         return String.format("%.2f", (float) barrierTicks / 20);
     }
 
