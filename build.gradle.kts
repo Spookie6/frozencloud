@@ -1,31 +1,19 @@
+import org.gradle.api.tasks.wrapper.Wrapper.DistributionType
+
 plugins {
-    idea
-    java
-    kotlin("jvm") version "2.0.0-Beta1" apply false
+    `java` // for common library
+    id("org.polyfrost.multi-version.root")
+    id("com.github.johnrengelman.shadow") version "8.1.1" apply false
+    kotlin("jvm") version "2.0.0" apply false
 }
 
 allprojects {
-    group = "dev.frozencloud"
-    version = "1.0.0"
-
-
     repositories {
         mavenCentral()
         maven("https://repo.spongepowered.org/maven/")
-        maven("https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1")
-    }
-}
-
-subprojects {
-    apply(plugin = "java")
-
-    extensions.configure<JavaPluginExtension> {
-        toolchain {
-            languageVersion.set(JavaLanguageVersion.of(8))
-        }
+        maven("https://repo.polyfrost.cc/releases")
+        // add any other repos you used previously
     }
 
-    tasks.withType<JavaCompile>().configureEach {
-        options.encoding = "UTF-8"
-    }
+    group = findProperty("group")?.toString() ?: "com.example"
 }

@@ -1,144 +1,131 @@
-import org.apache.commons.lang3.SystemUtils
+@file:Suppress("UnstableApiUsage", "PropertyName")
+
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import net.fabricmc.loom.task.RemapJarTask
+import org.polyfrost.gradle.util.noServerRunConfigs
 
 plugins {
-    idea
     java
-    id("gg.essential.loom") version "0.10.0.+"
-    id("dev.architectury.architectury-pack200") version "0.1.3"
-    id("com.github.johnrengelman.shadow") version "7.1.2"
+    id("org.polyfrost.defaults.repo")
+    id("org.polyfrost.defaults.java")
+    id("org.polyfrost.defaults.loom")
+    id("com.github.johnrengelman.shadow")
+    id("net.kyori.blossom") version "1.3.2"
 }
 
+val mod_id: String = findProperty("frozen.id")?.toString() ?: "frozen"
+val mod_name: String = findProperty("frozen.name")?.toString() ?: "Frozen"
+val mod_version: String = findProperty("frozen.version")?.toString() ?: "1.0.0"
+val baseGroup: String = project.rootProject.group.toString()
 val forgeVersion: String by project
-val baseGroup: String by project
-val mcVersion: String by project
-val version: String by project
-val modid: String by project // set in root gradle.properties or override here
-val transformerFile = file("src/main/resources/accesstransformer.cfg")
 
-java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(8))
+
+// blossom replacement
+blossom {
+    replaceToken("@VER@", mod_version)
+    replaceToken("@NAME@", mod_name)
+    replaceToken("@ID@", mod_id)
 }
 
-loom {
-    log4jConfigs.from(file("log4j2.xml"))
-    launchConfigs {
-        "client" {
-            property("mixin.debug", "true")
-            arg("--tweakClass", "org.spongepowered.asm.launch.MixinTweaker")
-        }
-    }
-    runConfigs {
-        create("frozenClient") {
-            client() // base Minecraft client run
-            runDir = "run"
-        }
-        "client" {
-            if (SystemUtils.IS_OS_MAC_OSX) {
-                vmArgs.remove("-XstartOnFirstThread")
-            }
-        }
-        remove(getByName("server"))
-    }
-    forge {
-        pack200Provider.set(dev.architectury.pack200.java.Pack200Adapter())
-        mixinConfig("mixins.$modid.json")
-        if (transformerFile.exists()) {
-            println("Installing access transformer")
-            accessTransformer(transformerFile)
-        }
-    }
-    mixin {
-        defaultRefmapName.set("mixins.$modid.refmap.json")
+version = mod_version
+group = baseGroup
+
+// Source resources go into classes folder (same trick you used earlier)
+sourceSets {
+    main {
+        output.setResourcesDir(java.classesDirectory)
     }
 }
 
-sourceSets.main {
-    output.setResourcesDir(sourceSets.main.flatMap { it.java.classesDirectory })
+// Shade configurations: we will include the :frozencloud project into the mod jar
+val shade: Configuration by configurations.creating {
+    configurations.implementation.get().extendsFrom(this)
+}
+val modShade: Configuration by configurations.creating {
+    configurations.modImplementation.get().extendsFrom(this)
 }
 
 repositories {
-    mavenCentral()
-    maven("https://repo.spongepowered.org/maven/")
-    maven("https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1")
     maven("https://repo.polyfrost.org/releases")
-}
-
-val shadowImpl: Configuration by configurations.creating {
-    configurations.implementation.get().extendsFrom(this)
+    maven("https://repo.spongepowered.org/maven")
+    maven("https://repo.polyfrost.cc/releases")
 }
 
 dependencies {
-    minecraft("com.mojang:minecraft:1.8.9")
-    mappings("de.oceanlabs.mcp:mcp_stable:22-1.8.9")
-    forge("net.minecraftforge:forge:$forgeVersion")
-    implementation("cc.polyfrost:oneconfig-1.8.9-forge:0.2.2-alpha206")
+    // OneConfig and DevAuth similar to polyfrost example
+    modCompileOnly("cc.polyfrost:oneconfig-1.8.9-forge:0.2.2-alpha+")
+    modRuntimeOnly("me.djtheredstoner:DevAuth-forge-legacy:1.2.1")
 
-    // mixins and annotation processors
-    shadowImpl("org.spongepowered:mixin:0.7.11-SNAPSHOT") {
-        isTransitive = false
-    }
-    annotationProcessor("org.spongepowered:mixin:0.8.5-SNAPSHOT")
+    // Mixin & launchwrapper for legacy Forge
+    compileOnly("org.spongepowered:mixin:0.7.11-SNAPSHOT")
+    shade("cc.polyfrost:oneconfig-wrapper-launchwrapper:1.0.0-beta17")
 
-    runtimeOnly("me.djtheredstoner:DevAuth-forge-legacy:1.2.1")
-
-    // include shared core project into the mod
+    // include the shared project in modJar by shading it
+    shade(project(":frozencloud-core"))
     implementation(project(":frozencloud-core"))
 }
 
-tasks.withType(JavaCompile::class) {
-    options.encoding = "UTF-8"
+// ShadowJar task provider
+val shadowJarTask = tasks.named<ShadowJar>("shadowJar") {
+    archiveClassifier.set("dev")
+    configurations = listOf(shade, modShade)
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
-tasks.withType(org.gradle.jvm.tasks.Jar::class) {
-    archiveBaseName.set(modid)
-    manifest.attributes.run {
-        this["FMLCorePluginContainsFMLMod"] = "true"
-        this["ForceLoadAsMod"] = "true"
-        this["TweakClass"] = "org.spongepowered.asm.launch.MixinTweaker"
-        this["MixinConfigs"] = "mixins.$modid.json"
-        if (transformerFile.exists()) this["FMLAT"] = "${modid}_at.cfg"
-    }
-}
-
-tasks.processResources {
-    inputs.property("version", project.version)
-    inputs.property("mcversion", mcVersion)
-    inputs.property("modid", modid)
-    inputs.property("basePackage", baseGroup)
-
-    filesMatching(listOf("mcmod.info", "mixins.$modid.json")) {
-        expand(inputs.properties)
-    }
-
-    rename("accesstransformer.cfg", "META-INF/${modid}_at.cfg")
-}
-
-val remapJar by tasks.named<net.fabricmc.loom.task.RemapJarTask>("remapJar") {
+// RemapJar task uses shadowJarTask
+tasks.named<RemapJarTask>("remapJar") {
+    inputFile.set(shadowJarTask.flatMap { it.archiveFile })
     archiveClassifier.set("")
-    from(tasks.shadowJar)
-    input.set(tasks.shadowJar.get().archiveFile)
 }
 
-tasks.jar {
-    archiveClassifier.set("without-deps")
-    destinationDirectory.set(layout.buildDirectory.dir("intermediates"))
+// Make assemble depend on remapJar
+tasks.named("assemble") {
+    dependsOn(tasks.named("remapJar"))
 }
 
-tasks.shadowJar {
-    destinationDirectory.set(layout.buildDirectory.dir("intermediates"))
-    archiveClassifier.set("non-obfuscated-with-deps")
-    configurations = listOf(shadowImpl)
-    // include the project dependency in the shadow to ensure frozencloud-core classes are present
-    dependencies {
-        include(project(":frozencloud-core"))
-    }
-    doLast {
-        configurations.forEach {
-            println("Copying dependencies into mod: ${it.files}")
+// Loom configuration (using polyfrost defaults)
+loom {
+    noServerRunConfigs()
+
+    // Legacy Forge tweak class for 1.8.9
+    runConfigs {
+        "client" {
+            programArgs("--tweakClass", "cc.polyfrost.oneconfig.loader.stage0.LaunchWrapperTweaker")
+            property("mixin.debug.export", "true")
         }
     }
 
-    fun relocate(name: String) = relocate(name, "$baseGroup.deps.$name")
+    forge {
+        mixinConfig("mixins.${mod_id}.json")
+        accessTransformer(file("src/main/resources/accesstransformer.cfg"))
+    }
+
+    mixin {
+        defaultRefmapName.set("mixins.${mod_id}.refmap.json")
+    }
 }
 
-tasks.assemble.get().dependsOn(tasks.remapJar)
+tasks {
+    // processResources replacements
+    processResources {
+        inputs.property("modid", mod_id)
+        inputs.property("name", mod_name)
+        inputs.property("version", mod_version)
+        inputs.property("mcversion", "1.8.9")
+        inputs.property("basePackage", baseGroup)
+        filesMatching(listOf("mcmod.info", "mixins.${mod_id}.json", "mods.toml")) {
+            expand(mapOf(
+                "modid" to mod_id,
+                "name" to mod_name,
+                "version" to mod_version,
+                "mcversion" to "1.8.9",
+                "basePackage" to baseGroup
+            ))
+        }
+    }
+
+    // The remapped jar that gets assembled
+    assemble {
+        dependsOn(remapJar)
+    }
+}

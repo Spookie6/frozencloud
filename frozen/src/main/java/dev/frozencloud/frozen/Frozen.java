@@ -1,6 +1,4 @@
 package dev.frozencloud.frozen;
-
-import dev.frozencloud.core.ws.WSClient;
 import dev.frozencloud.frozen.commands.MainCommand;
 import dev.frozencloud.frozen.config.ModConfig;
 import dev.frozencloud.frozen.events.EventDispatcher;

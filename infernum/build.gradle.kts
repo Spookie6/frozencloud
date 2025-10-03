@@ -4,6 +4,7 @@ plugins {
     idea
     java
     kotlin("jvm") version "2.0.0-Beta1"
+    id("java")
     id("gg.essential.loom") version "0.10.0.+"
     id("dev.architectury.architectury-pack200") version "0.1.3"
     id("com.github.johnrengelman.shadow") version "7.1.2"
@@ -29,20 +30,13 @@ loom {
         }
     }
     runConfigs {
-        create("infernumClient") {
-            client()
-            runDir = "run"
-        }
-        create("allModsClient") {
-            client()
-            runDir = "run"
-        }
         "client" {
             if (SystemUtils.IS_OS_MAC_OSX) {
                 vmArgs.remove("-XstartOnFirstThread")
             }
         }
         remove(getByName("server"))
+
     }
     forge {
         pack200Provider.set(dev.architectury.pack200.java.Pack200Adapter())

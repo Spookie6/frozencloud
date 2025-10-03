@@ -1,8 +1,20 @@
 {
-  "package": "${basePackage}.mixin",
-  "plugin": "${basePackage}.init.AutoDiscoveryMixinPlugin",
-  "refmap": "mixins.${modid}.refmap.json",
-  "minVersion": "0.7",
   "compatibilityLevel": "JAVA_8",
-  "__comment": "You do not need to manually register mixins in this template. Check the auto discovery mixin plugin for more info."
+  "minVersion": "0.7",
+  "package": "${basePackage}.${modid}.mixin",
+  "refmap": "mixins.${modid}.refmap.json",
+  "injectors": {
+    "maxShiftBy": 5
+  },
+  "client": [
+    "AccessorGuiContainer",
+    "AccessorMinecraft",
+    "MixinEntityPlayer",
+    "MixinGuiContainer",
+    "MixinGuiIngame",
+    "MixinGuiScreen",
+    "MixinMinecraft",
+    "MixinNetworkManager"
+  ],
+  "verbose": true
 }
