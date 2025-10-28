@@ -1,10 +1,11 @@
 package dev.frozencloud.frozen.features.hud;
 
+import dev.frozencloud.core.ModEnum;
 import dev.frozencloud.frozen.config.ModConfig;
 import dev.frozencloud.frozen.events.impl.ChatPacketEvent;
-import dev.frozencloud.frozen.utils.gui.overlays.BooleanConfigBinding;
-import dev.frozencloud.frozen.utils.gui.overlays.OverlayManager;
-import dev.frozencloud.frozen.utils.gui.overlays.TextOverlay;
+import dev.frozencloud.core.overlaymanager.BooleanConfigBinding;
+import dev.frozencloud.core.overlaymanager.OverlayManager;
+import dev.frozencloud.core.overlaymanager.TextOverlay;
 import dev.frozencloud.frozen.utils.skyblock.dungeon.DungeonEnums;
 import dev.frozencloud.frozen.utils.skyblock.dungeon.DungeonUtils;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -20,6 +21,7 @@ public class Notifications {
 
     public Notifications() {
         this.overlay = new TextOverlay(
+                ModEnum.FROZEN,
                 new BooleanConfigBinding(() -> ModConfig.notifications, (val) -> ModConfig.notifications = val),
                 "Notification",
                 () -> text,

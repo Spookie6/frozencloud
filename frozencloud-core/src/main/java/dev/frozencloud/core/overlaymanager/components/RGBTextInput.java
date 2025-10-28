@@ -1,6 +1,6 @@
-package dev.frozencloud.frozen.utils.gui.components;
+package dev.frozencloud.core.overlaymanager.components;
 
-import dev.frozencloud.frozen.utils.Button;
+import dev.frozencloud.core.overlaymanager.ButtonEnum;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import org.lwjgl.input.Keyboard;
@@ -39,8 +39,8 @@ public class RGBTextInput extends Gui {
         mc.fontRendererObj.drawString(visibleText + (focused && (System.currentTimeMillis() / 500) % 2 == 0 ? "|" : ""), x + 4, textY, textColor);
     }
 
-    public void mouseClicked(Button button, int mouseX, int mouseY) {
-        if (!button.equals(Button.MOUSE_LEFT)) return;
+    public void mouseClicked(ButtonEnum button, int mouseX, int mouseY) {
+        if (!button.equals(ButtonEnum.MOUSE_LEFT)) return;
         focused = mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height;
     }
 

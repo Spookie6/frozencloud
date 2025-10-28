@@ -1,11 +1,12 @@
 package dev.frozencloud.frozen.features.dungeons;
 
+import dev.frozencloud.core.ModEnum;
 import dev.frozencloud.frozen.config.ModConfig;
 import dev.frozencloud.frozen.events.impl.DragonSpawnEvent;
 import dev.frozencloud.frozen.events.impl.ServerTickEvent;
-import dev.frozencloud.frozen.utils.gui.overlays.BooleanConfigBinding;
-import dev.frozencloud.frozen.utils.gui.overlays.OverlayManager;
-import dev.frozencloud.frozen.utils.gui.overlays.TextOverlay;
+import dev.frozencloud.core.overlaymanager.BooleanConfigBinding;
+import dev.frozencloud.core.overlaymanager.OverlayManager;
+import dev.frozencloud.core.overlaymanager.TextOverlay;
 import dev.frozencloud.frozen.utils.skyblock.dungeon.DungeonEnums;
 import dev.frozencloud.frozen.utils.skyblock.dungeon.DungeonUtils;
 import net.minecraftforge.event.world.WorldEvent;
@@ -27,6 +28,7 @@ public class Dragons {
 
     public Dragons() {
         OverlayManager.register(new TextOverlay(
+                ModEnum.FROZEN,
                 new BooleanConfigBinding(
                         () -> ModConfig.dragonTimer,
                         (val) -> ModConfig.dragonTimer = val

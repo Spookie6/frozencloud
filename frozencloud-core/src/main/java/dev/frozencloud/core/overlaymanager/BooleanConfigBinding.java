@@ -1,4 +1,4 @@
-package dev.frozencloud.frozen.utils.gui.overlays;
+package dev.frozencloud.core.overlaymanager;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;

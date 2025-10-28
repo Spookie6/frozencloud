@@ -1,11 +1,12 @@
 package dev.frozencloud.frozen.features.dungeons;
 
+import dev.frozencloud.core.ModEnum;
 import dev.frozencloud.frozen.config.ModConfig;
 import dev.frozencloud.frozen.events.impl.ChatPacketEvent;
 import dev.frozencloud.frozen.utils.ChatUtils;
-import dev.frozencloud.frozen.utils.gui.overlays.BooleanConfigBinding;
-import dev.frozencloud.frozen.utils.gui.overlays.OverlayManager;
-import dev.frozencloud.frozen.utils.gui.overlays.TextOverlay;
+import dev.frozencloud.core.overlaymanager.BooleanConfigBinding;
+import dev.frozencloud.core.overlaymanager.OverlayManager;
+import dev.frozencloud.core.overlaymanager.TextOverlay;
 import dev.frozencloud.frozen.utils.skyblock.dungeon.DungeonEnums;
 import dev.frozencloud.frozen.utils.skyblock.dungeon.DungeonUtils;
 import net.minecraft.util.BlockPos;
@@ -31,6 +32,7 @@ public class LocationalMessage {
 
     public LocationalMessage() {
         OverlayManager.register(new TextOverlay(
+                ModEnum.FROZEN,
                 new BooleanConfigBinding(
                         () -> ModConfig.locationalMessages,
                         (val) -> ModConfig.locationalMessages = val
@@ -42,6 +44,7 @@ public class LocationalMessage {
         ));
 
         OverlayManager.register(new TextOverlay(
+                ModEnum.FROZEN,
                 new BooleanConfigBinding(
                         () -> ModConfig.debugOverlays,
                         (val) -> ModConfig.debugOverlays = val

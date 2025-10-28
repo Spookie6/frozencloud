@@ -1,9 +1,10 @@
 package dev.frozencloud.frozen.features.dungeons;
 
+import dev.frozencloud.core.ModEnum;
 import dev.frozencloud.frozen.config.ModConfig;
-import dev.frozencloud.frozen.utils.gui.overlays.BooleanConfigBinding;
-import dev.frozencloud.frozen.utils.gui.overlays.OverlayManager;
-import dev.frozencloud.frozen.utils.gui.overlays.TextOverlay;
+import dev.frozencloud.core.overlaymanager.BooleanConfigBinding;
+import dev.frozencloud.core.overlaymanager.OverlayManager;
+import dev.frozencloud.core.overlaymanager.TextOverlay;
 import dev.frozencloud.frozen.utils.skyblock.ItemUtils;
 import dev.frozencloud.frozen.utils.skyblock.dungeon.DungeonEnums;
 import net.minecraft.block.Block;
@@ -47,6 +48,7 @@ public class Relics {
 
     public Relics() {
         OverlayManager.register(new TextOverlay(
+                ModEnum.FROZEN,
                 new BooleanConfigBinding(
                         () -> ModConfig.relicTimer,
                         (val) -> ModConfig.relicTimer = val
@@ -57,6 +59,7 @@ public class Relics {
                 "2.10"
         ));
         OverlayManager.register(new TextOverlay(
+                ModEnum.FROZEN,
                 new BooleanConfigBinding(
                         () -> ModConfig.debugOverlays,
                         (val) -> ModConfig.debugOverlays = val

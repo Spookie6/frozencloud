@@ -1,19 +1,20 @@
 package dev.frozencloud.frozen;
+
+import dev.frozencloud.core.Core;
+import dev.frozencloud.core.ModEnum;
+import dev.frozencloud.core.overlaymanager.*;
 import dev.frozencloud.frozen.commands.MainCommand;
 import dev.frozencloud.frozen.config.ModConfig;
 import dev.frozencloud.frozen.events.EventDispatcher;
 import dev.frozencloud.frozen.features.dungeons.*;
 import dev.frozencloud.frozen.features.hud.*;
 import dev.frozencloud.frozen.features.misc.*;
-import dev.frozencloud.frozen.utils.SlotBindingUtils;
-import dev.frozencloud.frozen.utils.gui.overlays.*;
 import dev.frozencloud.frozen.utils.skyblock.LocationUtils;
 import dev.frozencloud.frozen.utils.skyblock.PartyUtils;
 import dev.frozencloud.frozen.utils.skyblock.ScoreboardUtils;
 import dev.frozencloud.frozen.utils.skyblock.dungeon.DungeonUtils;
 import dev.frozencloud.frozen.utils.skyblock.dungeon.SplitsManager;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -21,7 +22,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -32,20 +32,16 @@ import java.util.stream.Collectors;
 public class Frozen {
     public static final String MODID = "@ID@";
     public static final String VERSION = "@VER@";
-    public static final String chatPrefix = "&f[&bFrozen&f] &8»&7 ";
 
     public static final Minecraft mc = Minecraft.getMinecraft();
     public static ModConfig config;
 
-    public static GuiScreen guiToOpen = null;
-    public static final GuiOverlayEditor guiOverlayEditor = new GuiOverlayEditor();
     private final ArrayList<Object> modules = new ArrayList<>();
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
-        OverlayConfigManager.init();
-        SlotBindingUtils.init();
-        MinecraftForge.EVENT_BUS.register(guiOverlayEditor);
+        Core.init(mc, ModEnum.FROZEN);
+
         MinecraftForge.EVENT_BUS.register(this);
 
         ClientCommandHandler.instance.registerCommand(new MainCommand());
@@ -55,27 +51,6 @@ public class Frozen {
         modules.forEach(MinecraftForge.EVENT_BUS::register);
 
         initOverlays();
-    }
-
-    @Mod.EventHandler
-    public void onClientStopping(FMLServerStoppedEvent e) {
-        OverlayConfigManager.saveOverlayConfigs();
-    };
-
-    @SubscribeEvent
-    public void onRenderOverlay(RenderGameOverlayEvent.Post event) {
-        if (mc.currentScreen != null && mc.currentScreen.equals(guiOverlayEditor)) return;
-        if (event.type == RenderGameOverlayEvent.ElementType.ALL) {
-            OverlayManager.renderOverlays();
-        }
-    }
-
-    @SubscribeEvent
-    public void onTick(TickEvent.ClientTickEvent e) {
-        if (e.phase.equals(TickEvent.Phase.END) || guiToOpen == null) return;
-
-        mc.displayGuiScreen(guiToOpen);
-        guiToOpen = null;
     }
 
     private void addModules() {
@@ -113,6 +88,7 @@ public class Frozen {
 
     private void initOverlays() {
         OverlayManager.register(new TextOverlay(
+                ModEnum.FROZEN,
                 new BooleanConfigBinding(
                         () -> ModConfig.timeHud,
                         (val) -> ModConfig.timeHud = val
@@ -129,6 +105,7 @@ public class Frozen {
 
 //        DEBUG OVERLAYS
         OverlayManager.register(new TextOverlay(
+                ModEnum.FROZEN,
                 new BooleanConfigBinding(
                         () -> ModConfig.debugOverlays,
                         (val) -> ModConfig.debugOverlays = val
@@ -147,6 +124,7 @@ public class Frozen {
         ));
 
         OverlayManager.register(new TextOverlay(
+                ModEnum.FROZEN,
                 new BooleanConfigBinding(
                         () -> ModConfig.debugOverlays,
                         (val) -> ModConfig.debugOverlays = val
@@ -166,6 +144,7 @@ public class Frozen {
         ));
 
         OverlayManager.register(new TextOverlay(
+                ModEnum.FROZEN,
                 new BooleanConfigBinding(
                         () -> ModConfig.debugOverlays,
                         (val) -> ModConfig.debugOverlays = val

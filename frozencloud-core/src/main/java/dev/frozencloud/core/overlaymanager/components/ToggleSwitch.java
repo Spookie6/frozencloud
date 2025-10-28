@@ -1,4 +1,4 @@
-package dev.frozencloud.frozen.utils.gui.components;
+package dev.frozencloud.core.overlaymanager.components;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;

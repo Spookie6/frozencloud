@@ -1,11 +1,7 @@
-package dev.frozencloud.frozen.utils.gui.overlays;
+package dev.frozencloud.core.overlaymanager;
 
-import dev.frozencloud.frozen.Frozen;
-import dev.frozencloud.frozen.utils.Button;
-import dev.frozencloud.frozen.utils.gui.components.ColorPicker;
-import dev.frozencloud.frozen.utils.gui.components.IntegerInput;
-import dev.frozencloud.frozen.utils.gui.components.TabsRow;
-import dev.frozencloud.frozen.utils.gui.components.ToggleSwitch;
+import dev.frozencloud.core.Core;
+import dev.frozencloud.core.overlaymanager.components.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
@@ -13,6 +9,7 @@ import net.minecraft.client.gui.ScaledResolution;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class OverlayConfigGui extends Gui {
     public final int x, y;
@@ -26,7 +23,7 @@ public class OverlayConfigGui extends Gui {
 
     private TabsRow tabsRow;
     private ToggleSwitch configOptiontoggle;
-    private dev.frozencloud.frozen.utils.gui.components.Button resetButton;
+    private Button resetButton;
     private ToggleSwitch shadowToggle;
     private ToggleSwitch rightAlignToggle;
     private IntegerInput extraWidthInput;
@@ -55,7 +52,7 @@ public class OverlayConfigGui extends Gui {
 
         this.colorPicker = new ColorPicker(mx + margin, this.tabsRow == null ? baseY : baseY + 22, overlay.color);
         this.configOptiontoggle = new ToggleSwitch(mx + 110, baseY, overlay.configOption.get(), "Enabled");
-        this.resetButton = new dev.frozencloud.frozen.utils.gui.components.Button(mx + 110, baseY + 24, "Reset", () -> {
+        this.resetButton = new dev.frozencloud.core.overlaymanager.components.Button(mx + 110, baseY + 24, "Reset", () -> {
             overlay.reset();
             colorPicker.setColor(overlay.color);
         });
@@ -86,7 +83,7 @@ public class OverlayConfigGui extends Gui {
         return mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height;
     }
 
-    public void mouseClicked(Button button, int mouseX, int mouseY) {
+    public void mouseClicked(ButtonEnum button, int mouseX, int mouseY) {
         colorPicker.mouseClicked(button, mouseX, mouseY);
         updateColor();
 
@@ -160,7 +157,7 @@ public class OverlayConfigGui extends Gui {
     }
 
     public static boolean fits(int mx, int my) {
-        ScaledResolution res = Frozen.guiOverlayEditor.res;
+        ScaledResolution res = new ScaledResolution(Core.INSTANCE.getMc());
 
         int screenWidth = res.getScaledWidth();
         int screenHeight = res.getScaledHeight();

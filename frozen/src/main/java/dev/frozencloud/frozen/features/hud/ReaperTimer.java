@@ -1,9 +1,10 @@
 package dev.frozencloud.frozen.features.hud;
 
+import dev.frozencloud.core.ModEnum;
 import dev.frozencloud.frozen.config.ModConfig;
-import dev.frozencloud.frozen.utils.gui.overlays.BooleanConfigBinding;
-import dev.frozencloud.frozen.utils.gui.overlays.OverlayManager;
-import dev.frozencloud.frozen.utils.gui.overlays.TextOverlay;
+import dev.frozencloud.core.overlaymanager.BooleanConfigBinding;
+import dev.frozencloud.core.overlaymanager.OverlayManager;
+import dev.frozencloud.core.overlaymanager.TextOverlay;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
@@ -17,6 +18,7 @@ public class ReaperTimer  {
 
     public ReaperTimer() {
         OverlayManager.register(new TextOverlay(
+                ModEnum.FROZEN,
                 new BooleanConfigBinding(
                         () -> ModConfig.reaperTimer,
                         (val) -> ModConfig.reaperTimer = val

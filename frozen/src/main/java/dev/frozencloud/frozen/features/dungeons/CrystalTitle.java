@@ -1,11 +1,12 @@
 package dev.frozencloud.frozen.features.dungeons;
 
+import dev.frozencloud.core.ModEnum;
 import dev.frozencloud.frozen.config.ModConfig;
 import dev.frozencloud.frozen.events.impl.ChatPacketEvent;
 import dev.frozencloud.frozen.utils.ChatUtils;
-import dev.frozencloud.frozen.utils.gui.overlays.BooleanConfigBinding;
-import dev.frozencloud.frozen.utils.gui.overlays.OverlayManager;
-import dev.frozencloud.frozen.utils.gui.overlays.TextOverlay;
+import dev.frozencloud.core.overlaymanager.BooleanConfigBinding;
+import dev.frozencloud.core.overlaymanager.OverlayManager;
+import dev.frozencloud.core.overlaymanager.TextOverlay;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -19,6 +20,7 @@ public class CrystalTitle {
 
     public CrystalTitle() {
         OverlayManager.register(new TextOverlay(
+                ModEnum.FROZEN,
                 new BooleanConfigBinding(
                         () -> ModConfig.crystalTitle,
                         (val) -> ModConfig.crystalTitle = val

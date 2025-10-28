@@ -1,11 +1,12 @@
 package dev.frozencloud.frozen.features.dungeons;
 
+import dev.frozencloud.core.ModEnum;
 import dev.frozencloud.frozen.config.ModConfig;
 import dev.frozencloud.frozen.events.impl.ChatPacketEvent;
 import dev.frozencloud.frozen.events.impl.ServerTickEvent;
-import dev.frozencloud.frozen.utils.gui.overlays.BooleanConfigBinding;
-import dev.frozencloud.frozen.utils.gui.overlays.OverlayManager;
-import dev.frozencloud.frozen.utils.gui.overlays.TextOverlay;
+import dev.frozencloud.core.overlaymanager.BooleanConfigBinding;
+import dev.frozencloud.core.overlaymanager.OverlayManager;
+import dev.frozencloud.core.overlaymanager.TextOverlay;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
@@ -20,6 +21,7 @@ public class TickTimers {
     public TickTimers() {
 //        Registering overlays
         OverlayManager.register(new TextOverlay(
+                ModEnum.FROZEN,
                 new BooleanConfigBinding(
                         () -> ModConfig.crystalTicks,
                         (val) -> ModConfig.crystalTicks = val
@@ -32,6 +34,7 @@ public class TickTimers {
         );
 
         OverlayManager.register(new TextOverlay(
+                ModEnum.FROZEN,
                 new BooleanConfigBinding(
                         () -> ModConfig.padTicks,
                         (val) -> ModConfig.padTicks = val
@@ -44,6 +47,7 @@ public class TickTimers {
         );
 
         OverlayManager.register(new TextOverlay(
+                ModEnum.FROZEN,
                 new BooleanConfigBinding(
                         () -> ModConfig.crushTicks,
                         (val) -> ModConfig.crushTicks = val
@@ -56,6 +60,7 @@ public class TickTimers {
         );
 
         OverlayManager.register(new TextOverlay(
+                ModEnum.FROZEN,
                 new BooleanConfigBinding(
                         () -> ModConfig.startTimer,
                         (val) -> ModConfig.startTimer = val
@@ -68,6 +73,7 @@ public class TickTimers {
         );
 
         OverlayManager.register(new TextOverlay(
+                ModEnum.FROZEN,
                 new BooleanConfigBinding(
                         () -> ModConfig.barrierTicks,
                         (val) -> ModConfig.barrierTicks = val

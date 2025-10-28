@@ -1,11 +1,12 @@
 package dev.frozencloud.frozen.features.hud;
 
+import dev.frozencloud.core.ModEnum;
 import dev.frozencloud.frozen.config.ModConfig;
 import dev.frozencloud.frozen.utils.ChatUtils;
-import dev.frozencloud.frozen.utils.gui.overlays.BooleanConfigBinding;
-import dev.frozencloud.frozen.utils.gui.overlays.IntegerConfigBinding;
-import dev.frozencloud.frozen.utils.gui.overlays.OverlayManager;
-import dev.frozencloud.frozen.utils.gui.overlays.TextOverlay;
+import dev.frozencloud.core.overlaymanager.BooleanConfigBinding;
+import dev.frozencloud.core.overlaymanager.IntegerConfigBinding;
+import dev.frozencloud.core.overlaymanager.OverlayManager;
+import dev.frozencloud.core.overlaymanager.TextOverlay;
 import dev.frozencloud.frozen.utils.skyblock.dungeon.DungeonUtils;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -20,6 +21,7 @@ import java.util.List;
 public class MaskTimers {
     public MaskTimers() {
         OverlayManager.register(new TextOverlay(
+                ModEnum.FROZEN,
                 new BooleanConfigBinding(
                         () -> ModConfig.maskTimers,
                         (val) -> ModConfig.maskTimers = val
@@ -35,6 +37,7 @@ public class MaskTimers {
                 .setExtraWidth(new IntegerConfigBinding(() -> ModConfig.maskTimersExtraWidth, (val) -> ModConfig.maskTimersExtraWidth = val)));
 
         OverlayManager.register(new TextOverlay(
+                ModEnum.FROZEN,
                 new BooleanConfigBinding(
                         () -> ModConfig.invincibilityTimer,
                         (val) -> ModConfig.invincibilityTimer = val

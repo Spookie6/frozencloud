@@ -1,6 +1,6 @@
-package dev.frozencloud.frozen.utils.gui.components;
+package dev.frozencloud.core.overlaymanager.components;
 
-import dev.frozencloud.frozen.utils.Button;
+import dev.frozencloud.core.overlaymanager.ButtonEnum;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.util.MathHelper;
@@ -97,7 +97,7 @@ public class ColorPicker {
         Gui.drawRect(brightnessX - 1, sliderY, brightnessX + 1, sliderY + brightnessHeight, 0xFF000000);
     }
 
-    public void mouseClicked(Button button, int mouseX, int mouseY) {
+    public void mouseClicked(ButtonEnum button, int mouseX, int mouseY) {
         if (isInside(mouseX, mouseY, x, y, colorFieldSize, colorFieldSize)) {
             updateColorFromMouse(mouseX, mouseY);
             draggingField = true;

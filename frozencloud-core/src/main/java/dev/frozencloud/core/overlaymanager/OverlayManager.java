@@ -1,9 +1,11 @@
-package dev.frozencloud.frozen.utils.gui.overlays;
+package dev.frozencloud.core.overlaymanager;
+
+import dev.frozencloud.core.Core;
+import dev.frozencloud.core.Mod;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static dev.frozencloud.frozen.Frozen.mc;
 
 public class OverlayManager {
     private static final List<Overlay> overlays = new ArrayList<>();
@@ -18,7 +20,7 @@ public class OverlayManager {
     public static void renderOverlays() {
         for (Overlay overlay : overlays) {
             if (!overlay.isVisible()) continue;
-            overlay.render(mc);
+            overlay.render(Core.INSTANCE.getMc());
         }
     }
 

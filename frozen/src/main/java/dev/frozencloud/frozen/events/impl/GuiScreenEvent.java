@@ -1,6 +1,6 @@
 package dev.frozencloud.frozen.events.impl;
 
-import dev.frozencloud.frozen.utils.Button;
+import dev.frozencloud.core.overlaymanager.ButtonEnum;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.inventory.ContainerChest;
@@ -34,24 +34,24 @@ public class GuiScreenEvent extends Event {
     }
 
     public static class MouseClicked extends GuiScreenEvent {
-        public final Button btn;
+        public final ButtonEnum btn;
         public final int mx, my;
 
         public MouseClicked (GuiScreen gui, int mx, int my, int btn, CallbackInfo cbi) {
             super(gui, cbi);
-            this.btn = Button.getButton(btn);
+            this.btn = ButtonEnum.getButton(btn);
             this.mx = mx;
             this.my = my;
         }
     }
 
     public static class MouseReleased extends GuiScreenEvent {
-        public final Button btn;
+        public final ButtonEnum btn;
         public final int mx, my;
 
         public MouseReleased (GuiScreen gui, int mx, int my, int btn, CallbackInfo cbi) {
             super(gui, cbi);
-            this.btn = Button.getButton(btn);
+            this.btn = ButtonEnum.getButton(btn);
             this.mx = mx;
             this.my = my;
         }

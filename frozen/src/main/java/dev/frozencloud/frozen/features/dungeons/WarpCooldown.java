@@ -1,8 +1,9 @@
 package dev.frozencloud.frozen.features.dungeons;
 
-import dev.frozencloud.frozen.utils.gui.overlays.BooleanConfigBinding;
-import dev.frozencloud.frozen.utils.gui.overlays.OverlayManager;
-import dev.frozencloud.frozen.utils.gui.overlays.TextOverlay;
+import dev.frozencloud.core.ModEnum;
+import dev.frozencloud.core.overlaymanager.BooleanConfigBinding;
+import dev.frozencloud.core.overlaymanager.OverlayManager;
+import dev.frozencloud.core.overlaymanager.TextOverlay;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import dev.frozencloud.frozen.config.ModConfig;
 import dev.frozencloud.frozen.events.impl.ChatPacketEvent;
@@ -11,6 +12,7 @@ public class WarpCooldown  {
 
     public WarpCooldown() {
         OverlayManager.register(new TextOverlay(
+                ModEnum.FROZEN,
                 new BooleanConfigBinding(
                         () -> ModConfig.warpCooldown,
                         (val) -> ModConfig.warpCooldown = val

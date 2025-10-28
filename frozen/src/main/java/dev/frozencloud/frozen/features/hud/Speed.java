@@ -1,9 +1,10 @@
 package dev.frozencloud.frozen.features.hud;
 
+import dev.frozencloud.core.ModEnum;
 import dev.frozencloud.frozen.config.ModConfig;
-import dev.frozencloud.frozen.utils.gui.overlays.BooleanConfigBinding;
-import dev.frozencloud.frozen.utils.gui.overlays.OverlayManager;
-import dev.frozencloud.frozen.utils.gui.overlays.TextOverlay;
+import dev.frozencloud.core.overlaymanager.BooleanConfigBinding;
+import dev.frozencloud.core.overlaymanager.OverlayManager;
+import dev.frozencloud.core.overlaymanager.TextOverlay;
 import dev.frozencloud.frozen.utils.skyblock.LocationUtils;
 import net.minecraft.client.entity.EntityPlayerSP;
 
@@ -13,6 +14,7 @@ public class Speed {
 
     public Speed() {
         OverlayManager.register(new TextOverlay(
+                        ModEnum.FROZEN,
                 new BooleanConfigBinding(
                         () -> ModConfig.speedHud,
                         (val) -> ModConfig.speedHud = val

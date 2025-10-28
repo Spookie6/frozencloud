@@ -1,5 +1,7 @@
-package dev.frozencloud.frozen.utils.gui.overlays;
+package dev.frozencloud.core.overlaymanager;
 
+import dev.frozencloud.core.Core;
+import dev.frozencloud.core.ModEnum;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -8,7 +10,6 @@ import org.lwjgl.opengl.GL11;
 import java.awt.*;
 import java.util.function.Supplier;
 
-import static dev.frozencloud.frozen.Frozen.mc;
 import static net.minecraft.client.gui.Gui.drawRect;
 
 public class TextOverlay extends Overlay {
@@ -24,8 +25,8 @@ public class TextOverlay extends Overlay {
 
     private final String delimiter = "#";
 
-    public TextOverlay(BooleanConfigBinding configOption, String displayName, Supplier<String> textSupplier, Supplier<Boolean> renderCondition, String exampleText) {
-        super(configOption, displayName, renderCondition);
+    public TextOverlay(ModEnum mod, BooleanConfigBinding configOption, String displayName, Supplier<String> textSupplier, Supplier<Boolean> renderCondition, String exampleText) {
+        super(mod, configOption, displayName, renderCondition);
         this.textSupplier = textSupplier;
         this.exampleText = exampleText;
 
@@ -102,7 +103,7 @@ public class TextOverlay extends Overlay {
     }
 
     private Dimensions calculateTextDimensions(String text) {
-        FontRenderer fontRenderer = mc.fontRendererObj;
+        FontRenderer fontRenderer = Core.INSTANCE.getMc().fontRendererObj;
         String[] lines = text.split("\n");
 
         if (this.titleSupplier != null && lines.length == 1) {

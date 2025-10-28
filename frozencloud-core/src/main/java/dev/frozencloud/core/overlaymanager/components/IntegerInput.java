@@ -1,6 +1,6 @@
-package dev.frozencloud.frozen.utils.gui.components;
+package dev.frozencloud.core.overlaymanager.components;
 
-import dev.frozencloud.frozen.utils.Button;
+import dev.frozencloud.core.overlaymanager.ButtonEnum;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 
@@ -54,8 +54,8 @@ public class IntegerInput extends Gui {
         mc.fontRendererObj.drawString("-", x + width - 10 - mc.fontRendererObj.getStringWidth("-") / 2, y + height / 2 + 2, textColor); // down
     }
 
-    public void mouseClicked(Button button, int mouseX, int mouseY) {
-        if (!button.equals(Button.MOUSE_LEFT)) return;
+    public void mouseClicked(ButtonEnum button, int mouseX, int mouseY) {
+        if (!button.equals(ButtonEnum.MOUSE_LEFT)) return;
 
         if (mouseY >= y && mouseY <= y + height / 2) {
             // Up button

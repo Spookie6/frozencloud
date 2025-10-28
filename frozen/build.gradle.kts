@@ -13,12 +13,16 @@ plugins {
     id("net.kyori.blossom") version "1.3.2"
 }
 
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
 val mod_id: String = findProperty("frozen.id")?.toString() ?: "frozen"
 val mod_name: String = findProperty("frozen.name")?.toString() ?: "Frozen"
 val mod_version: String = findProperty("frozen.version")?.toString() ?: "1.0.0"
 val baseGroup: String = project.rootProject.group.toString()
 val forgeVersion: String by project
-
 
 // blossom replacement
 blossom {
@@ -61,8 +65,8 @@ dependencies {
     shade("cc.polyfrost:oneconfig-wrapper-launchwrapper:1.0.0-beta17")
 
     // include the shared project in modJar by shading it
-    shade(project(":frozencloud-core"))
-    implementation(project(":frozencloud-core"))
+    implementation(project(path = ":frozencloud-core", configuration = "namedElements"))
+//    shade(project(":frozencloud-core"))
 }
 
 // ShadowJar task provider
@@ -87,21 +91,22 @@ tasks.named("assemble") {
 loom {
     noServerRunConfigs()
 
-    // Legacy Forge tweak class for 1.8.9
-    runConfigs {
-        "client" {
+    runs {
+        named("client") {
+            client() // ensures proper main class and arguments
+            ideConfigGenerated(true)
             programArgs("--tweakClass", "cc.polyfrost.oneconfig.loader.stage0.LaunchWrapperTweaker")
             property("mixin.debug.export", "true")
         }
     }
 
     forge {
-        mixinConfig("mixins.${mod_id}.json")
+        mixinConfig("mixins.$mod_id.json")
         accessTransformer(file("src/main/resources/accesstransformer.cfg"))
     }
 
     mixin {
-        defaultRefmapName.set("mixins.${mod_id}.refmap.json")
+        defaultRefmapName.set("mixins.$mod_id.refmap.json")
     }
 }
 

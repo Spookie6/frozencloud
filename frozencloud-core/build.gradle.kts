@@ -24,9 +24,9 @@ dependencies {
     implementation("io.ktor:ktor-server-websockets:$ktorVersion")
 }
 
-// Optional: sourceSets, toolchain, etc.
-sourceSets {
-    main {
-        output.setResourcesDir(java.classesDirectory)
-    }
-}
+//// Optional: sourceSets, toolchain, etc.
+//sourceSets {
+//    main {
+//        output.setResourcesDir(java.classesDirectory)
+//    }
+//}

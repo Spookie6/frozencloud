@@ -1,8 +1,9 @@
-package dev.frozencloud.frozen.utils.gui.overlays;
+package dev.frozencloud.core.overlaymanager;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import dev.frozencloud.core.Core;
 
 import java.io.File;
 import java.io.FileReader;
@@ -12,10 +13,8 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
-import static dev.frozencloud.frozen.Frozen.mc;
-
 public class OverlayConfigManager {
-    public static final File configFile = new File(mc.mcDataDir, "config/frozen/overlays.json");
+    public static final File configFile = new File(Core.INSTANCE.getMc().mcDataDir, "config/frozencloud/overlays.json");
     public static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
     public static final Type type = new TypeToken<Map<String, OverlayConfig>>() {}.getType();
@@ -31,7 +30,7 @@ public class OverlayConfigManager {
         try (FileReader reader = new FileReader(configFile)) {
             configMap = GSON.fromJson(reader, type);
         } catch (IOException e) {
-            configMap = new HashMap<>(); // fallback
+            configMap = new HashMap<>();
         }
     }
 

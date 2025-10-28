@@ -1,8 +1,7 @@
-package dev.frozencloud.frozen.utils.gui.overlays;
+package dev.frozencloud.core.overlaymanager;
 
-import dev.frozencloud.frozen.Frozen;
-import dev.frozencloud.frozen.utils.Button;
-import dev.frozencloud.frozen.utils.gui.components.ToggleSwitch;
+import dev.frozencloud.core.Core;
+import dev.frozencloud.core.overlaymanager.components.ToggleSwitch;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import net.minecraft.client.Minecraft;
@@ -183,10 +182,10 @@ public class GuiOverlayEditor extends GuiScreen {
         super.mouseClicked(mouseX, mouseY, mouseButton);
         showTip = false;
 
-        Button mouseBtn = Button.getButton(mouseButton);
+        ButtonEnum mouseBtn = ButtonEnum.getButton(mouseButton);
         Overlay hoveringOverlay = getHoveredOverlay(mouseX, mouseY);
 
-        if (mouseBtn.equals(Button.MOUSE_LEFT)) {
+        if (mouseBtn.equals(ButtonEnum.MOUSE_LEFT)) {
             if (overlayConfigGui != null) {
                 if (overlayConfigGui.isMouseOver(mouseX, mouseY)) {
                     overlayConfigGui.mouseClicked(mouseBtn, mouseX, mouseY);
@@ -216,7 +215,7 @@ public class GuiOverlayEditor extends GuiScreen {
                 dragOffsetX = mouseX - hoveringOverlay.getX();
                 dragOffsetY = mouseY - hoveringOverlay.getY();
             }
-        } else if (mouseBtn.equals(Button.MOUSE_RIGHT)) {
+        } else if (mouseBtn.equals(ButtonEnum.MOUSE_RIGHT)) {
             if (hoveringOverlay != null) {
                 overlayConfigGui = null;
                 int mx = OverlayConfigGui.fits(mouseX, mouseY) ? mouseX : mouseX - OverlayConfigGui.width;
@@ -349,7 +348,7 @@ public class GuiOverlayEditor extends GuiScreen {
     }
 
     public void open() {
-        Frozen.guiToOpen = this;
+        Core.INSTANCE.setGuiToOpen(this);
         opened = true;
     }
 

@@ -1,5 +1,6 @@
-package dev.frozencloud.frozen.utils.gui.components;
+package dev.frozencloud.core.overlaymanager.components;
 
+import dev.frozencloud.core.overlaymanager.ButtonEnum;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 
@@ -48,8 +49,8 @@ public class Button extends Gui {
         mc.fontRendererObj.drawString(label, x + width / 2 - strW / 2, y + height / 2 - mc.fontRendererObj.FONT_HEIGHT / 2, textColor);
     }
 
-    public void mouseClicked(dev.frozencloud.frozen.utils.Button button, int mouseX, int mouseY) {
-        if (!button.equals(dev.frozencloud.frozen.utils.Button.MOUSE_LEFT)) return;
+    public void mouseClicked(ButtonEnum button, int mouseX, int mouseY) {
+        if (!button.equals(ButtonEnum.MOUSE_LEFT)) return;
         if (isMouseOver(mouseX, mouseY)) {
             action.run();
             pressed = true;

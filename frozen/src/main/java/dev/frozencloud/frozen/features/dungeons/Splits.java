@@ -1,10 +1,11 @@
 package dev.frozencloud.frozen.features.dungeons;
 
+import dev.frozencloud.core.ModEnum;
 import dev.frozencloud.frozen.config.ModConfig;
-import dev.frozencloud.frozen.utils.gui.overlays.BooleanConfigBinding;
-import dev.frozencloud.frozen.utils.gui.overlays.IntegerConfigBinding;
-import dev.frozencloud.frozen.utils.gui.overlays.OverlayManager;
-import dev.frozencloud.frozen.utils.gui.overlays.TextOverlay;
+import dev.frozencloud.core.overlaymanager.BooleanConfigBinding;
+import dev.frozencloud.core.overlaymanager.IntegerConfigBinding;
+import dev.frozencloud.core.overlaymanager.OverlayManager;
+import dev.frozencloud.core.overlaymanager.TextOverlay;
 import dev.frozencloud.frozen.utils.skyblock.dungeon.DungeonEnums;
 import dev.frozencloud.frozen.utils.skyblock.dungeon.DungeonUtils;
 import dev.frozencloud.frozen.utils.skyblock.dungeon.SplitsManager;
@@ -29,6 +30,7 @@ public class Splits {
 
     public Splits() {
         OverlayManager.register(new TextOverlay(
+                ModEnum.FROZEN,
                 new BooleanConfigBinding(
                         () -> ModConfig.splits,
                         (val) -> ModConfig.splits = val
@@ -41,6 +43,7 @@ public class Splits {
                 .setExtraWidth(new IntegerConfigBinding(() -> ModConfig.splitsExtraWidth, (val) -> ModConfig.splitsExtraWidth = val)));
 
         OverlayManager.register(new TextOverlay(
+                ModEnum.FROZEN,
                 new BooleanConfigBinding(
                         () -> ModConfig.bloodSplit,
                         (val) -> ModConfig.bloodSplit = val
@@ -60,6 +63,7 @@ public class Splits {
         ));
 
         OverlayManager.register(new TextOverlay(
+                ModEnum.FROZEN,
                 new BooleanConfigBinding(
                         () -> ModConfig.stormSplit,
                         (val) -> ModConfig.stormSplit = val

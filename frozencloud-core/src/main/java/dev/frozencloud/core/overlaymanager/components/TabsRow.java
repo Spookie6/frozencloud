@@ -1,6 +1,6 @@
-package dev.frozencloud.frozen.utils.gui.components;
+package dev.frozencloud.core.overlaymanager.components;
 
-import dev.frozencloud.frozen.utils.Button;
+import dev.frozencloud.core.overlaymanager.ButtonEnum;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 
@@ -55,8 +55,8 @@ public class TabsRow extends Gui {
         }
     }
 
-    public void mouseClicked(Button button, int mouseX, int mouseY) {
-        if (!button.equals(Button.MOUSE_LEFT)) return;
+    public void mouseClicked(ButtonEnum button, int mouseX, int mouseY) {
+        if (!button.equals(ButtonEnum.MOUSE_LEFT)) return;
         String hovered = getHoveredTab(mouseX, mouseY);
         if (hovered == null) return;
         selectedIndex = tabNames.indexOf(hovered);

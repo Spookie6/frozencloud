@@ -1,4 +1,4 @@
-package dev.frozencloud.frozen.utils.gui.overlays;
+package dev.frozencloud.core.overlaymanager;
 
 public enum OverlayType {
     NORMAL, INGUI, DUAL, HOVERITEM

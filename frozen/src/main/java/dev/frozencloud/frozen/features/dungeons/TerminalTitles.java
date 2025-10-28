@@ -1,13 +1,14 @@
 package dev.frozencloud.frozen.features.dungeons;
 
+import dev.frozencloud.core.ModEnum;
 import dev.frozencloud.frozen.config.ModConfig;
 import dev.frozencloud.frozen.events.impl.TitleEvent;
 import dev.frozencloud.frozen.utils.StringUtils;
 import dev.frozencloud.frozen.utils.TitleType;
-import dev.frozencloud.frozen.utils.gui.overlays.BooleanConfigBinding;
-import dev.frozencloud.frozen.utils.gui.overlays.Overlay;
-import dev.frozencloud.frozen.utils.gui.overlays.OverlayManager;
-import dev.frozencloud.frozen.utils.gui.overlays.TextOverlay;
+import dev.frozencloud.core.overlaymanager.BooleanConfigBinding;
+import dev.frozencloud.core.overlaymanager.Overlay;
+import dev.frozencloud.core.overlaymanager.OverlayManager;
+import dev.frozencloud.core.overlaymanager.TextOverlay;
 import dev.frozencloud.frozen.utils.skyblock.Island;
 import dev.frozencloud.frozen.utils.skyblock.LocationUtils;
 import dev.frozencloud.frozen.utils.skyblock.dungeon.DungeonEnums;
@@ -26,6 +27,7 @@ public class TerminalTitles {
 
     public TerminalTitles() {
         OverlayManager.register(new TextOverlay(
+                ModEnum.FROZEN,
                 new BooleanConfigBinding(
                         () -> ModConfig.customTerminalTitles,
                         (val) -> ModConfig.customTerminalTitles = val

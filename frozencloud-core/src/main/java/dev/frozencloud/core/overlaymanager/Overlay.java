@@ -1,16 +1,17 @@
-package dev.frozencloud.frozen.utils.gui.overlays;
+package dev.frozencloud.core.overlaymanager;
 
-import dev.frozencloud.frozen.Frozen;
+import dev.frozencloud.core.Core;
+import dev.frozencloud.core.ModEnum;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.util.MathHelper;
 
 import java.awt.*;
+import java.util.Objects;
 import java.util.function.Supplier;
 
-import static dev.frozencloud.frozen.Frozen.mc;
-
 public abstract class Overlay {
+    protected ModEnum mod;
     protected int x, y;
     protected boolean centerX, centerY;
 
@@ -41,7 +42,7 @@ public abstract class Overlay {
     public abstract void render(Minecraft mc);
     public abstract void updateDimensions();
 
-    public Overlay(BooleanConfigBinding configOption, String displayName, Supplier<Boolean> renderCondition) {
+    public Overlay(ModEnum mod, BooleanConfigBinding configOption, String displayName, Supplier<Boolean> renderCondition) {
         this.configOption = configOption;
         this.displayName = displayName;
         this.renderCondition = renderCondition;
@@ -85,8 +86,8 @@ public abstract class Overlay {
     }
 
     public void updateDynamicPosition() {
-        if (this.centerX) this.x = new ScaledResolution(mc).getScaledWidth() / 2 - this.getWidth() / 2;
-        if (this.centerY) this.y = new ScaledResolution(mc).getScaledHeight() / 2 - this.getHeight() / 2;
+        if (this.centerX) this.x = new ScaledResolution(Objects.requireNonNull(Core.INSTANCE.getMc())).getScaledWidth() / 2 - this.getWidth() / 2;
+        if (this.centerY) this.y = new ScaledResolution(Objects.requireNonNull(Core.INSTANCE.getMc())).getScaledHeight() / 2 - this.getHeight() / 2;
     }
 
     public int getX() { return x; }
@@ -111,7 +112,7 @@ public abstract class Overlay {
     }
 
     public void updateScale(double scale) {
-        ScaledResolution res = Frozen.guiOverlayEditor.res;
+        ScaledResolution res = new ScaledResolution(Objects.requireNonNull(Core.INSTANCE.getMc()));
         this.scale = roundToDecimals(MathHelper.clamp_double(scale, MIN_SCALE, MAX_SCALE), 2);
 
         if (this.x + this.getWidth() > res.getScaledWidth()) {
