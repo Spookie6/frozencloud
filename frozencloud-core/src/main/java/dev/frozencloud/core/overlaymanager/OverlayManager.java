@@ -1,7 +1,6 @@
 package dev.frozencloud.core.overlaymanager;
 
 import dev.frozencloud.core.Core;
-import dev.frozencloud.core.Mod;
 
 import java.util.ArrayList;
 import java.util.List;
