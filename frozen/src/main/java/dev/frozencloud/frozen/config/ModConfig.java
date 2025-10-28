@@ -10,6 +10,7 @@ import cc.polyfrost.oneconfig.config.data.ModType;
 
 import cc.polyfrost.oneconfig.config.data.OptionSize;
 import cc.polyfrost.oneconfig.libs.universal.UKeyboard;
+import dev.frozencloud.core.Core;
 import dev.frozencloud.frozen.Frozen;
 import org.lwjgl.input.Keyboard;
 
@@ -21,7 +22,7 @@ public class ModConfig extends Config {
         super(new Mod(Frozen.MODID, ModType.SKYBLOCK, "/frozen.svg"), Frozen.MODID + ".json");
         initialize();
 
-        registerKeyBind(moveOverlaysKeybind, Frozen.guiOverlayEditor::open);
+        registerKeyBind(moveOverlaysKeybind, Core.INSTANCE.getGuiOverlayEditor()::open);
 
         addDependency("bloodTimer", "split");
         slotbinding = false;

@@ -1,6 +1,7 @@
 package dev.frozencloud.frozen.commands;
 
 import cc.polyfrost.oneconfig.libs.universal.UChat;
+import dev.frozencloud.core.Core;
 import dev.frozencloud.frozen.Frozen;
 import dev.frozencloud.frozen.events.impl.ChatPacketEvent;
 import dev.frozencloud.frozen.utils.ChatUtils;
@@ -73,7 +74,7 @@ public class MainCommand extends CommandBase {
                 break;
             case "moveoverlays":
             case "mo":
-                Frozen.guiOverlayEditor.open();
+                Core.INSTANCE.getGuiOverlayEditor().open();
                 break;
             case "chatsim": {
                 String stringToSim = String.join(" ", arguments);
